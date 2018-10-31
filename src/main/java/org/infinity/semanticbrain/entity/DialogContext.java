@@ -12,8 +12,8 @@ import java.util.Stack;
 public class DialogContext implements Serializable {
 
     private Stack<Output> latestOutputs    = new Stack<>();
-    private int           stackSize        = 4;
-    private int           keepAliveSeconds = 40;
+    private int           stackSize        = 4;  // Context history size
+    private int           keepAliveSeconds = 40; // Context life cycle
 
     public DialogContext(int stackSize, int keepAliveSeconds) {
         this.stackSize = stackSize;
