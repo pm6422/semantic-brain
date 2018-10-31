@@ -12,8 +12,9 @@ import org.springframework.util.StopWatch;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
@@ -58,7 +59,8 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
             } else {
                 // Executing multiple filterConfigs concurrently
                 int filterCountInParallel = parallelFilters.size();
-                ExecutorService threadPoolInParallel = Executors.newFixedThreadPool(filterCountInParallel);
+                ThreadPoolExecutor threadPoolInParallel = new ThreadPoolExecutor(filterCountInParallel, filterCountInParallel, 1, TimeUnit.SECONDS,
+                        new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
                 CountDownLatch countDownLatch = new CountDownLatch(filterCountInParallel);
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 for (int i = 0; i < filterCountInParallel; i++) {
