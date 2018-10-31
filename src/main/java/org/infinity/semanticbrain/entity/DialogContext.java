@@ -11,13 +11,13 @@ import java.util.Stack;
  */
 public class DialogContext implements Serializable {
 
-    private Stack<Output> latestOutputs   = new Stack<>();
-    private int           stackSize       = 4;
-    private int           maxAgeInSeconds = 40;
+    private Stack<Output> latestOutputs    = new Stack<>();
+    private int           stackSize        = 4;
+    private int           keepAliveSeconds = 40;
 
-    public DialogContext(int stackSize, int maxAgeInSeconds) {
+    public DialogContext(int stackSize, int keepAliveSeconds) {
         this.stackSize = stackSize;
-        this.maxAgeInSeconds = maxAgeInSeconds;
+        this.keepAliveSeconds = keepAliveSeconds;
     }
 
     public void push(Output output) {
@@ -38,7 +38,7 @@ public class DialogContext implements Serializable {
             return null;
         }
         Output output = latestOutputs.pop();
-        if (Instant.now().minusSeconds(maxAgeInSeconds).isAfter(output.getTime())) {
+        if (Instant.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
             // Expired
             return null;
         }
@@ -55,7 +55,7 @@ public class DialogContext implements Serializable {
             return null;
         }
         Output output = latestOutputs.peek();
-        if (Instant.now().minusSeconds(maxAgeInSeconds).isAfter(output.getTime())) {
+        if (Instant.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
             // Expired
             return null;
         }
