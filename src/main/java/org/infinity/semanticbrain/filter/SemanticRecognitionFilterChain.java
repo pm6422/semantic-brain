@@ -121,7 +121,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
         LOGGER.error(ExceptionUtils.getStackTrace(e));
     }
 
-    private boolean startToFilter(final Output lastOutput, SemanticFilter parallelFilter) {
+    private boolean startToFilter(final Output lastOutput, final SemanticFilter parallelFilter) {
         return lastOutput == null && !parallelFilter.isContextFilter() || lastOutput != null && parallelFilter.isContextFilter();
     }
 
