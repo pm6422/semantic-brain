@@ -12,9 +12,7 @@ import org.springframework.util.StopWatch;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
@@ -31,11 +29,16 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
      * The int which is used to maintain the current position in the filter chain
      */
     private              int                                   pos               = 0;
+    /**
+     * Thread pool
+     */
+    private              ThreadPoolExecutor                    threadPool;
 
 
-    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs, Map<String, SemanticFilter> semanticFilterMap) {
+    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs, Map<String, SemanticFilter> semanticFilterMap, ThreadPoolExecutor threadPool) {
         this.filterConfigs = filterConfigs;
         this.semanticFilterMap = semanticFilterMap;
+        this.threadPool = threadPool;
     }
 
     @Override
@@ -59,15 +62,13 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
             } else {
                 // Executing multiple filterConfigs concurrently
                 int filterCountInParallel = parallelFilters.size();
-                ThreadPoolExecutor threadPoolInParallel = new ThreadPoolExecutor(filterCountInParallel, filterCountInParallel, 1, TimeUnit.SECONDS,
-                        new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
                 CountDownLatch countDownLatch = new CountDownLatch(filterCountInParallel);
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 for (int i = 0; i < filterCountInParallel; i++) {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
                     if (this.startToFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
-                        threadPoolInParallel.submit(this.createWrappedRunnable(() -> {
+                        threadPool.submit(this.createWrappedRunnable(() -> {
                             checkActiveThread();
                             Output threadOutput = new Output();
                             StopWatch stopWatch = new StopWatch();
@@ -86,7 +87,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
                 // Try to shutdown all submitted task thread after getting candidate outputs, but do NOT guarantee all the threads can be shutdown
                 // TODO: check the logic
-                threadPoolInParallel.shutdownNow();
+//                threadPool.shutdownNow();
 
                 // Get the result of the highest score
                 Output maxScoreOutput = Collections.max(candidateOutputs, Comparator.comparing(Output::getScore));

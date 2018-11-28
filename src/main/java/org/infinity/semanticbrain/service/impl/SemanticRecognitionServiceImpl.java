@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SemanticRecognitionServiceImpl implements SemanticRecognitionService, ApplicationContextAware, InitializingBean {
@@ -29,6 +32,7 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     private          List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
     private          Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
     private volatile boolean                               logIntentionResult = false;
+    private          ThreadPoolExecutor                    threadPool;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -47,13 +51,14 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
         });
 
         semanticFilterMap = applicationContext.getBeansOfType(SemanticFilter.class);
+        threadPool = new ThreadPoolExecutor(32, 32, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
     }
 
     @Override
     public Output recognize(Input input) {
         Output output = new Output();
         try {
-            SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap);
+            SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool);
             this.processInput(input);
             Output lastOutput = this.getLastOutput(input);
             filterChain.doFilter(input, output, lastOutput);

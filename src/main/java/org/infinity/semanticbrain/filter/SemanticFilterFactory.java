@@ -4,6 +4,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public final class SemanticFilterFactory {
 
@@ -11,9 +12,9 @@ public final class SemanticFilterFactory {
         // Prevent instance creation. This is a utility class.
     }
 
-    public static SemanticRecognitionFilterChain createFilterChain(List<SemanticRecognitionFilterConfig> filterChainConfigs, Map<String, SemanticFilter> semanticFilterMap) {
+    public static SemanticRecognitionFilterChain createFilterChain(List<SemanticRecognitionFilterConfig> filterChainConfigs, Map<String, SemanticFilter> semanticFilterMap, ThreadPoolExecutor threadPoolExecutor) {
         Assert.notEmpty(filterChainConfigs, "Filter chains must NOT be empty.");
-        SemanticRecognitionFilterChain filterChain = new SemanticRecognitionFilterChain(filterChainConfigs, semanticFilterMap);
+        SemanticRecognitionFilterChain filterChain = new SemanticRecognitionFilterChain(filterChainConfigs, semanticFilterMap, threadPoolExecutor);
         return filterChain;
     }
 }
