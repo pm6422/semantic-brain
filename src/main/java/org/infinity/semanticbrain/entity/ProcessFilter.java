@@ -2,7 +2,7 @@ package org.infinity.semanticbrain.entity;
 
 public class ProcessFilter {
     private String name;
-    private Long   elapsed; // Time in ms
+    private Long   elapsed; // Time unit in ms
 
 
     public ProcessFilter(String name, Long elapsed) {
