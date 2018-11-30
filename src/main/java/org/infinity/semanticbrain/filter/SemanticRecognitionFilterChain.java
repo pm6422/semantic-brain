@@ -68,7 +68,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
                     if (this.startToFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
-                        threadPool.submit(this.createWrappedRunnable(() -> {
+                        threadPool.execute(this.createWrappedRunnable(() -> {
                             checkActiveThread();
                             Output threadOutput = new Output();
                             StopWatch stopWatch = new StopWatch();
