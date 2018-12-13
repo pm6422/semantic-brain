@@ -14,24 +14,30 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSemanticFilter.class);
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput) {
+    public Output doFilter(final Input input, final Output output, final Output lastOutput) {
         LOGGER.debug("Filter by {}", this.getName());
+        Output result = new Output();
         Output candidate = this.recognize(input, lastOutput);
         if (output.isRecognized() && candidate.getScore().compareTo(output.getScore()) > 0) {
-            // Store the result of the highest score
+            // Store the result with the higher score
             BeanUtils.copyProperties(candidate, output);
+            result = output;
         }
+        return result;
     }
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) {
+    public Output doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) {
         LOGGER.debug("Filter by {}", this.getName());
+        Output result = new Output();
         Output candidate = this.recognize(input, lastOutput);
         if (output.isRecognized() && candidate.getScore().compareTo(output.getScore()) > 0) {
-            // Store the result of the highest score
+            // Store the result with the higher score
             BeanUtils.copyProperties(candidate, output);
+            result = output;
         }
         this.countDown(countDownLatch);
+        return result;
     }
 
     protected abstract Output recognize(final Input input, final Output lastOutput);
