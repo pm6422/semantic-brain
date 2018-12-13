@@ -63,7 +63,6 @@ public class Output implements Serializable {
         this.time = time;
     }
 
-
     public String getStatus() {
         return status;
     }

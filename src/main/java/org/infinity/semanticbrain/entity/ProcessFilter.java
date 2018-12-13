@@ -4,10 +4,11 @@ public class ProcessFilter {
     private String name;
     private Long   elapsed; // Time unit in ms
 
-
-    public ProcessFilter(String name, Long elapsed) {
-        this.name = name;
-        this.elapsed = elapsed;
+    public static ProcessFilter of(String name, Long elapsed) {
+        ProcessFilter processFilter = new ProcessFilter();
+        processFilter.setName(name);
+        processFilter.setElapsed(elapsed);
+        return processFilter;
     }
 
     public String getName() {

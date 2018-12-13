@@ -12,7 +12,6 @@ import org.springframework.util.StopWatch;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -66,7 +65,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 int filterCountInParallel = parallelFilters.size();
                 CountDownLatch countDownLatch = new CountDownLatch(filterCountInParallel);
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
-                List<FutureTask<Output>> futureTasks = new ArrayList<>(filterCountInParallel);
+                List<FutureTask<Output>> tasks = new ArrayList<>(filterCountInParallel);
                 for (int i = 0; i < filterCountInParallel; i++) {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
                     if (this.enableFilter(lastOutput, parallelFilter)) {
@@ -77,10 +76,10 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             stopWatch.start();
                             parallelFilter.doFilter(input, output, lastOutput, countDownLatch);
                             stopWatch.stop();
-                            output.getFilters().add(new ProcessFilter(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
+                            output.getFilters().add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
                             return output;
                         });
-                        futureTasks.add(task);
+                        tasks.add(task);
                         threadPool.execute(task);
                     } else {
                         countDownLatch.countDown();
@@ -89,16 +88,21 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 // Wait for all parallel threads being executed
                 countDownLatch.await();
 
-                for (FutureTask<Output> task : futureTasks) {
+//                for (FutureTask<Output> task : futureTasks) {
+//                    // Terminal all undone parallel threads
+//                    task.cancel(true);
+//                }
+
+                for (FutureTask<Output> task : tasks) {
                     try {
-                        if (task.get() != null && task.get().isRecognized()) {
+                        if (task.isDone() && task.get() != null && task.get().isRecognized()) {
                             // Store complete result
                             candidateOutputs.add(task.get());
                         } else {
-                            // Terminal other parallel undone thread
+                            // Terminal all undone parallel threads
                             task.cancel(true);
                         }
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
                         LOGGER.error(ExceptionUtils.getStackTrace(e));
                     }
                 }

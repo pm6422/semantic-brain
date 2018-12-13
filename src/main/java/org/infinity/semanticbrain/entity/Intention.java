@@ -2,8 +2,6 @@ package org.infinity.semanticbrain.entity;
 
 import java.io.Serializable;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 public class Intention implements Serializable {
 
     private static final long   serialVersionUID = -1L;
@@ -36,10 +34,6 @@ public class Intention implements Serializable {
 
     public void setSkillName(String skillName) {
         this.skillName = skillName;
-    }
-
-    public boolean isRecognized() {
-        return isNotEmpty(commandCode);
     }
 
     public String getCommandCode() {

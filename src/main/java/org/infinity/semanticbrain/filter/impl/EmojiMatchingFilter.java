@@ -34,6 +34,7 @@ public class EmojiMatchingFilter extends AbstractSemanticFilter {
         try {
             TimeUnit.SECONDS.sleep(3L);
             output.addIntention(Intention.of("Emoji", "Emoji", "Emoji", "Emoji"));
+            output.setScore(Output.TOP_SCORE);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
