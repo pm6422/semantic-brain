@@ -14,6 +14,7 @@ public class Output implements Serializable {
     private             List<Intention>     intentions = new ArrayList<>();
     private             BigDecimal          score      = new BigDecimal(0);
     private             List<ProcessFilter> filters    = new ArrayList<>();
+    private             String              matchedFilter;
     private             Input               input;
     private             Instant             time;
     private             String              status;
@@ -45,6 +46,14 @@ public class Output implements Serializable {
 
     public void setFilters(List<ProcessFilter> filters) {
         this.filters = filters;
+    }
+
+    public String getMatchedFilter() {
+        return matchedFilter;
+    }
+
+    public void setMatchedFilter(String matchedFilter) {
+        this.matchedFilter = matchedFilter;
     }
 
     public Input getInput() {

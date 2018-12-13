@@ -55,6 +55,5 @@ logging:
 # ===================================================================
 application:
     semantic-filter:
-        seq[0]: emojiMatchingFilter,fullMatchingFilter,contextFullMatchingFilter
-        seq[1]: argMatchingFilter
-        seq[2]: partialMatchingFilter
+        seq[0]: emojiMatchingFilter,fullMatchingFilter,contextFullMatchingFilter,argMatchingFilter
+        seq[1]: partialMatchingFilter

@@ -19,6 +19,7 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
         Output candidate = this.recognize(input, lastOutput);
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
+            candidate.setMatchedFilter(this.getName());
             BeanUtils.copyProperties(candidate, output);
         }
     }
@@ -29,16 +30,17 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
         Output candidate = this.recognize(input, lastOutput);
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
+            candidate.setMatchedFilter(this.getName());
             BeanUtils.copyProperties(candidate, output);
         }
-        this.countDown(countDownLatch);
+        this.countDown(candidate, countDownLatch);
     }
 
     protected abstract Output recognize(final Input input, final Output lastOutput);
 
-    protected void countDown(CountDownLatch countDownLatch) {
+    protected void countDown(final Output candidate, final CountDownLatch countDownLatch) {
         Assert.notNull(countDownLatch, "countDownLatch must NOT be null.");
-        if (this.getType().equals(TYPE.TYPE_IMMEDIATE_TERMINATE)) {
+        if (this.getType().equals(TYPE.TYPE_IMMEDIATE_TERMINATE) && candidate.isRecognized()) {
             // Decrease count to 0 in one step
             while (countDownLatch.getCount() != 0) {
                 countDownLatch.countDown();

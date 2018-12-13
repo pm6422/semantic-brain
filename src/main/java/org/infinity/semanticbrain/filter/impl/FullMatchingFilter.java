@@ -5,8 +5,6 @@ import org.infinity.semanticbrain.entity.Output;
 import org.infinity.semanticbrain.filter.AbstractSemanticFilter;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @Component
@@ -30,10 +28,12 @@ public class FullMatchingFilter extends AbstractSemanticFilter {
     @Override
     protected Output recognize(Input input, final Output lastOutput) {
         Output output = new Output();
-        try {
-            TimeUnit.MINUTES.sleep(3L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // stimulate time consuming event
+        for (int i = 0; i < 10000; i++) {
+            for (int j = 0; j < 100000; j++) {
+                if (j % 100000 == 0)
+                    System.out.println(j);
+            }
         }
         return output;
     }
