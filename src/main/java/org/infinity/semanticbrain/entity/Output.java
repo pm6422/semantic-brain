@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Output implements Serializable {
 
-    public static final BigDecimal          TOP_SCORE = new BigDecimal(100);
-    private             List<Intention>     intentions;
-    private             BigDecimal          score     = new BigDecimal(0);
-    private             List<ProcessFilter> filters   = new ArrayList<>();
+    public static final BigDecimal          TOP_SCORE  = new BigDecimal(100);
+    private             List<Intention>     intentions = new ArrayList<>();
+    private             BigDecimal          score      = new BigDecimal(0);
+    private             List<ProcessFilter> filters    = new ArrayList<>();
     private             Input               input;
     private             Instant             time;
     private             String              status;
@@ -25,6 +25,10 @@ public class Output implements Serializable {
 
     public void setIntentions(List<Intention> intentions) {
         this.intentions = intentions;
+    }
+
+    public void addIntention(Intention intention) {
+        this.intentions.add(intention);
     }
 
     public BigDecimal getScore() {

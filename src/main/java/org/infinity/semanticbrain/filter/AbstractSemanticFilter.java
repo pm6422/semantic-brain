@@ -2,6 +2,8 @@ package org.infinity.semanticbrain.filter;
 
 import org.infinity.semanticbrain.entity.Input;
 import org.infinity.semanticbrain.entity.Output;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
@@ -9,10 +11,13 @@ import java.util.concurrent.CountDownLatch;
 
 public abstract class AbstractSemanticFilter implements SemanticFilter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSemanticFilter.class);
+
     @Override
     public void doFilter(final Input input, final Output output, final Output lastOutput) {
+        LOGGER.debug("Filter by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
-        if (candidate.getScore().compareTo(output.getScore()) > 0) {
+        if (output.isRecognized() && candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result of the highest score
             BeanUtils.copyProperties(candidate, output);
         }
@@ -20,8 +25,9 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
 
     @Override
     public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) {
+        LOGGER.debug("Filter by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
-        if (candidate.getScore().compareTo(output.getScore()) > 0) {
+        if (output.isRecognized() && candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result of the highest score
             BeanUtils.copyProperties(candidate, output);
         }

@@ -1,9 +1,12 @@
 package org.infinity.semanticbrain.filter.impl;
 
 import org.infinity.semanticbrain.entity.Input;
+import org.infinity.semanticbrain.entity.Intention;
 import org.infinity.semanticbrain.entity.Output;
 import org.infinity.semanticbrain.filter.AbstractSemanticFilter;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
@@ -28,7 +31,12 @@ public class EmojiMatchingFilter extends AbstractSemanticFilter {
     @Override
     protected Output recognize(Input input, final Output lastOutput) {
         Output output = new Output();
-
+        try {
+            TimeUnit.SECONDS.sleep(3L);
+            output.addIntention(Intention.of("Emoji", "Emoji", "Emoji", "Emoji"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return output;
     }
 }

@@ -7,25 +7,19 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class Intention implements Serializable {
 
     private static final long   serialVersionUID = -1L;
-    private              String commandCode;
-    private              String commandName;
     private              String skillCode;
     private              String skillName;
+    private              String commandCode;
+    private              String commandName;
 
-    public String getCommandCode() {
-        return commandCode;
-    }
 
-    public void setCommandCode(String commandCode) {
-        this.commandCode = commandCode;
-    }
-
-    public String getCommandName() {
-        return commandName;
-    }
-
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
+    public static Intention of(String skillCode, String skillName, String commandCode, String commandName) {
+        Intention intention = new Intention();
+        intention.setSkillCode(skillCode);
+        intention.setSkillName(skillName);
+        intention.setCommandCode(commandCode);
+        intention.setCommandName(commandName);
+        return intention;
     }
 
     public String getSkillCode() {
@@ -46,5 +40,21 @@ public class Intention implements Serializable {
 
     public boolean isRecognized() {
         return isNotEmpty(commandCode);
+    }
+
+    public String getCommandCode() {
+        return commandCode;
+    }
+
+    public void setCommandCode(String commandCode) {
+        this.commandCode = commandCode;
+    }
+
+    public String getCommandName() {
+        return commandName;
+    }
+
+    public void setCommandName(String commandName) {
+        this.commandName = commandName;
     }
 }

@@ -31,7 +31,7 @@ public class FullMatchingFilter extends AbstractSemanticFilter {
     protected Output recognize(Input input, final Output lastOutput) {
         Output output = new Output();
         try {
-            TimeUnit.SECONDS.sleep(3L);
+            TimeUnit.SECONDS.sleep(5L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

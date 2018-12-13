@@ -5,8 +5,6 @@ import org.infinity.semanticbrain.entity.Output;
 import org.infinity.semanticbrain.filter.AbstractSemanticFilter;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @Component
@@ -30,11 +28,6 @@ public class ArgMatchingFilter extends AbstractSemanticFilter {
     @Override
     protected Output recognize(Input input, final Output lastOutput) {
         Output output = new Output();
-        try {
-            TimeUnit.SECONDS.sleep(5L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return output;
     }
 }
