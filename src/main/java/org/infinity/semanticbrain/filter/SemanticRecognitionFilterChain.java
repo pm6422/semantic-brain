@@ -88,11 +88,6 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 // Wait for all parallel threads being executed
                 countDownLatch.await();
 
-//                for (FutureTask<Output> task : futureTasks) {
-//                    // Terminal all undone parallel threads
-//                    task.cancel(true);
-//                }
-
                 for (FutureTask<Output> task : tasks) {
                     try {
                         if (task.isDone() && task.get() != null && task.get().isRecognized()) {
