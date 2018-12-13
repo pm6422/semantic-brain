@@ -132,7 +132,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     }
 
     private boolean continueToFilter(final Output output) {
-        SemanticFilter matchedFilter = semanticFilterMap.get(output.getLastFilter());
+        SemanticFilter matchedFilter = semanticFilterMap.get(output.getMatchedFilter());
         return !output.isRecognized() || output.isRecognized() && matchedFilter.getType().equals(SemanticFilter.TYPE.TYPE_SERIAL_COMPARING);
     }
 

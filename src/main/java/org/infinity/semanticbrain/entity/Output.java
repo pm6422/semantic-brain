@@ -88,10 +88,6 @@ public class Output implements Serializable {
         this.extra = extra;
     }
 
-    public ProcessFilter getLastFilter() {
-        return CollectionUtils.isNotEmpty(filters) ? filters.get(filters.size() - 1) : null;
-    }
-
     public Intention getFirstIntention() {
         return CollectionUtils.isNotEmpty(intentions) ? intentions.get(0) : null;
     }
