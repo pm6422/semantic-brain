@@ -86,15 +86,16 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                         countDownLatch.countDown();
                     }
                 }
-                // Wait for all child thread being executed
+                // Wait for all parallel threads being executed
                 countDownLatch.await();
 
                 for (FutureTask<Output> task : futureTasks) {
                     try {
                         if (task.get() != null && task.get().isRecognized()) {
+                            // Store complete result
                             candidateOutputs.add(task.get());
                         } else {
-                            // Terminal other parallel undone tasks
+                            // Terminal other parallel undone thread
                             task.cancel(true);
                         }
                     } catch (ExecutionException e) {
@@ -110,27 +111,12 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
             // Set index to the next
             pos++;
 
+            // Decide whether to continue filter
             if (this.continueToFilter(output)) {
                 // Continue to execute filter chain
                 this.doFilter(input, output, lastOutput);
             }
         }
-    }
-
-    private Runnable createWrappedRunnable(final Runnable task) {
-        return () -> {
-            try {
-                task.run();
-            } catch (Exception e) {
-                if (e instanceof InterruptedException) {
-                    // Ignore the InterruptedException
-                    LOGGER.debug("Executed task ahead of time");
-                } else {
-                    // Handle other type exceptions
-                    handleRunnableException(e);
-                }
-            }
-        };
     }
 
     private void handleRunnableException(Exception e) {
