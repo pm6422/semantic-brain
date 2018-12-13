@@ -1,7 +1,7 @@
 package org.infinity.semanticbrain.entity;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Stack;
 
 /**
@@ -38,7 +38,7 @@ public class DialogContext implements Serializable {
             return null;
         }
         Output output = latestOutputs.pop();
-        if (Instant.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
+        if (LocalDateTime.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
             // Expired
             return null;
         }
@@ -55,7 +55,7 @@ public class DialogContext implements Serializable {
             return null;
         }
         Output output = latestOutputs.peek();
-        if (Instant.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
+        if (LocalDateTime.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
             // Expired
             return null;
         }

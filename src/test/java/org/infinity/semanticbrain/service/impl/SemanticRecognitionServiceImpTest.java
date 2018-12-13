@@ -2,6 +2,7 @@ package org.infinity.semanticbrain.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.infinity.semanticbrain.entity.Input;
 import org.infinity.semanticbrain.entity.Output;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
@@ -24,7 +25,6 @@ public class SemanticRecognitionServiceImpTest {
 
     }
 
-
     @Test
     public void testRecognize() throws JsonProcessingException {
         Input input = new Input();
@@ -32,6 +32,7 @@ public class SemanticRecognitionServiceImpTest {
         Output output = semanticRecognitionService.recognize(input);
 //        Assert.assertTrue(output.isRecognized());
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         System.out.println("Output:");
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(output));
     }

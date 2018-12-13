@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StopWatch;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.FutureTask;
@@ -53,7 +53,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
         // Set value to output
         output.setInput(input);
-        output.setTime(Instant.now());
+        output.setTime(LocalDateTime.now());
     }
 
     private void internalDoFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {

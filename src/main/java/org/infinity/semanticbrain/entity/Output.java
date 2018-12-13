@@ -1,10 +1,11 @@
 package org.infinity.semanticbrain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Output implements Serializable {
     private             List<ProcessFilter> filters    = new ArrayList<>();
     private             String              matchedFilter;
     private             Input               input;
-    private             Instant             time;
+    private             LocalDateTime       time;
     private             String              status;
     private             Extra               extra;
     private             Long                elapsed; // Time in milliseconds
@@ -65,11 +66,12 @@ public class Output implements Serializable {
         this.input = input;
     }
 
-    public Instant getTime() {
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(Instant time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
