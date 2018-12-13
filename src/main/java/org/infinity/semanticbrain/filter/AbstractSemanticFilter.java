@@ -17,30 +17,28 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     public void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
-        LOGGER.debug("Filtered by {}", this.getName());
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());
             BeanUtils.copyProperties(candidate, output);
         }
+        LOGGER.debug("Filtered by {}", this.getName());
     }
 
     @Override
     public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
-        LOGGER.debug("Filtered by {}", this.getName());
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());
             BeanUtils.copyProperties(candidate, output);
         }
+        LOGGER.debug("Filtered by {}", this.getName());
         this.countDown(candidate, countDownLatch);
     }
 
-    protected abstract Output recognize(final Input input, final Output lastOutput) throws InterruptedException;
-
-    protected void countDown(final Output candidate, final CountDownLatch countDownLatch) {
+    private void countDown(final Output candidate, final CountDownLatch countDownLatch) {
         Assert.notNull(countDownLatch, "countDownLatch must NOT be null.");
         if (this.getType().equals(TYPE.TYPE_IMMEDIATE_TERMINATE) && candidate.isRecognized()) {
             // Decrease count to 0 in one step
@@ -51,4 +49,6 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
             countDownLatch.countDown();
         }
     }
+
+    protected abstract Output recognize(final Input input, final Output lastOutput) throws InterruptedException;
 }

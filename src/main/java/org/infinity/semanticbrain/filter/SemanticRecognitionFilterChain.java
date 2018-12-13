@@ -71,6 +71,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 CountDownLatch countDownLatch = new CountDownLatch(filterCountInParallel);
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 List<FutureTask<Output>> tasks = new ArrayList<>(filterCountInParallel);
+                List<ProcessFilter> filters = new ArrayList<>();
                 for (int i = 0; i < filterCountInParallel; i++) {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
                     if (this.enableFilter(lastOutput, parallelFilter)) {
@@ -81,7 +82,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             stopWatch.start();
                             parallelFilter.doFilter(input, output, lastOutput, countDownLatch);
                             stopWatch.stop();
-                            output.getFilters().add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
+                            filters.add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
                             return output;
                         });
                         tasks.add(task);
@@ -110,6 +111,9 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 // Get the result of the highest score
                 Output maxScoreOutput = Collections.max(candidateOutputs, Comparator.comparing(Output::getScore));
                 BeanUtils.copyProperties(maxScoreOutput, output);
+
+                // Add filters
+                output.getFilters().addAll(filters);
             }
 
             // Set index to the next
