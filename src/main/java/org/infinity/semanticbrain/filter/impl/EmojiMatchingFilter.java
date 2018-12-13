@@ -28,6 +28,13 @@ public class EmojiMatchingFilter extends AbstractSemanticFilter {
     @Override
     protected Output recognize(Input input, final Output lastOutput) {
         Output output = new Output();
+//        try {
+//            TimeUnit.SECONDS.sleep(1L);
+//            output.addIntention(Intention.of("Emoji", "Emoji", "Emoji", "Emoji"));
+//            output.setScore(Output.TOP_SCORE);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return output;
     }
 }
