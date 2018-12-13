@@ -66,7 +66,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 for (int i = 0; i < filterCountInParallel; i++) {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
-                    if (this.startToFilter(lastOutput, parallelFilter)) {
+                    if (this.enableFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
                         threadPool.execute(this.createWrappedRunnable(() -> {
                             checkActiveThread();
@@ -110,8 +110,10 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 task.run();
             } catch (Exception e) {
                 if (e instanceof InterruptedException) {
-                    LOGGER.debug("Interrupted task");
+                    // Ignore the InterruptedException
+                    LOGGER.debug("Executed task ahead of time");
                 } else {
+                    // Handle other exceptions
                     handleRunnableException(e);
                 }
             }
@@ -122,7 +124,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
         LOGGER.error(ExceptionUtils.getStackTrace(e));
     }
 
-    private boolean startToFilter(final Output lastOutput, final SemanticFilter parallelFilter) {
+    private boolean enableFilter(final Output lastOutput, final SemanticFilter parallelFilter) {
         return lastOutput == null && !parallelFilter.isContextFilter() || lastOutput != null && parallelFilter.isContextFilter();
     }
 
