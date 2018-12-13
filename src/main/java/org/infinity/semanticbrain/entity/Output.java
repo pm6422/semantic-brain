@@ -19,6 +19,7 @@ public class Output implements Serializable {
     private             Instant             time;
     private             String              status;
     private             Extra               extra;
+    private             Long                elapsed; // Time in milliseconds
 
     public List<Intention> getIntentions() {
         return intentions;
@@ -86,6 +87,14 @@ public class Output implements Serializable {
 
     public void setExtra(Extra extra) {
         this.extra = extra;
+    }
+
+    public Long getElapsed() {
+        return elapsed;
+    }
+
+    public void setElapsed(Long elapsed) {
+        this.elapsed = elapsed;
     }
 
     public Intention getFirstIntention() {

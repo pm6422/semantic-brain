@@ -15,8 +15,9 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
 
     @Override
     public void doFilter(final Input input, final Output output, final Output lastOutput) {
-        LOGGER.debug("Filter by {}", this.getName());
+        LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
+        LOGGER.debug("Filtered by {}", this.getName());
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());
@@ -26,8 +27,9 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
 
     @Override
     public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) {
-        LOGGER.debug("Filter by {}", this.getName());
+        LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
+        LOGGER.debug("Filtered by {}", this.getName());
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());

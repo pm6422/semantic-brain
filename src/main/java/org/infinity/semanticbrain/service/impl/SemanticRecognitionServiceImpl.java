@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
 
     @Override
     public Output recognize(Input input) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         Output output = new Output();
         try {
             SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool);
@@ -64,8 +67,9 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
             filterChain.doFilter(input, output, lastOutput);
             this.processOutput(output);
         } catch (Exception e) {
-            return output;
         }
+        stopWatch.stop();
+        output.setElapsed(stopWatch.getTotalTimeMillis());
         return output;
     }
 
