@@ -29,10 +29,10 @@ public class FullMatchingFilter extends AbstractSemanticFilter {
     protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
         // stimulate time consuming event
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 10000; i++) {
             for (int j = 0; j < 100000; j++) {
-//                if (j % 100000 == 0)
-//                    System.out.println(j);
+                if (j % 100000 == 0)
+                    System.out.println(j);
             }
         }
         return output;
