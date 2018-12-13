@@ -25,7 +25,7 @@ public interface SemanticFilter {
      * @param output
      * @param lastOutput
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput);
+    void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException;
 
     /**
      * For multiple thread
@@ -35,6 +35,6 @@ public interface SemanticFilter {
      * @param lastOutput
      * @param countDownLatch
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch);
+    void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) throws InterruptedException;
 
 }

@@ -26,7 +26,7 @@ public class FullMatchingFilter extends AbstractSemanticFilter {
     }
 
     @Override
-    protected Output recognize(Input input, final Output lastOutput) {
+    protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
         // stimulate time consuming event
         for (int i = 0; i < 10000; i++) {

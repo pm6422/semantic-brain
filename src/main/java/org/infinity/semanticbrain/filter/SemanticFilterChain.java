@@ -12,6 +12,6 @@ public interface SemanticFilterChain {
      * @param output
      * @param lastOutput
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException;
+    void doFilter(final Input input, final Output output, final Output lastOutput);
 
 }

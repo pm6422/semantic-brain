@@ -29,15 +29,11 @@ public class ArgMatchingFilter extends AbstractSemanticFilter {
     }
 
     @Override
-    protected Output recognize(Input input, final Output lastOutput) {
+    protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
-        try {
-            TimeUnit.SECONDS.sleep(2L);
-            output.addIntention(Intention.of("Music", "Music", "Music", "Music"));
-            output.setScore(Output.TOP_SCORE);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        TimeUnit.SECONDS.sleep(2L);
+        output.addIntention(Intention.of("Music", "Music", "Music", "Music"));
+        output.setScore(Output.TOP_SCORE);
         return output;
     }
 }

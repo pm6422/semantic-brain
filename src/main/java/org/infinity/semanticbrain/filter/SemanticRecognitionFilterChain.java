@@ -43,8 +43,13 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     }
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
-        internalDoFilter(input, output, lastOutput);
+    public void doFilter(final Input input, final Output output, final Output lastOutput) {
+        try {
+            internalDoFilter(input, output, lastOutput);
+        } catch (InterruptedException e) {
+            // Ignore InterruptedException
+            // Cancelling thread task can cause InterruptedException
+        }
 
         // Set value to output
         output.setInput(input);

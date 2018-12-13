@@ -14,7 +14,7 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSemanticFilter.class);
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput) {
+    public void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
         LOGGER.debug("Filtered by {}", this.getName());
@@ -26,7 +26,7 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     }
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) {
+    public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
         Output candidate = this.recognize(input, lastOutput);
         LOGGER.debug("Filtered by {}", this.getName());
@@ -38,7 +38,7 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
         this.countDown(candidate, countDownLatch);
     }
 
-    protected abstract Output recognize(final Input input, final Output lastOutput);
+    protected abstract Output recognize(final Input input, final Output lastOutput) throws InterruptedException;
 
     protected void countDown(final Output candidate, final CountDownLatch countDownLatch) {
         Assert.notNull(countDownLatch, "countDownLatch must NOT be null.");
