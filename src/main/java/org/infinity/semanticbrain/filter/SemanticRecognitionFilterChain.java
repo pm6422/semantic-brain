@@ -113,7 +113,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                     // Ignore the InterruptedException
                     LOGGER.debug("Executed task ahead of time");
                 } else {
-                    // Handle other exceptions
+                    // Handle other type exceptions
                     handleRunnableException(e);
                 }
             }
