@@ -12,6 +12,7 @@ import org.springframework.util.StopWatch;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -103,7 +104,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             // Terminal all undone parallel threads
                             task.cancel(true);
                         }
-                    } catch (Exception e) {
+                    } catch (ExecutionException e) {
                         LOGGER.error(ExceptionUtils.getStackTrace(e));
                     }
                 }
