@@ -81,6 +81,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             checkActiveThread();
                             StopWatch stopWatch = new StopWatch();
                             stopWatch.start();
+                            // Note: it maybe a bug for one output in multiple threads env.
                             parallelFilter.doFilter(input, output, lastOutput, countDownLatch);
                             stopWatch.stop();
                             filters.add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
