@@ -52,7 +52,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
         });
 
         semanticFilterMap = applicationContext.getBeansOfType(SemanticFilter.class);
-        threadPool = new ThreadPoolExecutor(32, 32, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
+        int cpuCores = Runtime.getRuntime().availableProcessors() - 3;
+        threadPool = new ThreadPoolExecutor(cpuCores, cpuCores, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
     }
 
     @Override
