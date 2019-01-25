@@ -8,7 +8,10 @@ import org.infinity.semanticbrain.filter.SemanticFilterFactory;
 import org.infinity.semanticbrain.filter.SemanticRecognitionFilterChain;
 import org.infinity.semanticbrain.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -25,15 +28,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class SemanticRecognitionServiceImpl implements SemanticRecognitionService, ApplicationContextAware, InitializingBean {
+public class SemanticRecognitionServiceImpl implements SemanticRecognitionService, ApplicationContextAware, InitializingBean, DisposableBean {
 
+    private static final Logger                                LOGGER             = LoggerFactory.getLogger(SemanticRecognitionServiceImpl.class);
     @Autowired
-    private          ApplicationProperties                 applicationProperties;
-    private          ApplicationContext                    applicationContext;
-    private          List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
-    private          Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
-    private volatile boolean                               logIntentionResult = false;
-    private          ThreadPoolExecutor                    threadPool;
+    private              ApplicationProperties                 applicationProperties;
+    private              ApplicationContext                    applicationContext;
+    private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
+    private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
+    private volatile     boolean                               logIntentionResult = false;
+    private              ThreadPoolExecutor                    threadPool;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -54,6 +58,15 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
         semanticFilterMap = applicationContext.getBeansOfType(SemanticFilter.class);
         int cpuCores = Runtime.getRuntime().availableProcessors() - 3;
         threadPool = new ThreadPoolExecutor(cpuCores, cpuCores, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        threadPool.shutdown();
+        while (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
+            LOGGER.debug("Thread is still running!");
+        }
+        LOGGER.info("All threads are terminated!");
     }
 
     @Override

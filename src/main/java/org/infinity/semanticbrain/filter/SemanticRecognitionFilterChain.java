@@ -98,6 +98,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
                 for (FutureTask<Output> task : tasks) {
                     try {
+                        // FutureTask can check the thread execution status
                         if (task.isDone() && task.get() != null && task.get().isRecognized()) {
                             // Store complete result
                             candidateOutputs.add(task.get());
