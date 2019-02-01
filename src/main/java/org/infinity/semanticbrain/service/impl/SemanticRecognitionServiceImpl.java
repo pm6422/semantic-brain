@@ -1,5 +1,6 @@
 package org.infinity.semanticbrain.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.infinity.semanticbrain.config.ApplicationProperties;
 import org.infinity.semanticbrain.entity.Input;
 import org.infinity.semanticbrain.entity.Output;
@@ -8,12 +9,14 @@ import org.infinity.semanticbrain.filter.SemanticFilterFactory;
 import org.infinity.semanticbrain.filter.SemanticRecognitionFilterChain;
 import org.infinity.semanticbrain.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
+import org.infinity.semanticbrain.utils.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     private static final Logger                                LOGGER             = LoggerFactory.getLogger(SemanticRecognitionServiceImpl.class);
     @Autowired
     private              ApplicationProperties                 applicationProperties;
+    @Value("${info.artifact.name}")
+    private              String                                appName;
     private              ApplicationContext                    applicationContext;
     private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
     private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
@@ -57,7 +62,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
 
         semanticFilterMap = applicationContext.getBeansOfType(SemanticFilter.class);
         int cpuCores = Runtime.getRuntime().availableProcessors() - 3;
-        threadPool = new ThreadPoolExecutor(cpuCores, cpuCores, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15), new ThreadPoolExecutor.DiscardPolicy());
+        threadPool = new ThreadPoolExecutor(cpuCores, cpuCores, 1, TimeUnit.SECONDS, new LinkedBlockingQueue(15),
+                new NamedThreadFactory(StringUtils.upperCase(appName) + "-NLU-POOL"), new ThreadPoolExecutor.DiscardPolicy());
     }
 
     @Override
