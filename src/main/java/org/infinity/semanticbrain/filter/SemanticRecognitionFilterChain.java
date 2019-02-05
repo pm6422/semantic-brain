@@ -19,22 +19,22 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     /**
      * Filters
      */
-    private              List<SemanticRecognitionFilterConfig> filterConfigs;
+    private List<SemanticRecognitionFilterConfig> filterConfigs;
     /**
      * The map which is used to save semantic filterConfigs
      */
-    private              Map<String, SemanticFilter>           semanticFilterMap = new HashMap<>();
+    private Map<String, SemanticFilter>           semanticFilterMap = new HashMap<>();
     /**
      * The int which is used to maintain the current position in the filter chain
      */
-    private              int                                   pos               = 0;
+    private int                                   pos               = 0;
     /**
      * Thread pool
      */
-    private              ThreadPoolExecutor                    threadPool;
+    private ExecutorService                       threadPool;
 
 
-    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs, Map<String, SemanticFilter> semanticFilterMap, ThreadPoolExecutor threadPool) {
+    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs, Map<String, SemanticFilter> semanticFilterMap, ExecutorService threadPool) {
         this.filterConfigs = filterConfigs;
         this.semanticFilterMap = semanticFilterMap;
         this.threadPool = threadPool;
