@@ -11,10 +11,7 @@ import org.springframework.util.StopWatch;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
@@ -71,13 +68,13 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 int filterCountInParallel = parallelFilters.size();
                 CountDownLatch countDownLatch = new CountDownLatch(filterCountInParallel);
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
-                List<FutureTask<Output>> tasks = new ArrayList<>(filterCountInParallel);
+                List<Future<Output>> outputs = new ArrayList<>(filterCountInParallel);
                 List<ProcessFilter> filters = new ArrayList<>();
                 for (int i = 0; i < filterCountInParallel; i++) {
                     SemanticFilter parallelFilter = parallelFilters.get(i);
                     if (this.enableFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
-                        FutureTask<Output> task = new FutureTask<>(() -> {
+                        Callable<Output> task = () -> {
                             checkActiveThread();
                             StopWatch stopWatch = new StopWatch();
                             stopWatch.start();
@@ -86,9 +83,8 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             stopWatch.stop();
                             filters.add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
                             return output;
-                        });
-                        tasks.add(task);
-                        threadPool.execute(task);
+                        };
+                        outputs.add(threadPool.submit(task));
                     } else {
                         countDownLatch.countDown();
                     }
@@ -96,7 +92,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 // Wait for all parallel threads being executed
                 countDownLatch.await();
 
-                for (FutureTask<Output> task : tasks) {
+                for (Future<Output> task : outputs) {
                     try {
                         // FutureTask can check the thread execution status
                         if (task.isDone() && task.get() != null && task.get().isRecognized()) {
