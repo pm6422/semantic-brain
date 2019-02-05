@@ -38,7 +38,7 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
     private volatile     boolean                               logIntentionResult = false;
     @Autowired
-    @Qualifier("semanticRecognitionThreadPool")
+    @Qualifier("nluThreadPool")
     private              ExecutorService                       threadPool;
 
     @Override

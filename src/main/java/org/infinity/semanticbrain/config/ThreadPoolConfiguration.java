@@ -17,7 +17,7 @@ public class ThreadPoolConfiguration {
     private String appName;
 
     @Bean
-    public ExecutorService semanticRecognitionThreadPool() {
+    public ExecutorService nluThreadPool() {
         int cpuCores = Runtime.getRuntime().availableProcessors() - 3;
         return new ThreadPoolExecutor(cpuCores, cpuCores, 100L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue(10),
                 new NamedThreadFactory(StringUtils.upperCase(appName) + "-NLU-POOL"), new ThreadPoolExecutor.DiscardPolicy());
