@@ -9,13 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.StopWatch;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -23,11 +29,14 @@ public class SemanticRecognitionConcurrencyTest {
 
     private static final Logger                     LOGGER = LoggerFactory.getLogger(SemanticRecognitionConcurrencyTest.class);
     @Autowired
+    private              WebApplicationContext      context;
+    private              MockMvc                    mockMvc;
+    @Autowired
     private              SemanticRecognitionService semanticRecognitionService;
 
     @Before
     public void setUp() {
-
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
     }
 
     /**
@@ -41,7 +50,6 @@ public class SemanticRecognitionConcurrencyTest {
         watch.start();
         int requestCount = 10000;
         int threadPoolSize = 20;
-        CountDownLatch countDownLatch = new CountDownLatch(requestCount);
         ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
         IntStream.range(0, requestCount).forEach(i -> {
@@ -50,17 +58,46 @@ public class SemanticRecognitionConcurrencyTest {
                 try {
                     Input input = new Input();
                     semanticRecognitionService.recognize(input);
-                    countDownLatch.countDown();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
         });
 
-        countDownLatch.await();
-        watch.stop();
-        LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
-        LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
-        LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
+        threadPool.shutdown();
+        if (threadPool.awaitTermination(2, TimeUnit.SECONDS)) {
+            watch.stop();
+            LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
+            LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
+            LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
+        }
+    }
+
+    @Test
+    public void testConcurrency2() throws Exception {
+        StopWatch watch = new StopWatch();
+        watch.start();
+        int requestCount = 1000;
+        int threadPoolSize = 20;
+        ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
+
+        IntStream.range(0, requestCount).forEach(i -> {
+            threadPool.execute(() -> {
+                LOGGER.debug("Active thread count: {}", Thread.activeCount());
+                try {
+                    this.mockMvc.perform(get("/open-api/semantic-recognize").accept(MediaType.APPLICATION_JSON));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        threadPool.shutdown();
+        if (threadPool.awaitTermination(2, TimeUnit.SECONDS)) {
+            watch.stop();
+            LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
+            LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
+            LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
+        }
     }
 }

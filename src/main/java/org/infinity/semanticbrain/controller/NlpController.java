@@ -16,7 +16,7 @@ public class NlpController {
     @Autowired
     private SemanticRecognitionService semanticRecognitionService;
 
-    @RequestMapping(value = "/semantic-recognize", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/open-api/semantic-recognize", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Output> semanticRecognize() {
         Input input = new Input();
         return ResponseEntity.ok(semanticRecognitionService.recognize(input));
