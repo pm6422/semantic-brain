@@ -2,7 +2,8 @@ package org.infinity.semanticbrain.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Stack;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * DialogContext class
@@ -11,9 +12,9 @@ import java.util.Stack;
  */
 public class DialogContext implements Serializable {
 
-    private Stack<Output> latestOutputs    = new Stack<>();
-    private int           stackSize        = 4;  // Context history size
-    private int           keepAliveSeconds = 40; // Context life cycle
+    private List<Output> latestOutputs    = new CopyOnWriteArrayList<>();
+    private int          stackSize        = 4;  // Context history size
+    private int          keepAliveSeconds = 40; // Context life cycle
 
     public DialogContext(int stackSize, int keepAliveSeconds) {
         this.stackSize = stackSize;
@@ -22,26 +23,14 @@ public class DialogContext implements Serializable {
 
     public void push(Output output) {
         if (latestOutputs.size() == stackSize) {
-            this.removeHead();
+            latestOutputs.remove(0);
         }
-        latestOutputs.push(output);
-    }
-
-    private void removeHead() {
-        if (!latestOutputs.isEmpty()) {
-            latestOutputs.removeElementAt(0);
-        }
+        latestOutputs.add(output);
     }
 
     public Output pop() {
-        if (latestOutputs.isEmpty()) {
-            return null;
-        }
-        Output output = latestOutputs.pop();
-        if (LocalDateTime.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
-            // Expired
-            return null;
-        }
+        Output output = this.peek();
+        latestOutputs.remove(latestOutputs.size() - 1);
         return output;
     }
 
@@ -54,7 +43,7 @@ public class DialogContext implements Serializable {
         if (latestOutputs.isEmpty()) {
             return null;
         }
-        Output output = latestOutputs.peek();
+        Output output = latestOutputs.get(latestOutputs.size() - 1);
         if (LocalDateTime.now().minusSeconds(keepAliveSeconds).isAfter(output.getTime())) {
             // Expired
             return null;
@@ -68,10 +57,10 @@ public class DialogContext implements Serializable {
         }
 
         int repeatCount = 0;
-        Output last = latestOutputs.elementAt(latestOutputs.size() - 1);
+        Output last = latestOutputs.get(latestOutputs.size() - 1);
         int i = latestOutputs.size() - 2;
         while (i > 0) {
-            Output next = latestOutputs.elementAt(i);
+            Output next = latestOutputs.get(i);
             if (next.getInput().getText().equals(last.getInput().getText())) {
                 repeatCount++;
             } else {
