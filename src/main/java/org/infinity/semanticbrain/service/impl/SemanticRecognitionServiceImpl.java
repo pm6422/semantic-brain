@@ -63,10 +63,9 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     @Override
     public void destroy() throws Exception {
         threadPool.shutdown();
-        while (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
-            LOGGER.debug("Thread is still running!");
+        if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+            LOGGER.info("All threads are terminated!");
         }
-        LOGGER.info("All threads are terminated!");
     }
 
     @Override
