@@ -1,19 +1,20 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Note: Serialization friendly class
- */
+@ApiModel("用户输入信息")
 public class Input implements Serializable {
 
     private static final long   serialVersionUID = 1L;
-    // Request ID for tracing request chain
-    private              String requestId;
-    // Original input text
+    @ApiModelProperty("请求ID")
+    private              String requestId;//用于链路追踪
+    @ApiModelProperty("输入文本")
     private              String text;
-    // Device information
+    @ApiModelProperty("设备信息")
     private              Device device;
 
     public Input() {

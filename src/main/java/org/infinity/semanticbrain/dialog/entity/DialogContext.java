@@ -1,24 +1,24 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * DialogContext class
- * Note: Serialization friendly class
- */
+@ApiModel("对话上下文")
 public class DialogContext implements Serializable {
 
     private static final long         serialVersionUID = 6996205094278136766L;
-    // Last time output
-    private              Output       latestOutput;
-    // Dialog context output histories
+    @ApiModelProperty("上次输出结果")
+    private              Output       lastOutput;
+    @ApiModelProperty("最近多次输出结果历史")
     private              List<Output> latestOutputs    = new CopyOnWriteArrayList<Output>();// Read more than write
-    // Dialog context output history size
+    @ApiModelProperty("最近多次输出结果历史大小")
     private              int          latestOutputSize = 5;
-    // Keep alive time for dialog context
+    @ApiModelProperty("上下文对话有效时间秒数")
     private              int          keepAliveSeconds = 45;
 
     public static DialogContext of(int latestOutputSize, int keepAliveSeconds) {
@@ -28,12 +28,12 @@ public class DialogContext implements Serializable {
         return context;
     }
 
-    public Output getLatestOutput() {
-        return latestOutput;
+    public Output getLastOutput() {
+        return lastOutput;
     }
 
-    public void setLatestOutput(Output latestOutput) {
-        this.latestOutput = latestOutput;
+    public void setLastOutput(Output lastOutput) {
+        this.lastOutput = lastOutput;
     }
 
     public int getLatestOutputSize() {
@@ -58,7 +58,7 @@ public class DialogContext implements Serializable {
      * @param latestOutput the latest dialog context output
      */
     public void addOutput(Output latestOutput) {
-        this.latestOutput = latestOutput;
+        this.lastOutput = latestOutput;
         latestOutputs.add(latestOutput);
         if (latestOutputs.size() > latestOutputSize) {
             latestOutputs.remove(0);
@@ -71,10 +71,10 @@ public class DialogContext implements Serializable {
      * @return latest dialog context output
      */
     public Output getAliveOutput() {
-        if (latestOutput == null || expired()) {
+        if (lastOutput == null || expired()) {
             return null;
         }
-        return latestOutput;
+        return lastOutput;
     }
 
     /**
@@ -83,7 +83,7 @@ public class DialogContext implements Serializable {
      * @return
      */
     public boolean expired() {
-        return Instant.now().isAfter(latestOutput.getTime().plusSeconds(keepAliveSeconds));
+        return Instant.now().isAfter(lastOutput.getTime().plusSeconds(keepAliveSeconds));
     }
 
     /**
@@ -92,7 +92,7 @@ public class DialogContext implements Serializable {
      * @return
      */
     public boolean recognized() {
-        return latestOutput.recognized();
+        return lastOutput.recognized();
     }
 
     /**

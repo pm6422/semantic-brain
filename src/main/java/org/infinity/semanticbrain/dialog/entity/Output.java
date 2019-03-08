@@ -1,5 +1,7 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.collections.CollectionUtils;
 import org.infinity.semanticbrain.dialog.filter.ProcessFilter;
 
@@ -9,17 +11,27 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApiModel("意图识别结果")
 public class Output implements Serializable {
 
     public static final BigDecimal          TOP_SCORE = new BigDecimal(100);
-    private             List<Intent>        intents   = new ArrayList<>();
+    @ApiModelProperty("意图识别列表")
+    private             List<Intent>        intents   = new ArrayList<Intent>();
+    @ApiModelProperty("分数")
     private             BigDecimal          score     = new BigDecimal(0);
-    private             List<ProcessFilter> filters   = new ArrayList<>();
+    @ApiModelProperty("识别过滤器列表")
+    private             List<ProcessFilter> filters   = new ArrayList<ProcessFilter>();
+    @ApiModelProperty("最终识别的过滤器")
     private             String              matchedFilter;
+    @ApiModelProperty("用户输入信息")
     private             Input               input;
+    @ApiModelProperty("状态信息")
     private             String              status;
+    @ApiModelProperty("其他信息")
     private             Extra               extra;
+    @ApiModelProperty("识别时间")
     private             Instant             time;
+    @ApiModelProperty("耗费时间")
     private             Long                elapsed; // Time in milliseconds
 
     public List<Intent> getIntents() {

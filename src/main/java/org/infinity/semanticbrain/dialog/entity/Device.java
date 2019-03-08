@@ -1,23 +1,23 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Entity class for device
- * Note: Serialization friendly class
- */
+@ApiModel("输入设备")
 public class Device implements Serializable {
 
     private static final long         serialVersionUID = 6996205094278193728L;
-    // 公司ID
+    @ApiModelProperty("公司ID")
     private              String       companyId;
-    // 型号ID
+    @ApiModelProperty("型号ID")
     private              String       modelId;
-    // 用户ID，同一个设备可以绑定多个用户
-    private              List<String> userIds;
-    // 设备ID
+    @ApiModelProperty("用户IDs")
+    private              List<String> userIds;// 同一个设备可以绑定多个用户
+    @ApiModelProperty("设备ID")
     private              String       deviceId;
 
     public Device() {

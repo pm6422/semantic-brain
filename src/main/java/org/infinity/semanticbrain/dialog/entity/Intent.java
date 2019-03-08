@@ -1,16 +1,15 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-/**
- * Intent class
- * Note: Serialization friendly class
- */
+@ApiModel("意图结果")
 public class Intent implements Serializable {
     private static final long serialVersionUID = 6996205094272356735L;
 
+    // 控制类型值
     public static final String CONTROL_TYPE_CONFIRM       = "confirm";
     public static final String CONTROL_TYPE_CANCEL        = "cancel";
     public static final String CONTROL_TYPE_NEXT          = "next";
@@ -20,15 +19,20 @@ public class Intent implements Serializable {
     public static final String CONTROL_TYPE_CONTINUE      = "continue";
     public static final String CONTROL_TYPE_SINGLE_REPEAT = "playSingleRepeat";
 
-    @ApiModelProperty("功能名称")
+    @ApiModelProperty("技能代码")
     private String skillCode;
+    @ApiModelProperty("技能名称")
     private String skillName;
+    @ApiModelProperty("技能大分类")
     private String skillCategory;
+    @ApiModelProperty("技能小分类")
     private String skillType;
+    @ApiModelProperty("命令代码")
     private String commandCode;
+    @ApiModelProperty("命令名称")
     private String commandName;
-    // 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
-    private String controlType;
+    @ApiModelProperty("控制类型")
+    private String controlType;// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
 
     public static Intent of(String skillCode, String skillName, String skillCategory, String skillType, String commandCode, String commandName) {
         Intent intent = new Intent();
