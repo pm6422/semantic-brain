@@ -1,5 +1,7 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ public class Intent implements Serializable {
     public static final String CONTROL_TYPE_CONTINUE      = "continue";
     public static final String CONTROL_TYPE_SINGLE_REPEAT = "playSingleRepeat";
 
+    @ApiModelProperty("功能名称")
     private String skillCode;
     private String skillName;
     private String skillCategory;
