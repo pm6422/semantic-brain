@@ -21,6 +21,9 @@ public class DialogContext implements Serializable {
     @ApiModelProperty("上下文对话有效时间秒数")
     private              int          keepAliveSeconds = 45;
 
+    public DialogContext() {
+    }
+
     public static DialogContext of(int latestOutputSize, int keepAliveSeconds) {
         DialogContext context = new DialogContext();
         context.setLatestOutputSize(latestOutputSize);

@@ -34,6 +34,9 @@ public class Output implements Serializable {
     @ApiModelProperty("耗费时间")
     private             Long                elapsed; // Time in milliseconds
 
+    public Output() {
+    }
+
     public List<Intent> getIntents() {
         return intents;
     }

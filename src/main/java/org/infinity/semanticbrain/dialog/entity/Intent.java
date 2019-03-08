@@ -38,6 +38,9 @@ public class Intent implements Serializable {
     @ApiModelProperty("槽位信息列表")
     private List<Slot> slots         = new ArrayList<>();
 
+    public Intent() {
+    }
+
     public static Intent of(String skillCode, String skillName, String skillCategory, String skillType, String commandCode, String commandName) {
         Intent intent = new Intent();
         intent.setSkillCode(skillCode);
