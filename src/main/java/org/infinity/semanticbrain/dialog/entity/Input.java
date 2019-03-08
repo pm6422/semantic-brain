@@ -9,8 +9,31 @@ import java.util.Objects;
 public class Input implements Serializable {
 
     private static final long   serialVersionUID = 1L;
+    // Track the request for trace
+    private              String requestId;
+    // Original input text
     private              String text;
+    // Device information
     private              Device device;
+
+    public Input() {
+    }
+
+    public static Input of(String requestId, String text, Device device) {
+        Input input = new Input();
+        input.setRequestId(requestId);
+        input.setText(text);
+        input.setDevice(device);
+        return input;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getText() {
         return text;
@@ -40,5 +63,14 @@ public class Input implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(text, device);
+    }
+
+    @Override
+    public String toString() {
+        return "Input{" +
+                "requestId='" + requestId + '\'' +
+                ", text='" + text + '\'' +
+                ", device=" + device +
+                '}';
     }
 }
