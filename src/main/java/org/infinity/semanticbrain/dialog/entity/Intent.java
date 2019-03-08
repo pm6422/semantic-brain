@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApiModel("意图结果")
 public class Intent implements Serializable {
@@ -20,19 +22,21 @@ public class Intent implements Serializable {
     public static final String CONTROL_TYPE_SINGLE_REPEAT = "playSingleRepeat";
 
     @ApiModelProperty("技能代码")
-    private String skillCode;
+    private String     skillCode     = "";
     @ApiModelProperty("技能名称")
-    private String skillName;
+    private String     skillName     = "";
     @ApiModelProperty("技能大分类")
-    private String skillCategory;
+    private String     skillCategory = "";
     @ApiModelProperty("技能小分类")
-    private String skillType;
+    private String     skillType     = "";
     @ApiModelProperty("命令代码")
-    private String commandCode;
+    private String     commandCode   = "";
     @ApiModelProperty("命令名称")
-    private String commandName;
+    private String     commandName   = "";
     @ApiModelProperty("控制类型")
-    private String controlType;// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
+    private String     controlType   = "";// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
+    @ApiModelProperty("槽位信息列表")
+    private List<Slot> slots         = new ArrayList<>();
 
     public static Intent of(String skillCode, String skillName, String skillCategory, String skillType, String commandCode, String commandName) {
         Intent intent = new Intent();
@@ -99,5 +103,13 @@ public class Intent implements Serializable {
 
     public void setControlType(String controlType) {
         this.controlType = controlType;
+    }
+
+    public List<Slot> getSlots() {
+        return slots;
+    }
+
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
     }
 }

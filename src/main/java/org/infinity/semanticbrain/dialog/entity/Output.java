@@ -14,19 +14,19 @@ import java.util.List;
 @ApiModel("意图识别结果")
 public class Output implements Serializable {
 
-    public static final BigDecimal          TOP_SCORE = new BigDecimal(100);
+    public static final BigDecimal          TOP_SCORE     = new BigDecimal(100);
     @ApiModelProperty("意图识别列表")
-    private             List<Intent>        intents   = new ArrayList<Intent>();
+    private             List<Intent>        intents       = new ArrayList<Intent>();
     @ApiModelProperty("分数")
-    private             BigDecimal          score     = new BigDecimal(0);
+    private             BigDecimal          score         = new BigDecimal(0);
     @ApiModelProperty("识别过滤器列表")
-    private             List<ProcessFilter> filters   = new ArrayList<ProcessFilter>();
+    private             List<ProcessFilter> filters       = new ArrayList<ProcessFilter>();
     @ApiModelProperty("最终识别的过滤器")
-    private             String              matchedFilter;
+    private             String              matchedFilter = "";
     @ApiModelProperty("用户输入信息")
     private             Input               input;
     @ApiModelProperty("状态信息")
-    private             String              status;
+    private             String              status        = "";
     @ApiModelProperty("其他信息")
     private             Extra               extra;
     @ApiModelProperty("识别时间")
