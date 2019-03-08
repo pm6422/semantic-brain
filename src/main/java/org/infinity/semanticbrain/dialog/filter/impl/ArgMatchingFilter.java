@@ -1,7 +1,7 @@
 package org.infinity.semanticbrain.dialog.filter.impl;
 
 import org.infinity.semanticbrain.dialog.entity.Input;
-import org.infinity.semanticbrain.dialog.entity.Intention;
+import org.infinity.semanticbrain.dialog.entity.Intent;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.AbstractSemanticFilter;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class ArgMatchingFilter extends AbstractSemanticFilter {
     protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
         TimeUnit.SECONDS.sleep(1L);
-        output.addIntention(Intention.of("Music", "Music", "Music", "Music"));
+        output.addIntention(Intent.of("Music", "Music", "Entertainment", "Music", "Music", "Music"));
         output.setScore(Output.TOP_SCORE);
         return output;
     }

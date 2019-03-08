@@ -11,10 +11,10 @@ import java.util.List;
 
 public class Output implements Serializable {
 
-    public static final BigDecimal          TOP_SCORE  = new BigDecimal(100);
-    private             List<Intention>     intentions = new ArrayList<>();
-    private             BigDecimal          score      = new BigDecimal(0);
-    private             List<ProcessFilter> filters    = new ArrayList<>();
+    public static final BigDecimal          TOP_SCORE = new BigDecimal(100);
+    private             List<Intent>        intents   = new ArrayList<>();
+    private             BigDecimal          score     = new BigDecimal(0);
+    private             List<ProcessFilter> filters   = new ArrayList<>();
     private             String              matchedFilter;
     private             Input               input;
     private             String              status;
@@ -22,16 +22,16 @@ public class Output implements Serializable {
     private             Instant             time;
     private             Long                elapsed; // Time in milliseconds
 
-    public List<Intention> getIntentions() {
-        return intentions;
+    public List<Intent> getIntents() {
+        return intents;
     }
 
-    public void setIntentions(List<Intention> intentions) {
-        this.intentions = intentions;
+    public void setIntents(List<Intent> intents) {
+        this.intents = intents;
     }
 
-    public void addIntention(Intention intention) {
-        this.intentions.add(intention);
+    public void addIntention(Intent intent) {
+        this.intents.add(intent);
     }
 
     public BigDecimal getScore() {
@@ -99,8 +99,8 @@ public class Output implements Serializable {
         this.elapsed = elapsed;
     }
 
-    public Intention getFirstIntention() {
-        return CollectionUtils.isNotEmpty(intentions) ? intentions.get(0) : null;
+    public Intent getFirstIntention() {
+        return CollectionUtils.isNotEmpty(intents) ? intents.get(0) : null;
     }
 
     /**
@@ -109,7 +109,7 @@ public class Output implements Serializable {
      * @return
      */
     public boolean recognized() {
-        return CollectionUtils.isNotEmpty(intentions);
+        return CollectionUtils.isNotEmpty(intents);
     }
 
     public static class Extra {

@@ -29,7 +29,7 @@ public class EmojiMatchingFilter extends AbstractSemanticFilter {
     protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
 //        TimeUnit.SECONDS.sleep(1L);
-//        output.addIntention(Intention.of("Emoji", "Emoji", "Emoji", "Emoji"));
+//        output.addIntention(Intent.of("Emoji", "Emoji", "Emoji", "Emoji"));
 //        output.setScore(Output.TOP_SCORE);
         return output;
     }
