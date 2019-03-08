@@ -45,7 +45,7 @@ public class Output implements Serializable {
         this.intents = intents;
     }
 
-    public void addIntention(Intent intent) {
+    public void addIntent(Intent intent) {
         this.intents.add(intent);
     }
 

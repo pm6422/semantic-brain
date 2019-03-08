@@ -32,7 +32,7 @@ public class ArgMatchingFilter extends AbstractSemanticFilter {
     protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
         Output output = new Output();
         TimeUnit.SECONDS.sleep(1L);
-        output.addIntention(Intent.of("Music", "Music", "Entertainment", "Music", "Music", "Music"));
+        output.addIntent(Intent.of("Music", "Music", "Entertainment", "Music", "Music", "Music"));
         output.setScore(Output.TOP_SCORE);
         return output;
     }
