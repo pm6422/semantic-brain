@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Input implements Serializable {
 
     private static final long   serialVersionUID = 1L;
-    // Request ID for trace
+    // Request ID for tracing request chain
     private              String requestId;
     // Original input text
     private              String text;
