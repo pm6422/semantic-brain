@@ -115,6 +115,11 @@ public class Output implements Serializable {
         return CollectionUtils.isNotEmpty(intents) ? intents.get(0) : null;
     }
 
+    // TODO
+    public boolean isDetermined() {
+        return false;
+    }
+
     /**
      * Check the dialog whether is recognized or not
      *
