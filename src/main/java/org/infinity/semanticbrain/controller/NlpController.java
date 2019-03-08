@@ -1,7 +1,7 @@
 package org.infinity.semanticbrain.controller;
 
-import org.infinity.semanticbrain.entity.Input;
-import org.infinity.semanticbrain.entity.Output;
+import org.infinity.semanticbrain.dialog.entity.Input;
+import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

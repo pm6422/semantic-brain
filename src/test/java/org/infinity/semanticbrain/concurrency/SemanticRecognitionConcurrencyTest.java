@@ -1,6 +1,6 @@
 package org.infinity.semanticbrain.concurrency;
 
-import org.infinity.semanticbrain.entity.Input;
+import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
 import org.junit.Before;
 import org.junit.Test;

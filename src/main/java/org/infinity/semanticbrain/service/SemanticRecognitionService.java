@@ -1,7 +1,7 @@
 package org.infinity.semanticbrain.service;
 
-import org.infinity.semanticbrain.entity.Input;
-import org.infinity.semanticbrain.entity.Output;
+import org.infinity.semanticbrain.dialog.entity.Input;
+import org.infinity.semanticbrain.dialog.entity.Output;
 
 public interface SemanticRecognitionService {
 

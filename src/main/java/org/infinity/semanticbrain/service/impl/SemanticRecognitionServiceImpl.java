@@ -1,12 +1,12 @@
 package org.infinity.semanticbrain.service.impl;
 
 import org.infinity.semanticbrain.config.ApplicationProperties;
-import org.infinity.semanticbrain.entity.Input;
-import org.infinity.semanticbrain.entity.Output;
-import org.infinity.semanticbrain.filter.SemanticFilter;
-import org.infinity.semanticbrain.filter.SemanticFilterFactory;
-import org.infinity.semanticbrain.filter.SemanticRecognitionFilterChain;
-import org.infinity.semanticbrain.filter.SemanticRecognitionFilterConfig;
+import org.infinity.semanticbrain.dialog.entity.Input;
+import org.infinity.semanticbrain.dialog.entity.Output;
+import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
+import org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory;
+import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterChain;
+import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
