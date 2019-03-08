@@ -40,7 +40,7 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
 
     private void countDown(final Output candidate, final CountDownLatch countDownLatch) {
         Assert.notNull(countDownLatch, "countDownLatch must NOT be null.");
-        if (this.getType().equals(TYPE.TYPE_IMMEDIATE_TERMINATE) && candidate.isRecognized()) {
+        if (this.getType().equals(TYPE.TYPE_IMMEDIATE_TERMINATE) && candidate.recognized()) {
             // Decrease count to 0 in one step
             while (countDownLatch.getCount() != 0) {
                 countDownLatch.countDown();

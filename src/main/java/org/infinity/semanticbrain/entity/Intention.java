@@ -2,9 +2,13 @@ package org.infinity.semanticbrain.entity;
 
 import java.io.Serializable;
 
+/**
+ * Intention class
+ * Note: Serialization friendly class
+ */
 public class Intention implements Serializable {
 
-    private static final long   serialVersionUID = -1L;
+    private static final long   serialVersionUID = 6996205094272356735L;
     private              String skillCode;
     private              String skillName;
     private              String commandCode;

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StopWatch;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -51,7 +51,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
         // Set value to output
         output.setInput(input);
-        output.setTime(LocalDateTime.now());
+        output.setTime(Instant.now());
     }
 
     private void internalDoFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
@@ -95,7 +95,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 for (Future<Output> task : outputs) {
                     try {
                         // FutureTask can check the thread execution status
-                        if (task.isDone() && task.get() != null && task.get().isRecognized()) {
+                        if (task.isDone() && task.get() != null && task.get().recognized()) {
                             // Store complete result
                             candidateOutputs.add(task.get());
                         } else {
@@ -136,7 +136,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
     private boolean continueToFilter(final Output output) {
         SemanticFilter matchedFilter = semanticFilterMap.get(output.getMatchedFilter());
-        return !output.isRecognized() || output.isRecognized() && matchedFilter.getType().equals(SemanticFilter.TYPE.TYPE_SERIAL_COMPARING);
+        return !output.recognized() || output.recognized() && matchedFilter.getType().equals(SemanticFilter.TYPE.TYPE_SERIAL_COMPARING);
     }
 
     private void checkActiveThread() {

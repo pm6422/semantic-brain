@@ -1,11 +1,10 @@
 package org.infinity.semanticbrain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +16,9 @@ public class Output implements Serializable {
     private             List<ProcessFilter> filters    = new ArrayList<>();
     private             String              matchedFilter;
     private             Input               input;
-    private             LocalDateTime       time;
     private             String              status;
     private             Extra               extra;
+    private             Instant             time;
     private             Long                elapsed; // Time in milliseconds
 
     public List<Intention> getIntentions() {
@@ -66,15 +65,6 @@ public class Output implements Serializable {
         this.input = input;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -91,6 +81,15 @@ public class Output implements Serializable {
         this.extra = extra;
     }
 
+    //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
+    }
+
     public Long getElapsed() {
         return elapsed;
     }
@@ -103,10 +102,14 @@ public class Output implements Serializable {
         return CollectionUtils.isNotEmpty(intentions) ? intentions.get(0) : null;
     }
 
-    public boolean isRecognized() {
+    /**
+     * Check the dialog whether is recognized or not
+     *
+     * @return
+     */
+    public boolean recognized() {
         return CollectionUtils.isNotEmpty(intentions);
     }
-
 
     public static class Extra {
         private String source;
