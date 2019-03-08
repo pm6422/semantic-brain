@@ -51,7 +51,7 @@ public class Intent implements Serializable {
     private String       commandSource = "";// 取值范围见常量定义
     @ApiModelProperty("控制类型")
     private String       controlType   = "";// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
-    @ApiModelProperty("匹配的句式，数据格式如：播放{Singer}的{Song}")
+    @ApiModelProperty("匹配的规则，如：播放{Singer}的{Song}")
     private List<String> rules         = new ArrayList<>();
     @ApiModelProperty("槽位信息列表")
     private List<Slot>   slots         = new ArrayList<>();
