@@ -28,11 +28,13 @@ public class Slot implements Serializable {
     private boolean asked;
     @ApiModelProperty("反问槽位优先级") // 优先级高的优先反问
     private int     askPrecedence;
+    @ApiModelProperty("是否为选择性反问")
+    private boolean optionAsked;
 
     public Slot() {
     }
 
-    public static Slot of(String code, String name, String value, String type, boolean required, boolean asked, int askPrecedence) {
+    public static Slot of(String code, String name, String value, String type, boolean required, boolean asked, int askPrecedence, boolean optionAsked) {
         Slot slot = new Slot();
         slot.setCode(code);
         slot.setName(name);
@@ -41,6 +43,7 @@ public class Slot implements Serializable {
         slot.setRequired(required);
         slot.setAsked(asked);
         slot.setAskPrecedence(askPrecedence);
+        slot.setOptionAsked(optionAsked);
 
         return slot;
     }
@@ -101,6 +104,14 @@ public class Slot implements Serializable {
         this.askPrecedence = askPrecedence;
     }
 
+    public boolean isOptionAsked() {
+        return optionAsked;
+    }
+
+    public void setOptionAsked(boolean optionAsked) {
+        this.optionAsked = optionAsked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,6 +120,7 @@ public class Slot implements Serializable {
         return required == slot.required &&
                 asked == slot.asked &&
                 askPrecedence == slot.askPrecedence &&
+                optionAsked == slot.optionAsked &&
                 Objects.equals(code, slot.code) &&
                 Objects.equals(name, slot.name) &&
                 Objects.equals(value, slot.value) &&
@@ -117,7 +129,7 @@ public class Slot implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, value, type, required, asked, askPrecedence);
+        return Objects.hash(code, name, value, type, required, asked, askPrecedence, optionAsked);
     }
 
     @Override
@@ -130,6 +142,7 @@ public class Slot implements Serializable {
                 ", required=" + required +
                 ", asked=" + asked +
                 ", askPrecedence=" + askPrecedence +
+                ", optionAsked=" + optionAsked +
                 '}';
     }
 }
