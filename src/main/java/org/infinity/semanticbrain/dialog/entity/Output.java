@@ -15,6 +15,8 @@ import java.util.List;
 public class Output implements Serializable {
 
     public static final BigDecimal          TOP_SCORE     = new BigDecimal(100);
+    @ApiModelProperty("用户输入信息")
+    private             Input               input;
     @ApiModelProperty("意图识别列表")
     private             List<Intent>        intents       = new ArrayList<Intent>();
     @ApiModelProperty("分数")
@@ -23,18 +25,25 @@ public class Output implements Serializable {
     private             List<ProcessFilter> filters       = new ArrayList<ProcessFilter>();
     @ApiModelProperty("最终识别的过滤器")
     private             String              matchedFilter = "";
-    @ApiModelProperty("用户输入信息")
-    private             Input               input;
     @ApiModelProperty("状态信息")
     private             String              status        = "";
-    @ApiModelProperty("其他信息")
-    private             Extra               extra;
-    @ApiModelProperty("识别时间")
+    @ApiModelProperty("创建时间")
     private             Instant             time;
     @ApiModelProperty("耗费时间")
-    private             Long                elapsed; // Time in milliseconds
+    private             Long                elapsed; // Time in ms
+    @ApiModelProperty("其他信息")
+    private             Extra               extra;
+
 
     public Output() {
+    }
+
+    public Input getInput() {
+        return input;
+    }
+
+    public void setInput(Input input) {
+        this.input = input;
     }
 
     public List<Intent> getIntents() {
@@ -73,28 +82,12 @@ public class Output implements Serializable {
         this.matchedFilter = matchedFilter;
     }
 
-    public Input getInput() {
-        return input;
-    }
-
-    public void setInput(Input input) {
-        this.input = input;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Extra getExtra() {
-        return extra;
-    }
-
-    public void setExtra(Extra extra) {
-        this.extra = extra;
     }
 
     //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -112,6 +105,14 @@ public class Output implements Serializable {
 
     public void setElapsed(Long elapsed) {
         this.elapsed = elapsed;
+    }
+
+    public Extra getExtra() {
+        return extra;
+    }
+
+    public void setExtra(Extra extra) {
+        this.extra = extra;
     }
 
 
@@ -138,14 +139,14 @@ public class Output implements Serializable {
     }
 
     public static class Extra {
-        private String source;
+        private String host;
 
-        public String getSource() {
-            return source;
+        public String getHost() {
+            return host;
         }
 
-        public void setSource(String source) {
-            this.source = source;
+        public void setHost(String host) {
+            this.host = host;
         }
     }
 }
