@@ -114,22 +114,27 @@ public class Output implements Serializable {
         this.elapsed = elapsed;
     }
 
-    public Intent getFirstIntention() {
-        return CollectionUtils.isNotEmpty(intents) ? intents.get(0) : null;
-    }
-
-    // TODO
-    public boolean isDetermined() {
-        return false;
-    }
 
     /**
-     * Check the dialog whether is recognized or not
+     * Check whether the dialog is recognized or not
      *
      * @return
      */
     public boolean recognized() {
         return CollectionUtils.isNotEmpty(intents);
+    }
+
+    /**
+     * Check whether the dialog is recognized and all required slots got.
+     *
+     * @return
+     */
+    public boolean isDetermined() {
+        return this.recognized() && intents.stream().allMatch(x -> x.isDetermined());
+    }
+
+    public Intent findOneIntent() {
+        return this.recognized() ? intents.get(0) : null;
     }
 
     public static class Extra {

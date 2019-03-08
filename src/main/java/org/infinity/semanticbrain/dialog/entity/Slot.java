@@ -12,7 +12,7 @@ public class Slot implements Serializable {
 
     // 槽位类型值
     public static final String TYPE_AFFIRMATIVE = "affirmative";// 肯定类型
-    public static final String TYPE_NEGATIVE    = "negative";// 否定类型，如："不要"买北京到上海的机票
+    public static final String TYPE_NEGATIVE    = "negative";// 否定类型，如：播放不是"刘德华"的歌
 
     @ApiModelProperty("槽位代码")
     private String  code;
@@ -22,22 +22,26 @@ public class Slot implements Serializable {
     private String  value;
     @ApiModelProperty("槽位类型")// 取值范围见常量定义
     private String  type;
-    @ApiModelProperty("反问槽位优先级") // 优先级高的优先反问
-    private int     askPrecedence;
     @ApiModelProperty("是否为必要槽位")
     private boolean required;
+    @ApiModelProperty("是否被反问")
+    private boolean asked;
+    @ApiModelProperty("反问槽位优先级") // 优先级高的优先反问
+    private int     askPrecedence;
 
     public Slot() {
     }
 
-    public static Slot of(String code, String name, String value, String type, int askPrecedence, boolean required) {
+    public static Slot of(String code, String name, String value, String type, boolean required, boolean asked, int askPrecedence) {
         Slot slot = new Slot();
         slot.setCode(code);
         slot.setName(name);
         slot.setValue(value);
         slot.setType(type);
-        slot.setAskPrecedence(askPrecedence);
         slot.setRequired(required);
+        slot.setAsked(asked);
+        slot.setAskPrecedence(askPrecedence);
+
         return slot;
     }
 
@@ -73,14 +77,6 @@ public class Slot implements Serializable {
         this.type = type;
     }
 
-    public int getAskPrecedence() {
-        return askPrecedence;
-    }
-
-    public void setAskPrecedence(int askPrecedence) {
-        this.askPrecedence = askPrecedence;
-    }
-
     public boolean isRequired() {
         return required;
     }
@@ -89,13 +85,30 @@ public class Slot implements Serializable {
         this.required = required;
     }
 
+    public boolean isAsked() {
+        return asked;
+    }
+
+    public void setAsked(boolean asked) {
+        this.asked = asked;
+    }
+
+    public int getAskPrecedence() {
+        return askPrecedence;
+    }
+
+    public void setAskPrecedence(int askPrecedence) {
+        this.askPrecedence = askPrecedence;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Slot slot = (Slot) o;
-        return askPrecedence == slot.askPrecedence &&
-                required == slot.required &&
+        return required == slot.required &&
+                asked == slot.asked &&
+                askPrecedence == slot.askPrecedence &&
                 Objects.equals(code, slot.code) &&
                 Objects.equals(name, slot.name) &&
                 Objects.equals(value, slot.value) &&
@@ -104,7 +117,7 @@ public class Slot implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, value, type, askPrecedence, required);
+        return Objects.hash(code, name, value, type, required, asked, askPrecedence);
     }
 
     @Override
@@ -114,8 +127,9 @@ public class Slot implements Serializable {
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 ", type='" + type + '\'' +
-                ", askPrecedence=" + askPrecedence +
                 ", required=" + required +
+                ", asked=" + asked +
+                ", askPrecedence=" + askPrecedence +
                 '}';
     }
 }

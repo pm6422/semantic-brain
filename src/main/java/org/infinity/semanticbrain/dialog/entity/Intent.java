@@ -2,6 +2,7 @@ package org.infinity.semanticbrain.dialog.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +22,13 @@ public class Intent implements Serializable {
     public static final String CONTROL_TYPE_CONTINUE      = "continue";
     public static final String CONTROL_TYPE_SINGLE_REPEAT = "playSingleRepeat";
 
+    // 回复类型值
+    public static final String REPLY_TYPE_TASK_BASED_ANSWER = "taskBasedAnswer"; // 任务型答案类型
+    public static final String REPLY_TYPE_QA_BASED_ANSWER   = "qaBasedAnswer"; // 问答型答案类型
+    public static final String REPLY_TYPE_CHAT_BASED_ANSWER = "chatBasedAnswer"; // 闲聊型答案类型
+    public static final String REPLY_TYPE_ASK               = "ask"; // 反问类型
+    public static final String REPLY_TYPE_OPTIONS           = "options"; // 选择性反问类型
+
     @ApiModelProperty("技能代码")
     private String     skillCode     = "";
     @ApiModelProperty("技能名称")
@@ -37,6 +45,11 @@ public class Intent implements Serializable {
     private String     controlType   = "";// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
     @ApiModelProperty("槽位信息列表")
     private List<Slot> slots         = new ArrayList<>();
+    @ApiModelProperty("回复内容")
+    private String     reply         = "";
+    @ApiModelProperty("回复类型")
+    private String     replyType     = "";// 取值范围见常量定义
+
 
     public Intent() {
     }
@@ -114,5 +127,30 @@ public class Intent implements Serializable {
 
     public void setSlots(List<Slot> slots) {
         this.slots = slots;
+    }
+
+    public String getReply() {
+        return reply;
+    }
+
+    public void setReply(String reply) {
+        this.reply = reply;
+    }
+
+    public String getReplyType() {
+        return replyType;
+    }
+
+    public void setReplyType(String replyType) {
+        this.replyType = replyType;
+    }
+
+    public Slot findAskSlotCode() {
+        return slots.stream().filter(x -> x.isAsked()).findFirst().orElse(null);
+    }
+
+    public boolean isDetermined() {
+        // 识别出命令代码并无反问槽位
+        return StringUtils.isNotEmpty(commandCode) && this.findAskSlotCode() == null;
     }
 }
