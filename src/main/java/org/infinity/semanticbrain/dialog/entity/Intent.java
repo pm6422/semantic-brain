@@ -32,8 +32,8 @@ public class Intent implements Serializable {
 
 
     // 回复类型值
-    public static final String COMMAND_SOURCE_SKILL_ASSOCIATION = "skillAssociation";
     public static final String COMMAND_SOURCE_USER_COMMAND      = "userCommand";
+    public static final String COMMAND_SOURCE_SKILL_ASSOCIATION = "skillAssociation";
 
     @ApiModelProperty("技能代码")
     private String       skillCode     = "";
