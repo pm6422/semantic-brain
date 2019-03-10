@@ -7,6 +7,7 @@ import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterChain;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
+import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.SemanticRecognitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     private static final Logger                                LOGGER             = LoggerFactory.getLogger(SemanticRecognitionServiceImpl.class);
     @Autowired
     private              ApplicationProperties                 applicationProperties;
+    @Autowired
+    private              InputPreprocessService                inputPreprocessService;
     private              ApplicationContext                    applicationContext;
     private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
     private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
@@ -87,30 +90,16 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     }
 
     private void beforeProcess(Input input) {
-    }
-
-    private void traditionalToSimplified(Input input) {
-
-    }
-
-    private void removePunctuation(Input input) {
-
-    }
-
-    private void removeModalParticles(Input input) {
-
-    }
-
-    private void processSynonymousSentence(Input input) {
-
-    }
-
-    private void afterProcess(Output output) {
+        inputPreprocessService.preprocess(input);
     }
 
     private Output getLastOutput(Input input) {
         return null;
     }
+
+    private void afterProcess(Output output) {
+    }
+
 
     @Override
     public void setLogIntentionResult(boolean logIntentionResult) {
