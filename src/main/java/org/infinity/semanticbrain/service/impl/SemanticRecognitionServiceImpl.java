@@ -74,11 +74,11 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
         stopWatch.start();
         Output output = new Output();
         try {
-            SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool);
-            this.processInput(input);
+            this.beforeProcess(input);
             Output lastOutput = this.getLastOutput(input);
+            SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool);
             filterChain.doFilter(input, output, lastOutput);
-            this.processOutput(output);
+            this.afterProcess(output);
         } catch (Exception e) {
         }
         stopWatch.stop();
@@ -86,7 +86,7 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
         return output;
     }
 
-    private void processInput(Input input) {
+    private void beforeProcess(Input input) {
     }
 
     private void traditionalToSimplified(Input input) {
@@ -105,7 +105,7 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
 
     }
 
-    private void processOutput(Output output) {
+    private void afterProcess(Output output) {
     }
 
     private Output getLastOutput(Input input) {
