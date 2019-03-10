@@ -1,7 +1,7 @@
 //package org.infinity.semanticbrain.concurrency;
 //
 //import org.infinity.semanticbrain.dialog.entity.Input;
-//import org.infinity.semanticbrain.service.SemanticRecognitionService;
+//import org.infinity.semanticbrain.service.NaturalLanguageUnderstandingService;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@
 //    private              WebApplicationContext      context;
 //    private              MockMvc                    mockMvc;
 //    @Autowired
-//    private              SemanticRecognitionService semanticRecognitionService;
+//    private              NaturalLanguageUnderstandingService semanticRecognitionService;
 //
 //    @Before
 //    public void setUp() {

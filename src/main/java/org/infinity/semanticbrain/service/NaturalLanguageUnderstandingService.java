@@ -3,7 +3,7 @@ package org.infinity.semanticbrain.service;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 
-public interface SemanticRecognitionService {
+public interface NaturalLanguageUnderstandingService {
 
     Output recognize(Input input);
 

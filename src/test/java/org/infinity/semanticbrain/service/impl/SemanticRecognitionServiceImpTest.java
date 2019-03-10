@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
-import org.infinity.semanticbrain.service.SemanticRecognitionService;
+import org.infinity.semanticbrain.service.NaturalLanguageUnderstandingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SemanticRecognitionServiceImpTest {
 
     @Autowired
-    private SemanticRecognitionService semanticRecognitionService;
+    private NaturalLanguageUnderstandingService semanticRecognitionService;
 
     @Before
     public void setUp() {
