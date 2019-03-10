@@ -14,6 +14,8 @@ public class Input implements Serializable {
     private              String requestId;//用于链路追踪
     @ApiModelProperty("输入文本")
     private              String originalText;
+    @ApiModelProperty("预处理文本")
+    private              String preprocessedText;
     @ApiModelProperty("设备信息")
     private              Device device;
 
@@ -44,6 +46,14 @@ public class Input implements Serializable {
         this.originalText = text;
     }
 
+    public String getPreprocessedText() {
+        return preprocessedText;
+    }
+
+    public void setPreprocessedText(String preprocessedText) {
+        this.preprocessedText = preprocessedText;
+    }
+
     public Device getDevice() {
         return device;
     }
@@ -57,13 +67,15 @@ public class Input implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Input input = (Input) o;
-        return Objects.equals(originalText, input.originalText) &&
+        return Objects.equals(requestId, input.requestId) &&
+                Objects.equals(originalText, input.originalText) &&
+                Objects.equals(preprocessedText, input.preprocessedText) &&
                 Objects.equals(device, input.device);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originalText, device);
+        return Objects.hash(requestId, originalText, preprocessedText, device);
     }
 
     @Override
@@ -71,6 +83,7 @@ public class Input implements Serializable {
         return "Input{" +
                 "requestId='" + requestId + '\'' +
                 ", originalText='" + originalText + '\'' +
+                ", preprocessedText='" + preprocessedText + '\'' +
                 ", device=" + device +
                 '}';
     }
