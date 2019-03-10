@@ -9,7 +9,7 @@ import org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterChain;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
-import org.infinity.semanticbrain.service.NaturalLanguageUnderstandingService;
+import org.infinity.semanticbrain.service.NluService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -30,9 +30,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class NaturalLanguageUnderstandingServiceImpl implements NaturalLanguageUnderstandingService, ApplicationContextAware, InitializingBean, DisposableBean {
+public class NluServiceImpl implements NluService, ApplicationContextAware, InitializingBean, DisposableBean {
 
-    private static final Logger                                LOGGER             = LoggerFactory.getLogger(NaturalLanguageUnderstandingServiceImpl.class);
+    private static final Logger                                LOGGER             = LoggerFactory.getLogger(NluServiceImpl.class);
     @Autowired
     private              ApplicationProperties                 applicationProperties;
     @Autowired
