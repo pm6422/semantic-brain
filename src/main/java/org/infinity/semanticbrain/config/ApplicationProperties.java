@@ -28,6 +28,7 @@ public class ApplicationProperties {
     private final Ribbon               ribbon               = new Ribbon();
     private final HttpClientConnection httpClientConnection = new HttpClientConnection();
     private final Url                  url                  = new Url();
+    private final DialogContext        dialogContext        = new DialogContext();
     private final SemanticFilter       semanticFilter       = new SemanticFilter();
 
     public Directory getDirectory() {
@@ -68,6 +69,10 @@ public class ApplicationProperties {
 
     public Url getUrl() {
         return url;
+    }
+
+    public DialogContext getDialogContext() {
+        return dialogContext;
     }
 
     public SemanticFilter getSemanticFilter() {
@@ -566,6 +571,37 @@ public class ApplicationProperties {
     }
 
     public static class Url {
+    }
+
+    public static class DialogContext {
+
+        private int keepAliveSeconds;
+        private int skillModeKeepAliveSeconds;
+        private int latestOutputSize;
+
+        public int getKeepAliveSeconds() {
+            return keepAliveSeconds;
+        }
+
+        public void setKeepAliveSeconds(int keepAliveSeconds) {
+            this.keepAliveSeconds = keepAliveSeconds;
+        }
+
+        public int getSkillModeKeepAliveSeconds() {
+            return skillModeKeepAliveSeconds;
+        }
+
+        public void setSkillModeKeepAliveSeconds(int skillModeKeepAliveSeconds) {
+            this.skillModeKeepAliveSeconds = skillModeKeepAliveSeconds;
+        }
+
+        public int getLatestOutputSize() {
+            return latestOutputSize;
+        }
+
+        public void setLatestOutputSize(int latestOutputSize) {
+            this.latestOutputSize = latestOutputSize;
+        }
     }
 
     public static class SemanticFilter {

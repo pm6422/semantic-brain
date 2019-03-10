@@ -7,5 +7,7 @@ public interface SemanticRecognitionService {
 
     Output recognize(Input input);
 
+    Output recognize(Input input, String skillCode);
+
     void setLogIntentionResult(boolean logIntentionResult);
 }

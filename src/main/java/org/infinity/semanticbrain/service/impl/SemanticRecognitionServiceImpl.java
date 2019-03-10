@@ -1,6 +1,7 @@
 package org.infinity.semanticbrain.service.impl;
 
 import org.infinity.semanticbrain.config.ApplicationProperties;
+import org.infinity.semanticbrain.dialog.context.DialogContextManager;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
@@ -36,6 +37,8 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     private              ApplicationProperties                 applicationProperties;
     @Autowired
     private              InputPreprocessService                inputPreprocessService;
+    @Autowired
+    private              DialogContextManager                  dialogContextManager;
     private              ApplicationContext                    applicationContext;
     private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
     private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
@@ -73,6 +76,11 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
 
     @Override
     public Output recognize(Input input) {
+        return this.recognize(input, null);
+    }
+
+    @Override
+    public Output recognize(Input input, String skillCode) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Output output = new Output();
@@ -94,7 +102,7 @@ public class SemanticRecognitionServiceImpl implements SemanticRecognitionServic
     }
 
     private Output getLastOutput(Input input) {
-        return null;
+        return dialogContextManager.getLastOutput(input);
     }
 
     private void afterProcess(Output output) {
