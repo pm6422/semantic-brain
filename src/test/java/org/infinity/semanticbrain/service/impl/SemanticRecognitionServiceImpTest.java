@@ -28,7 +28,7 @@ public class SemanticRecognitionServiceImpTest {
     @Test
     public void testRecognize() throws JsonProcessingException {
         Input input = new Input();
-        input.setText("今天@#¥33");
+        input.setOriginalText("今天@#¥33");
         Output output = semanticRecognitionService.recognize(input);
 //        Assert.assertTrue(output.isRecognized());
         ObjectMapper mapper = new ObjectMapper();

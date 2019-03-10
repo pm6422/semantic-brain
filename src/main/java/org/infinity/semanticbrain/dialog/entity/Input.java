@@ -13,17 +13,17 @@ public class Input implements Serializable {
     @ApiModelProperty("请求ID")
     private              String requestId;//用于链路追踪
     @ApiModelProperty("输入文本")
-    private              String text;
+    private              String originalText;
     @ApiModelProperty("设备信息")
     private              Device device;
 
     public Input() {
     }
 
-    public static Input of(String requestId, String text, Device device) {
+    public static Input of(String requestId, String originalText, Device device) {
         Input input = new Input();
         input.setRequestId(requestId);
-        input.setText(text);
+        input.setOriginalText(originalText);
         input.setDevice(device);
         return input;
     }
@@ -36,12 +36,12 @@ public class Input implements Serializable {
         this.requestId = requestId;
     }
 
-    public String getText() {
-        return text;
+    public String getOriginalText() {
+        return originalText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setOriginalText(String text) {
+        this.originalText = text;
     }
 
     public Device getDevice() {
@@ -57,20 +57,20 @@ public class Input implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Input input = (Input) o;
-        return Objects.equals(text, input.text) &&
+        return Objects.equals(originalText, input.originalText) &&
                 Objects.equals(device, input.device);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, device);
+        return Objects.hash(originalText, device);
     }
 
     @Override
     public String toString() {
         return "Input{" +
                 "requestId='" + requestId + '\'' +
-                ", text='" + text + '\'' +
+                ", originalText='" + originalText + '\'' +
                 ", device=" + device +
                 '}';
     }

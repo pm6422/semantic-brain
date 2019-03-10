@@ -112,7 +112,7 @@ public class DialogContext implements Serializable {
         Output lastOne = latestOutputs.get(latestOutputs.size() - 1);
         for (int i = latestOutputs.size() - 2; i >= 0; ) {
             Output prev = latestOutputs.get(i);
-            if (prev.getInput().getText().equals(lastOne.getInput().getText())) {
+            if (prev.getInput().getOriginalText().equals(lastOne.getInput().getOriginalText())) {
                 repeatOccurrences++;
             } else {
                 break;
