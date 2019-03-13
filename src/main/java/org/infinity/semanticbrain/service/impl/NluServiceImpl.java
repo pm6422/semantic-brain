@@ -94,6 +94,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         }
         stopWatch.stop();
         output.setElapsed(stopWatch.getTotalTimeMillis());
+        this.terminated(output);
         return output;
     }
 
@@ -108,6 +109,8 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     private void afterProcess(Output output) {
     }
 
+    private void terminated(Output output) {
+    }
 
     @Override
     public void setLogIntentionResult(boolean logIntentionResult) {
