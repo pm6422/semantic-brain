@@ -2,48 +2,66 @@
 # enter current directory of the shell
 cd `dirname $0`
 
+#------------------------------------------------------------------------------------------------------------
+# Set variables
+#------------------------------------------------------------------------------------------------------------
 appDir=../lib
 appName="${project.build.finalName}.${project.packaging}"
-serverPort=${server.port}
-profiles="${mvn.profiles.active}"
-appStartLog="./start.log"
+serverPort=${app.server.port}
+profiles="${spring.profiles.active}"
+appStartLog="../start.log"
 appStartedIndicatorText="Application is running"
 
-PIDS=`ps -ef | grep java | grep "$appName" | awk '{print $2}'`
+#------------------------------------------------------------------------------------------------------------
+# Check the existing process
+#------------------------------------------------------------------------------------------------------------
+function checkProcess() {
+    echo "Starting the $appName"
+    PIDS=`ps -ef | grep java | grep "$appName" | awk '{print $2}'`
 
-if [ -n "$PIDS" ]; then
-    echo "ERROR: The $appName already started!"
-    echo "PID: $PIDS"
-    exit 1
-fi
-
-if [ -n "$serverPort" ]; then
-    SERVER_PORT_COUNT=`netstat -tln | grep $serverPort | wc -l`
-    if [ $SERVER_PORT_COUNT -gt 0 ]; then
-        echo "ERROR: The $appName port $serverPort already used!"
+    if [ -n "$PIDS" ]; then
+        echo "Start failure: The $appName already started!"
+        echo "PID: $PIDS"
         exit 1
     fi
-fi
 
-
-### Function Definitions ###
-########################################################
-function run() {
-    JAVA_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true "
-    JAVA_MEM_OPTS=""
-    BITS=`java -version 2>&1 | grep -i 64-bit`
-    if [ -n "$BITS" ]; then
-        JAVA_MEM_OPTS=" -server -Xmx2g -Xms2g -Xmn256m -XX:PermSize=128m -Xss256k -XX:+DisableExplicitGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 "
-    else
-        JAVA_MEM_OPTS=" -server -Xms1g -Xmx1g -XX:PermSize=128m -XX:SurvivorRatio=2 -XX:+UseParallelGC "
-    fi
-    echo -e "Starting the $appName"
-    echo "Start Command: nohup java -jar $appDir/$appName --logging.level.ROOT=DEBUG --spring.profiles.active=$profiles --server.port=$serverPort >> $appStartLog 2>&1 &\n"
-    . /etc/profile
-    nohup java -jar $appDir/$appName --logging.level.ROOT=DEBUG --spring.profiles.active=$profiles --server.port=$serverPort >> $appStartLog 2>&1 &
+    COUNT=0
+    while [ $COUNT -lt 20 ]; do
+        SERVER_PORT_COUNT=`netstat -tln | grep -w $serverPort | wc -l`
+        sync;sync;sync
+        sleep 2
+        sync;sync;sync
+        if [[ $SERVER_PORT_COUNT -lt 1 ]]; then
+            break
+        fi
+        echo "Waiting to stop $((${COUNT}+1)) times..."
+        let COUNT++
+    done
 }
 
-function watchStartLog(){
+#------------------------------------------------------------------------------------------------------------
+# Delete start log file
+#------------------------------------------------------------------------------------------------------------
+function deleteStartLog() {
+    if [ -f "$appStartLog" ]; then
+        rm -rf "$appStartLog"
+        echo "Deleted start log"
+    fi
+}
+
+#------------------------------------------------------------------------------------------------------------
+# Run the application
+#------------------------------------------------------------------------------------------------------------
+function runApp() {
+    JAVA_CMD="nohup java -jar $appDir/$appName --logging.level.ROOT=INFO --spring.profiles.active=$profiles --server.port=$serverPort >> $appStartLog 2>&1 &"
+    echo "Command: $JAVA_CMD"
+    nohup java $JAVA_MEM_OPTS -jar $appDir/$appName --logging.level.ROOT=INFO --spring.profiles.active=$profiles --server.port=$serverPort >> $appStartLog 2>&1 &
+}
+
+#------------------------------------------------------------------------------------------------------------
+# Display the start log on terminal
+#------------------------------------------------------------------------------------------------------------
+function displayStartLog(){
     tail -f $appStartLog |
         while IFS= read line
             do
@@ -52,8 +70,13 @@ function watchStartLog(){
                     pkill tail
                 fi
         done
+    echo "Started the $appName"
 }
-### Functions Call ###
-########################################################
-run
-watchStartLog
+
+#------------------------------------------------------------------------------------------------------------
+# Execute functions
+#------------------------------------------------------------------------------------------------------------
+checkProcess
+deleteStartLog
+runApp
+displayStartLog
