@@ -42,7 +42,6 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     private              ApplicationContext                    applicationContext;
     private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
     private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
-    private volatile     boolean                               logIntentionResult = false;
     @Autowired
     @Qualifier("nluThreadPool")
     private              ExecutorService                       threadPool;
@@ -98,6 +97,19 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         return output;
     }
 
+    @Override
+    public Output recognize(Input input, boolean logOutput) {
+        try {
+
+        } finally {
+            if (logOutput) {
+                // Log output
+
+            }
+            return null;
+        }
+    }
+
     private void beforeProcess(Input input) {
         inputPreprocessService.preprocess(input);
     }
@@ -110,10 +122,5 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     private void terminated(Output output) {
-    }
-
-    @Override
-    public void setLogIntentionResult(boolean logIntentionResult) {
-        this.logIntentionResult = logIntentionResult;
     }
 }

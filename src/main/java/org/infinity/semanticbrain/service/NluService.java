@@ -9,5 +9,5 @@ public interface NluService {
 
     Output recognize(Input input, String skillCode);
 
-    void setLogIntentionResult(boolean logIntentionResult);
+    Output recognize(Input input, boolean logOutput);
 }
