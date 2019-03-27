@@ -3,10 +3,10 @@ package org.infinity.semanticbrain.utils;
 public final class StringUtils {
 
     /**
-     * 截取连续重复的非数字字符到指定限定数量
+     * 截取连续重复的非数字字符到指定限定值
      *
      * @param text        原文本
-     * @param repeatLimit 重复字符限定数量
+     * @param repeatLimit 重复字符限定值
      * @return 处理后文本
      */
     public static String truncateConsecutiveRepeatingNonDigitChar(String text, int repeatLimit) {
