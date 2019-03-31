@@ -1,6 +1,7 @@
 package org.infinity.semanticbrain.service.impl;
 
 import org.infinity.semanticbrain.dialog.entity.Input;
+import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class InputPreprocessServiceImpl implements InputPreprocessService {
 
     @Override
-    public void preprocess(Input input) {
+    public void preprocess(Input input, Output lastOutput) {
 
     }
 

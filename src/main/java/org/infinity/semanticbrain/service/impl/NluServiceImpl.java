@@ -78,10 +78,10 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         stopWatch.start();
         Output output = new Output();
         try {
-            this.beforeProcess(input);
             Output lastOutput = this.getLastOutput(input);
+            this.beforeProcess(input, lastOutput);
             SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool).doFilter(input, output, lastOutput);
-            this.afterProcess(output);
+            this.afterProcess(input, output);
         } catch (Exception e) {
         }
         stopWatch.stop();
@@ -108,15 +108,15 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         }
     }
 
-    private void beforeProcess(Input input) {
-        inputPreprocessService.preprocess(input);
+    private void beforeProcess(Input input, Output lastOutput) {
+        inputPreprocessService.preprocess(input, lastOutput);
     }
 
     private Output getLastOutput(Input input) {
         return dialogContextManager.getLastOutput(input);
     }
 
-    private void afterProcess(Output output) {
+    private void afterProcess(Input input, Output output) {
     }
 
     private void terminated(Input input, Output output) {
