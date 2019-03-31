@@ -108,12 +108,12 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         }
     }
 
-    private void beforeProcess(Input input, Output lastOutput) {
-        inputPreprocessService.preprocess(input, lastOutput);
-    }
-
     private Output getLastOutput(Input input) {
         return dialogContextManager.getLastOutput(input);
+    }
+
+    private void beforeProcess(Input input, Output lastOutput) {
+        inputPreprocessService.preprocess(input, lastOutput);
     }
 
     private void afterProcess(Input input, Output output) {
