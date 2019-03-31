@@ -6,7 +6,6 @@ import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory;
-import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterChain;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
@@ -74,11 +73,6 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     @Override
-    public Output recognize(Input input) {
-        return this.recognize(input, null);
-    }
-
-    @Override
     public Output recognize(Input input, String skillCode) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -86,24 +80,28 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         try {
             this.beforeProcess(input);
             Output lastOutput = this.getLastOutput(input);
-            SemanticRecognitionFilterChain filterChain = SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool);
-            filterChain.doFilter(input, output, lastOutput);
+            SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool).doFilter(input, output, lastOutput);
             this.afterProcess(output);
         } catch (Exception e) {
         }
         stopWatch.stop();
         output.setElapsed(stopWatch.getTotalTimeMillis());
-        this.terminated(output);
+        this.terminated(input, output);
         return output;
     }
 
     @Override
-    public Output recognize(Input input, boolean logOutput) {
-        try {
+    public Output recognize(Input input) {
+        return this.recognize(input, null);
+    }
 
+    @Override
+    public Output recognize(Input input, boolean saveOutput) {
+        try {
+            return this.recognize(input, null);
         } finally {
-            if (logOutput) {
-                // Log output
+            if (saveOutput) {
+                // Save output
 
             }
             return null;
@@ -121,6 +119,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     private void afterProcess(Output output) {
     }
 
-    private void terminated(Output output) {
+    private void terminated(Input input, Output output) {
+        dialogContextManager.addOutput(input, output);
     }
 }

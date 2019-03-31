@@ -5,9 +5,9 @@ import org.infinity.semanticbrain.dialog.entity.Output;
 
 public interface NluService {
 
-    Output recognize(Input input);
-
     Output recognize(Input input, String skillCode);
 
-    Output recognize(Input input, boolean logOutput);
+    Output recognize(Input input);
+
+    Output recognize(Input input, boolean saveOutput);
 }
