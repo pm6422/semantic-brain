@@ -19,10 +19,8 @@ public class Matcher {
     private SlotValService slotValService;
 
     public Output matchSlotVal(Input input, Output lastOutput) {
-        PatriciaTrie trie = slotValService.getSlotValTrie();
-        Multimap<String, Integer> slotValCodesMap = slotValService.getValCodesMap();
-        List<MatchedSlot> matchedSlots = this.extractSlot(input.getPreprocessedText(), trie, slotValCodesMap);
-        Set<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), matchedSlots);
+        List<MatchedSlot> slots = this.extractSlot(input.getPreprocessedText());
+        Set<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
 
         return null;
     }
@@ -31,11 +29,12 @@ public class Matcher {
      * 使用槽位值前缀树对输入文本进行槽位提取并获得槽位在文本中的位置
      *
      * @param inputText 用户输入文本
-     * @param trie      槽位值前缀树
      * @return 提取的槽位结果，包含词和词在输入文本中的位置
      */
-    private List<MatchedSlot> extractSlot(String inputText, PatriciaTrie trie, Multimap<String, Integer> slotValCodesMap) {
+    private List<MatchedSlot> extractSlot(String inputText) {
+        PatriciaTrie trie = slotValService.getSlotValTrie();
         Set<MatchedSlot> matchedSlots = new HashSet<MatchedSlot>();
+        Multimap<String, Integer> slotValCodesMap = slotValService.getValCodesMap();
         for (int i = 0; i < inputText.length(); i++) {
             // 以用户输入文本的首字母+i位置开始循环的进行连续匹配槽位值
             Iterator<String> it = trie.commonPrefixSearch(inputText.substring(i)).iterator();
