@@ -57,59 +57,59 @@ public class Matcher {
         return matchedSlots;
     }
 
-    private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedArgs) {
+    private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         Set<ParsedInputText> parsedInputTexts = new HashSet<ParsedInputText>();
 
         // 高效率全组合算法: http://mtnt2008.iteye.com/blog/715104
         // 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种
-        int bit = (0xFFFFFFFF >>> (32 - matchedArgs.size()));
+        int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
         for (int i = 1; i <= bit; i++) {
-            Set<MatchedSlot> matchedArgSet = new HashSet<MatchedSlot>();
-            for (int j = 0; j < matchedArgs.size(); j++) {
+            Set<MatchedSlot> slots = new HashSet<MatchedSlot>();
+            for (int j = 0; j < matchedSlots.size(); j++) {
                 if ((i << (31 - j)) >> 31 == -1) {
-                    if (CollectionUtils.isEmpty(matchedArgSet)) {
-                        matchedArgSet.add(matchedArgs.get(j));
+                    if (CollectionUtils.isEmpty(slots)) {
+                        slots.add(matchedSlots.get(j));
                     } else {
                         boolean sameOrContainOrOverlap = false;
-                        for (MatchedSlot matchedArg : matchedArgSet) {
-                            // 参数值相同而参数代码不同则不可以放到同一个matchedArgSet内
-                            // 有参数值字符overlap情况的参数不可以放到同一个matchedArgSet内，如：
+                        for (MatchedSlot slot : slots) {
+                            // 参数值相同而参数代码不同则不可以放到同一个slots内
+                            // 有参数值字符overlap情况的参数不可以放到同一个slots内，如：
                             // MatchedArg = { argCode: arg42, argValue: 我心, start: 0, end: 1 },
                             // MatchedArg = { argCode: arg387, argValue: 心情不好, start: 1, end: 4 }
                             if (// 相等
-                                    matchedArg.getValue().equals(matchedArgs.get(j).getValue())
-                                            && matchedArg.getStart() == matchedArgs.get(j).getStart()
-                                            && matchedArg.getEnd() == matchedArgs.get(j).getEnd()
+                                    slot.getValue().equals(matchedSlots.get(j).getValue())
+                                            && slot.getStart() == matchedSlots.get(j).getStart()
+                                            && slot.getEnd() == matchedSlots.get(j).getEnd()
                                             // 包含
-                                            || !matchedArg.getValue().equals(matchedArgs.get(j).getValue())
-                                            && matchedArg.getValue().contains(matchedArgs.get(j).getValue())
-                                            && matchedArg.getStart() <= matchedArgs.get(j).getStart()
-                                            && matchedArg.getEnd() >= matchedArgs.get(j).getEnd()
+                                            || !slot.getValue().equals(matchedSlots.get(j).getValue())
+                                            && slot.getValue().contains(matchedSlots.get(j).getValue())
+                                            && slot.getStart() <= matchedSlots.get(j).getStart()
+                                            && slot.getEnd() >= matchedSlots.get(j).getEnd()
                                             // 包含
-                                            || !matchedArg.getValue().equals(matchedArgs.get(j).getValue())
-                                            && matchedArgs.get(j).getValue().contains(matchedArg.getValue())
-                                            && matchedArgs.get(j).getStart() <= matchedArg.getStart()
-                                            && matchedArgs.get(j).getEnd() >= matchedArg.getEnd()
+                                            || !slot.getValue().equals(matchedSlots.get(j).getValue())
+                                            && matchedSlots.get(j).getValue().contains(slot.getValue())
+                                            && matchedSlots.get(j).getStart() <= slot.getStart()
+                                            && matchedSlots.get(j).getEnd() >= slot.getEnd()
                                             // 相交
-                                            || matchedArg.getStart() > matchedArgs.get(j).getStart()
-                                            && matchedArg.getEnd() > matchedArgs.get(j).getEnd()
-                                            && matchedArg.getStart() <= matchedArgs.get(j).getEnd()
+                                            || slot.getStart() > matchedSlots.get(j).getStart()
+                                            && slot.getEnd() > matchedSlots.get(j).getEnd()
+                                            && slot.getStart() <= matchedSlots.get(j).getEnd()
                                             // 相交
-                                            || matchedArg.getStart() < matchedArgs.get(j).getStart()
-                                            && matchedArg.getEnd() < matchedArgs.get(j).getEnd()
-                                            && matchedArg.getEnd() >= matchedArgs.get(j).getStart()) {
+                                            || slot.getStart() < matchedSlots.get(j).getStart()
+                                            && slot.getEnd() < matchedSlots.get(j).getEnd()
+                                            && slot.getEnd() >= matchedSlots.get(j).getStart()) {
                                 sameOrContainOrOverlap = true;
                                 break;
                             }
                         }
                         if (!sameOrContainOrOverlap) {
-                            matchedArgSet.add(matchedArgs.get(j));
+                            slots.add(matchedSlots.get(j));
                         }
                     }
                 }
             }
 
-            ParsedInputText of = ParsedInputText.of(inputText, matchedArgSet);
+            ParsedInputText of = ParsedInputText.of(inputText, slots);
             if (parsedInputTexts.contains(of)) {
                 System.out.println();
             } else {
