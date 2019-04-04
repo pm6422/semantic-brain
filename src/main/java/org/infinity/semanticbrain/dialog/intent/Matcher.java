@@ -50,7 +50,12 @@ public class Matcher {
                 String argValue = it.next();
                 Collection<Integer> argCodes = slotValCodesMap.get(argValue);
                 for (Integer argCode : argCodes) {
-                    matchedSlots.add(MatchedSlot.of(argCode, argValue, i, i + argValue.length()));
+                    MatchedSlot of = MatchedSlot.of(argCode, argValue, i, i + argValue.length());
+                    if (matchedSlots.contains(of)) {
+                        throw new RuntimeException("Duplicated element bug" + of);
+                    } else {
+                        matchedSlots.add(of);
+                    }
                 }
             }
         }
@@ -111,7 +116,7 @@ public class Matcher {
 
             ParsedInputText of = ParsedInputText.of(inputText, slots);
             if (parsedInputTexts.contains(of)) {
-                System.out.println();
+                throw new RuntimeException("Duplicated element bug" + of);
             } else {
                 parsedInputTexts.add(of);
             }
