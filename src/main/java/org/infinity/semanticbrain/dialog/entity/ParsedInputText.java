@@ -1,6 +1,7 @@
 package org.infinity.semanticbrain.dialog.entity;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -13,7 +14,7 @@ public class ParsedInputText {
 
     public static ParsedInputText of(String inputText, Set<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
-        Map<Integer, String> indexMap = new TreeMap<Integer, String>();// Using ordered map
+        Map<Integer, String> indexMap = new TreeMap<Integer, String>();// A map ordered by key
         char[] inputChars = inputText.toCharArray();
         for (int i = 0; i < inputChars.length; i++) {
             indexMap.put(i, String.valueOf(inputChars[i]));
@@ -50,6 +51,19 @@ public class ParsedInputText {
         this.matchedSlots = matchedSlots;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParsedInputText that = (ParsedInputText) o;
+        return Objects.equals(slotFilledText, that.slotFilledText) &&
+                Objects.equals(matchedSlots, that.matchedSlots);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(slotFilledText, matchedSlots);
+    }
 
     @Override
     public String toString() {

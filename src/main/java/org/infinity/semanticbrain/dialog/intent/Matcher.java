@@ -109,8 +109,12 @@ public class Matcher {
                 }
             }
 
-
-            parsedInputTexts.add(ParsedInputText.of(inputText, matchedArgSet));
+            ParsedInputText of = ParsedInputText.of(inputText, matchedArgSet);
+            if (parsedInputTexts.contains(of)) {
+                System.out.println();
+            } else {
+                parsedInputTexts.add(of);
+            }
         }
 
         return parsedInputTexts;
