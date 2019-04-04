@@ -27,7 +27,7 @@ public class Matcher {
         if (CollectionUtils.isEmpty(slots)) {
             return output;
         }
-        Set<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
+        List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
 
         return null;
     }
@@ -62,8 +62,8 @@ public class Matcher {
         return matchedSlots;
     }
 
-    private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
-        Set<ParsedInputText> parsedInputTexts = new HashSet<ParsedInputText>();
+    private List<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
+        List<ParsedInputText> parsedInputTexts = new ArrayList<>();
 
         // 高效率全组合算法: http://mtnt2008.iteye.com/blog/715104
         // 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种
