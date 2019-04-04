@@ -75,39 +75,16 @@ public class Matcher {
                     if (CollectionUtils.isEmpty(slots)) {
                         slots.add(matchedSlots.get(j));
                     } else {
-                        boolean sameOrContainOrOverlap = false;
+                        boolean valid = true;
                         for (MatchedSlot slot : slots) {
-                            // 参数值相同而参数代码不同则不可以放到同一个slots内
-                            // 有参数值字符overlap情况的参数不可以放到同一个slots内，如：
-                            // MatchedArg = { argCode: arg42, argValue: 我心, start: 0, end: 1 },
-                            // MatchedArg = { argCode: arg387, argValue: 心情不好, start: 1, end: 4 }
-                            if (// 相等
-                                    slot.getValue().equals(matchedSlots.get(j).getValue())
-                                            && slot.getStart() == matchedSlots.get(j).getStart()
-                                            && slot.getEnd() == matchedSlots.get(j).getEnd()
-                                            // 包含
-                                            || !slot.getValue().equals(matchedSlots.get(j).getValue())
-                                            && slot.getValue().contains(matchedSlots.get(j).getValue())
-                                            && slot.getStart() <= matchedSlots.get(j).getStart()
-                                            && slot.getEnd() >= matchedSlots.get(j).getEnd()
-                                            // 包含
-                                            || !slot.getValue().equals(matchedSlots.get(j).getValue())
-                                            && matchedSlots.get(j).getValue().contains(slot.getValue())
-                                            && matchedSlots.get(j).getStart() <= slot.getStart()
-                                            && matchedSlots.get(j).getEnd() >= slot.getEnd()
-                                            // 相交
-                                            || slot.getStart() > matchedSlots.get(j).getStart()
-                                            && slot.getEnd() > matchedSlots.get(j).getEnd()
-                                            && slot.getStart() <= matchedSlots.get(j).getEnd()
-                                            // 相交
-                                            || slot.getStart() < matchedSlots.get(j).getStart()
-                                            && slot.getEnd() < matchedSlots.get(j).getEnd()
-                                            && slot.getEnd() >= matchedSlots.get(j).getStart()) {
-                                sameOrContainOrOverlap = true;
+                            // 多个参数必须是错开的
+                            // 参数相同或交替或包含的情况不可以放到同一个slots组合内
+                            if (!(matchedSlots.get(j).getEnd() < slot.getStart() || matchedSlots.get(j).getStart() > slot.getEnd())) {
+                                valid = false;
                                 break;
                             }
                         }
-                        if (!sameOrContainOrOverlap) {
+                        if (valid) {
                             slots.add(matchedSlots.get(j));
                         }
                     }
@@ -115,9 +92,7 @@ public class Matcher {
             }
 
             ParsedInputText of = ParsedInputText.of(inputText, slots);
-            if (parsedInputTexts.contains(of)) {
-//                throw new RuntimeException("Duplicated element bug found" + of);
-            } else {
+            if (!parsedInputTexts.contains(of)) {
                 parsedInputTexts.add(of);
             }
         }
