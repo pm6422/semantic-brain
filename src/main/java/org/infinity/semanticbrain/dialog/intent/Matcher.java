@@ -52,7 +52,7 @@ public class Matcher {
                 for (Integer argCode : argCodes) {
                     MatchedSlot of = MatchedSlot.of(argCode, argValue, i, i + argValue.length());
                     if (matchedSlots.contains(of)) {
-                        throw new RuntimeException("Duplicated element bug" + of);
+                        throw new RuntimeException("Duplicated element bug found" + of);
                     } else {
                         matchedSlots.add(of);
                     }
@@ -116,7 +116,7 @@ public class Matcher {
 
             ParsedInputText of = ParsedInputText.of(inputText, slots);
             if (parsedInputTexts.contains(of)) {
-                throw new RuntimeException("Duplicated element bug" + of);
+                throw new RuntimeException("Duplicated element bug found" + of);
             } else {
                 parsedInputTexts.add(of);
             }
