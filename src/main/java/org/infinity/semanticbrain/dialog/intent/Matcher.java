@@ -66,7 +66,7 @@ public class Matcher {
         List<ParsedInputText> parsedInputTexts = new ArrayList<>();
         int count = 0;
 
-        // 高效率全组合算法: http://mtnt2008.iteye.com/blog/715104
+        // 高效率全组合算法: https://www.jianshu.com/p/a6e3c980e932
         // 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种
         int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
         for (int i = 1; i <= bit; i++) {
@@ -98,8 +98,7 @@ public class Matcher {
                 parsedInputTexts.add(of);
             }
         }
-
-        System.out.println(count);
+        LOGGER.debug("Combination count: {}", count);
         return parsedInputTexts;
     }
 }
