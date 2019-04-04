@@ -42,15 +42,15 @@ public class Matcher {
     private List<MatchedSlot> extractSlot(String inputText) {
         PatriciaTrie trie = slotValService.getSlotValTrie();
         List<MatchedSlot> matchedSlots = new ArrayList<MatchedSlot>();
-        Multimap<String, Integer> slotValCodesMap = slotValService.getValCodeMap();
+        Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap();
         for (int i = 0; i < inputText.length(); i++) {
             // 以用户输入文本的首字母+i位置开始循环的进行连续匹配槽位值
             Iterator<String> it = trie.commonPrefixSearch(inputText.substring(i)).iterator();
             while (it.hasNext()) {
-                String argValue = it.next();
-                Collection<Integer> argCodes = slotValCodesMap.get(argValue);
-                for (Integer argCode : argCodes) {
-                    MatchedSlot of = MatchedSlot.of(argCode, argValue, i, i + argValue.length());
+                String slotVal = it.next();
+                Collection<Integer> slotCodes = slotValCodeMap.get(slotVal);
+                for (Integer slotCode : slotCodes) {
+                    MatchedSlot of = MatchedSlot.of(slotCode, slotVal, i, i + slotVal.length());
                     if (matchedSlots.contains(of)) {
                         throw new RuntimeException("Duplicated element bug found" + of);
                     } else {
