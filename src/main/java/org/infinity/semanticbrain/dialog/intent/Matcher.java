@@ -62,12 +62,18 @@ public class Matcher {
         return matchedSlots;
     }
 
+    /**
+     * 高效率全组合算法: https://www.jianshu.com/p/a6e3c980e932
+     * 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种，另外还需要去掉非法组合
+     *
+     * @param inputText    输入文本
+     * @param matchedSlots 提取的槽位
+     * @return 转换的输入文本
+     */
     private List<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         List<ParsedInputText> parsedInputTexts = new ArrayList<>();
         int count = 0;
 
-        // 高效率全组合算法: https://www.jianshu.com/p/a6e3c980e932
-        // 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种
         int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
         for (int i = 1; i <= bit; i++) {
             Set<MatchedSlot> slots = new HashSet<MatchedSlot>();
