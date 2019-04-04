@@ -7,8 +7,6 @@ import org.infinity.semanticbrain.dialog.intent.Matcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @Component
@@ -34,10 +32,7 @@ public class SlotValMatchingFilter extends AbstractSemanticFilter {
 
     @Override
     protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
-        Output output = new Output();
-        TimeUnit.SECONDS.sleep(1L);
-//        output.addIntent(Intent.of("Music", "Music", "Entertainment", "Music", "Music", "Music"));
-        output.setScore(Output.TOP_SCORE);
+        Output output = matcher.matchSlotVal(input, lastOutput);
         return output;
     }
 }

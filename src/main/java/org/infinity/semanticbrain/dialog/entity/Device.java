@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +41,23 @@ public class Device implements Serializable {
         return device;
     }
 
+    public static Device of(String userId) {
+        return of(null, null, userId, null);
+    }
+
+    public static Device of(String modelId, String userId) {
+        return of(null, modelId, userId, null);
+    }
+
+    public static Device of(String companyId, String modelId, String userId, String deviceId) {
+        Device device = new Device();
+        device.setCompanyId(companyId);
+        device.setModelId(modelId);
+        device.addUserId(userId);
+        device.setDeviceId(deviceId);
+        return device;
+    }
+
     public String getCompanyId() {
         return companyId;
     }
@@ -54,6 +72,13 @@ public class Device implements Serializable {
 
     public void setUserIds(List<String> userIds) {
         this.userIds = userIds;
+    }
+
+    public void addUserId(String userId) {
+        if (userIds == null) {
+            userIds = new ArrayList<>();
+        }
+        userIds.add(userId);
     }
 
     public String getModelId() {

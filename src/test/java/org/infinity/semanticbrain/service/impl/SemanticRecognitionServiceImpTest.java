@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SemanticRecognitionServiceImpTest {
 
     @Autowired
-    private NluService semanticRecognitionService;
+    private NluService nluService;
 
     @Before
     public void setUp() {
@@ -29,7 +29,7 @@ public class SemanticRecognitionServiceImpTest {
     public void testRecognize() throws JsonProcessingException {
         Input input = new Input();
         input.setOriginalText("今天@#¥33");
-        Output output = semanticRecognitionService.recognize(input);
+        Output output = nluService.recognize(input);
 //        Assert.assertTrue(output.isRecognized());
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
