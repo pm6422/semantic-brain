@@ -116,7 +116,7 @@ public class Matcher {
 
             ParsedInputText of = ParsedInputText.of(inputText, slots);
             if (parsedInputTexts.contains(of)) {
-                throw new RuntimeException("Duplicated element bug found" + of);
+//                throw new RuntimeException("Duplicated element bug found" + of);
             } else {
                 parsedInputTexts.add(of);
             }
