@@ -64,6 +64,7 @@ public class Matcher {
 
     private List<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         List<ParsedInputText> parsedInputTexts = new ArrayList<>();
+        int count = 0;
 
         // 高效率全组合算法: http://mtnt2008.iteye.com/blog/715104
         // 生成关键字全组合，算法说明：当n大于2时，n个数的全组合一共有(2^n)-1种
@@ -71,6 +72,7 @@ public class Matcher {
         for (int i = 1; i <= bit; i++) {
             Set<MatchedSlot> slots = new HashSet<MatchedSlot>();
             for (int j = 0; j < matchedSlots.size(); j++) {
+                count++;
                 if ((i << (31 - j)) >> 31 == -1) {
                     if (CollectionUtils.isEmpty(slots)) {
                         slots.add(matchedSlots.get(j));
@@ -97,6 +99,7 @@ public class Matcher {
             }
         }
 
+        System.out.println(count);
         return parsedInputTexts;
     }
 }
