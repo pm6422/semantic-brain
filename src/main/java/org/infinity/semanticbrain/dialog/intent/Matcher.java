@@ -28,8 +28,8 @@ public class Matcher {
             return output;
         }
         List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
-
-        return null;
+        output = this.matchRules(input, lastOutput, parsedInputTexts);
+        return output;
     }
 
     /**
@@ -105,5 +105,9 @@ public class Matcher {
         }
         LOGGER.debug("Combination loop count: {}", count);
         return parsedInputTexts;
+    }
+
+    private Output matchRules(Input input, Output lastOutput, List<ParsedInputText> parsedInputTexts) {
+        return lastOutput;
     }
 }
