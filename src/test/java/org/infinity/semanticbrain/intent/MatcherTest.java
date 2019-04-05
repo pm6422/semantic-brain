@@ -36,7 +36,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testExtractSlot() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testExtractSlot1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Multimap<String, Integer> map = ArrayListMultimap.create();
         map.put("爸爸", 1);
         map.put("爸", 1);
@@ -60,6 +60,28 @@ public class MatcherTest {
         List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟");
         Assert.assertEquals(10, results.size());
     }
+
+    @Test
+    public void testExtractSlot2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Multimap<String, Integer> map = ArrayListMultimap.create();
+        map.put("上海", 2);
+        map.put("北京", 2);
+        map.put("上海", 3);
+        map.put("北京", 3);
+        Mockito.when(slotValService.getValCodeMap()).thenReturn(map);
+
+        PatriciaTrie trie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : map.entries()) {
+            trie.insert(entry.getKey());
+        }
+        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
+
+        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class);
+        method.setAccessible(true);
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "订从北京到上海的机票");
+        Assert.assertEquals(4, results.size());
+    }
+
 
     @Test
     public void testParseInputTexts() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
