@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
@@ -36,18 +37,6 @@ public class MatcherTest {
 
     @Test
     public void testExtractSlot() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        PatriciaTrie trie = new PatriciaTrie();
-        trie.insert("爸爸");
-        trie.insert("爸");
-        trie.insert("妈妈");
-        trie.insert("哥哥");
-        trie.insert("弟弟");
-        trie.insert("姐姐");
-        trie.insert("妹妹");
-        trie.insert("叔叔");
-        trie.insert("阿姨");
-        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
-
         Multimap<String, Integer> map = ArrayListMultimap.create();
         map.put("爸爸", 1);
         map.put("爸", 1);
@@ -59,6 +48,12 @@ public class MatcherTest {
         map.put("叔叔", 1);
         map.put("阿姨", 1);
         Mockito.when(slotValService.getValCodeMap()).thenReturn(map);
+
+        PatriciaTrie trie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : map.entries()) {
+            trie.insert(entry.getKey());
+        }
+        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
 
         Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class);
         method.setAccessible(true);
