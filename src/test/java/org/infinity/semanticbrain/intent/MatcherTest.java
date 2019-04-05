@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.trie4j.patricia.PatriciaTrie;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
 
