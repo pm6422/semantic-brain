@@ -41,8 +41,8 @@ public class Matcher {
      */
     private List<MatchedSlot> extractSlot(String inputText) {
         PatriciaTrie trie = slotValService.getSlotValTrie();
-        List<MatchedSlot> matchedSlots = new ArrayList<MatchedSlot>();
         Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap();
+        List<MatchedSlot> matchedSlots = new ArrayList<MatchedSlot>();
         for (int i = 0; i < inputText.length(); i++) {
             // 以用户输入文本的首字母+i位置开始循环的进行连续匹配槽位值
             Iterator<String> it = trie.commonPrefixSearch(inputText.substring(i)).iterator();
