@@ -40,4 +40,21 @@ public class MatcherTest {
         Output output = matcher.matchSlotVal(input, null);
         System.out.println(output);
     }
+
+    @Test
+    public void testExtractSlot2() {
+        Input input = new Input();
+        input.setOriginalText("订从北京到上海的机票");
+        input.setPreprocessedText("订从北京到上海的机票");
+        input.setRequestId(RandomStringUtils.randomNumeric(5));
+
+        Device device = new Device();
+        device.setCompanyId("company1");
+        device.setModelId("model1");
+        device.addUserId("user1");
+        input.setDevice(device);
+
+        Output output = matcher.matchSlotVal(input, null);
+        System.out.println(output);
+    }
 }

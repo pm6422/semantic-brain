@@ -26,6 +26,10 @@ public class SlotValServiceImpl implements SlotValService, InitializingBean {
         codeValMap.put(1, "妹妹");
         codeValMap.put(1, "叔叔");
         codeValMap.put(1, "阿姨");
+        codeValMap.put(2, "上海");
+        codeValMap.put(2, "北京");
+        codeValMap.put(3, "上海");
+        codeValMap.put(3, "北京");
     }
 
     @Override
