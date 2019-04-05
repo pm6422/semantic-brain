@@ -28,8 +28,7 @@ public class Matcher {
             return output;
         }
         List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
-        output = this.matchRules(input, lastOutput, parsedInputTexts);
-        return output;
+        return this.matchRules(input, lastOutput, parsedInputTexts);
     }
 
     /**
