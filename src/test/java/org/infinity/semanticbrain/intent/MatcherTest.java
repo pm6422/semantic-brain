@@ -49,12 +49,12 @@ public class MatcherTest {
     public void testParseInputTexts() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
-        List<MatchedSlot> matchedSlots = new ArrayList<>();
-        matchedSlots.add(MatchedSlot.of(2, "北京", 2, 4));
-        matchedSlots.add(MatchedSlot.of(3, "北京", 2, 4));
-        matchedSlots.add(MatchedSlot.of(2, "上海", 5, 7));
-        matchedSlots.add(MatchedSlot.of(3, "上海", 5, 7));
-        List<ParsedInputText> results = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots);
-        Assert.assertEquals(8, results.size());
+        List<MatchedSlot> matchedSlots1 = new ArrayList<>();
+        matchedSlots1.add(MatchedSlot.of(2, "北京", 2, 4));
+        matchedSlots1.add(MatchedSlot.of(3, "北京", 2, 4));
+        matchedSlots1.add(MatchedSlot.of(2, "上海", 5, 7));
+        matchedSlots1.add(MatchedSlot.of(3, "上海", 5, 7));
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        Assert.assertEquals(8, results1.size());
     }
 }
