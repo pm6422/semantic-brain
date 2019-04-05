@@ -26,10 +26,10 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
 
-    @InjectMocks
-    private Matcher            matcher;
     @Mock
     private SlotValServiceImpl slotValService;
+    @InjectMocks
+    private Matcher            matcher;
 
     @Before
     public void setUp() {
