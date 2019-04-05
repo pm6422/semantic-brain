@@ -1,15 +1,21 @@
 package org.infinity.semanticbrain.intent;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.infinity.semanticbrain.dialog.entity.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import org.infinity.semanticbrain.dialog.entity.MatchedSlot;
+import org.infinity.semanticbrain.dialog.entity.ParsedInputText;
 import org.infinity.semanticbrain.dialog.intent.Matcher;
+import org.infinity.semanticbrain.service.impl.SlotValServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.trie4j.patricia.PatriciaTrie;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
 
-    @Autowired
-    private Matcher matcher;
+    @InjectMocks
+    private Matcher            matcher;
+    @Mock
+    private SlotValServiceImpl slotValService;
 
     @Before
     public void setUp() {
@@ -29,20 +37,35 @@ public class MatcherTest {
     }
 
     @Test
-    public void testExtractSlot() {
-        Input input = new Input();
-        input.setOriginalText("爸爸妈妈爸爸妈妈哥哥弟弟");
-        input.setPreprocessedText("爸爸妈妈爸爸妈妈哥哥弟弟");
-        input.setRequestId(RandomStringUtils.randomNumeric(5));
+    public void testExtractSlot() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        PatriciaTrie trie = new PatriciaTrie();
+        trie.insert("爸爸");
+        trie.insert("爸");
+        trie.insert("妈妈");
+        trie.insert("哥哥");
+        trie.insert("弟弟");
+        trie.insert("姐姐");
+        trie.insert("妹妹");
+        trie.insert("叔叔");
+        trie.insert("阿姨");
+        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
 
-        Device device = new Device();
-        device.setCompanyId("company1");
-        device.setModelId("model1");
-        device.addUserId("user1");
-        input.setDevice(device);
+        Multimap<String, Integer> map = ArrayListMultimap.create();
+        map.put("爸爸", 1);
+        map.put("爸", 1);
+        map.put("妈妈", 1);
+        map.put("哥哥", 1);
+        map.put("弟弟", 1);
+        map.put("姐姐", 1);
+        map.put("妹妹", 1);
+        map.put("叔叔", 1);
+        map.put("阿姨", 1);
+        Mockito.when(slotValService.getValCodeMap()).thenReturn(map);
 
-        Output output = matcher.matchSlotVal(input, null);
-        System.out.println(output);
+        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class);
+        method.setAccessible(true);
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟");
+        Assert.assertEquals(10, results.size());
     }
 
     @Test
@@ -57,4 +80,21 @@ public class MatcherTest {
         List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
         Assert.assertEquals(8, results1.size());
     }
+
+//    @Test
+//    public void testMatchSlotVal() {
+//        Input input = new Input();
+//        input.setOriginalText("爸爸妈妈爸爸妈妈哥哥弟弟");
+//        input.setPreprocessedText("爸爸妈妈爸爸妈妈哥哥弟弟");
+//        input.setRequestId(RandomStringUtils.randomNumeric(5));
+//
+//        Device device = new Device();
+//        device.setCompanyId("company1");
+//        device.setModelId("model1");
+//        device.addUserId("user1");
+//        input.setDevice(device);
+//
+//        Output output = matcher.matchSlotVal(input, null);
+//        System.out.println(output);
+//    }
 }
