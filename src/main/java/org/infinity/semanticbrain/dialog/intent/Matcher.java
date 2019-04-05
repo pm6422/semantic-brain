@@ -85,7 +85,6 @@ public class Matcher {
                     } else {
                         boolean valid = true;
                         for (MatchedSlot slot : slots) {
-                            // 多个参数必须是错开的
                             // 参数错开的情况下才可以放到同一个slots组合内
                             if (!(matchedSlots.get(j).getEnd() < slot.getStart() || matchedSlots.get(j).getStart() > slot.getEnd())) {
                                 valid = false;
@@ -104,7 +103,7 @@ public class Matcher {
                 parsedInputTexts.add(of);
             }
         }
-        LOGGER.debug("Combination count: {}", count);
+        LOGGER.debug("Combination loop count: {}", count);
         return parsedInputTexts;
     }
 }
