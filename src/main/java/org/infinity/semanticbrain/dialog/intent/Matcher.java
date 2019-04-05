@@ -86,7 +86,7 @@ public class Matcher {
                         boolean valid = true;
                         for (MatchedSlot slot : slots) {
                             // 多个参数必须是错开的
-                            // 参数相同或交替或包含的情况不可以放到同一个slots组合内
+                            // 参数错开的情况下才可以放到同一个slots组合内
                             if (!(matchedSlots.get(j).getEnd() < slot.getStart() || matchedSlots.get(j).getStart() > slot.getEnd())) {
                                 valid = false;
                                 break;
