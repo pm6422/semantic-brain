@@ -36,45 +36,36 @@ public class Intent implements Serializable {
     public static final String COMMAND_SOURCE_SKILL_ASSOCIATION = "skillAssociation";
 
     @ApiModelProperty("技能代码")
-    private String       skillCode     = "";
+    private String     skillCode     = "";
     @ApiModelProperty("技能名称")
-    private String       skillName     = "";
+    private String     skillName     = "";
     @ApiModelProperty("技能大分类")
-    private String       skillCategory = "";
+    private String     skillCategory = "";
     @ApiModelProperty("技能小分类")
-    private String       skillType     = "";
-    @ApiModelProperty("命令代码")
-    private String       commandCode   = "";
-    @ApiModelProperty("命令名称")
-    private String       commandName   = "";
-    @ApiModelProperty("命令来源")
-    private String       commandSource = "";// 取值范围见常量定义
+    private String     skillType     = "";
     @ApiModelProperty("控制类型")
-    private String       controlType   = "";// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
-    @ApiModelProperty("匹配的规则，如：播放{Singer}的{Song}")
-    private List<String> rules         = new ArrayList<>();
+    private String     controlType   = "";// 控制类型的前提是要有上下文，而且本次意图解析结果需要保持上次命令，取值范围见常量定义
+    @ApiModelProperty("匹配的规则，如：播放{23}的{27}")
+    private String     rule          = "";
     @ApiModelProperty("槽位信息列表")
-    private List<Slot>   slots         = new ArrayList<>();
+    private List<Slot> slots         = new ArrayList<>();
     @ApiModelProperty("回复内容")
-    private String       reply         = "";
+    private String     reply         = "";
     @ApiModelProperty("回复类型")
-    private String       replyType     = "";// 取值范围见常量定义
+    private String     replyType     = "";// 取值范围见常量定义
 
     public Intent() {
     }
 
-    public static Intent of(String skillCode, String skillName, String skillCategory, String skillType, String commandCode, String commandName, String commandSource,
-                            String controlType, List<String> rules, List<Slot> slots, String reply, String replyType) {
+    public static Intent of(String skillCode, String skillName, String skillCategory, String skillType,
+                            String controlType, String rule, List<Slot> slots, String reply, String replyType) {
         Intent intent = new Intent();
         intent.setSkillCode(skillCode);
         intent.setSkillName(skillName);
         intent.setSkillCategory(skillCategory);
         intent.setSkillType(skillType);
-        intent.setCommandCode(commandCode);
-        intent.setCommandName(commandName);
-        intent.setCommandSource(commandSource);
         intent.setControlType(controlType);
-        intent.setRules(rules);
+        intent.setRule(rule);
         intent.setSlots(slots);
         intent.setReply(reply);
         intent.setReplyType(replyType);
@@ -114,30 +105,6 @@ public class Intent implements Serializable {
         this.skillType = skillType;
     }
 
-    public String getCommandCode() {
-        return commandCode;
-    }
-
-    public void setCommandCode(String commandCode) {
-        this.commandCode = commandCode;
-    }
-
-    public String getCommandName() {
-        return commandName;
-    }
-
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
-    }
-
-    public String getCommandSource() {
-        return commandSource;
-    }
-
-    public void setCommandSource(String commandSource) {
-        this.commandSource = commandSource;
-    }
-
     public String getControlType() {
         return controlType;
     }
@@ -146,12 +113,12 @@ public class Intent implements Serializable {
         this.controlType = controlType;
     }
 
-    public List<String> getRules() {
-        return rules;
+    public String getRule() {
+        return rule;
     }
 
-    public void setRules(List<String> rules) {
-        this.rules = rules;
+    public void setRule(String rule) {
+        this.rule = rule;
     }
 
     public List<Slot> getSlots() {
@@ -199,6 +166,6 @@ public class Intent implements Serializable {
 
     public boolean isDetermined() {
         // 识别出命令代码并无反问槽位
-        return StringUtils.isNotEmpty(commandCode) && this.findAskSlot() == null;
+        return StringUtils.isNotEmpty(skillCode) && this.findAskSlot() == null;
     }
 }

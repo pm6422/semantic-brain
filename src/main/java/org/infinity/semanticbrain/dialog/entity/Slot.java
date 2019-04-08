@@ -15,7 +15,7 @@ public class Slot implements Serializable {
     public static final String TYPE_NEGATIVE    = "negative";// 否定类型，如：播放不是"刘德华"的歌
 
     @ApiModelProperty("槽位代码")
-    private String  code;
+    private int     code;
     @ApiModelProperty("槽位名称")
     private String  name;
     @ApiModelProperty("槽位值")
@@ -34,7 +34,7 @@ public class Slot implements Serializable {
     public Slot() {
     }
 
-    public static Slot of(String code, String name, String value, String type, boolean required, boolean asked, int askPrecedence, boolean optionAsked) {
+    public static Slot of(int code, String name, String value, String type, boolean required, boolean asked, int askPrecedence, boolean optionAsked) {
         Slot slot = new Slot();
         slot.setCode(code);
         slot.setName(name);
@@ -48,11 +48,11 @@ public class Slot implements Serializable {
         return slot;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 

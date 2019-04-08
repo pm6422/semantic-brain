@@ -40,9 +40,9 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     }
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput) {
+    public void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) {
         try {
-            internalDoFilter(input, output, lastOutput);
+            internalDoFilter(input, output, lastOutput, skillCodes);
         } catch (InterruptedException e) {
             // Ignore InterruptedException
             // Cancelling thread task can cause InterruptedException
@@ -53,7 +53,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
         output.setTime(Instant.now());
     }
 
-    private void internalDoFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
+    private void internalDoFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) throws InterruptedException {
         // Call the next filter
         if (pos < filterConfigs.size()) {
             SemanticRecognitionFilterConfig filterConfig = filterConfigs.get(pos);
@@ -61,7 +61,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
             if (parallelFilters.size() == 1) {
                 // Executing one filter
-                parallelFilters.get(0).doFilter(input, output, lastOutput);
+                parallelFilters.get(0).doFilter(input, output, lastOutput, skillCodes);
             } else {
                 // Executing multiple filterConfigs concurrently
                 int filterCountInParallel = parallelFilters.size();
@@ -78,7 +78,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             StopWatch stopWatch = new StopWatch();
                             stopWatch.start();
                             // Note: it maybe a bug for one output in multiple threads env.
-                            parallelFilter.doFilter(input, output, lastOutput, countDownLatch);
+                            parallelFilter.doFilter(input, output, lastOutput, skillCodes, countDownLatch);
                             stopWatch.stop();
                             filters.add(ProcessFilter.of(parallelFilter.getName(), stopWatch.getTotalTimeMillis()));
                             return output;
@@ -120,7 +120,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
             // Decide whether to continue filter
             if (this.continueToFilter(output)) {
                 // Continue to execute filter chain
-                this.doFilter(input, output, lastOutput);
+                this.doFilter(input, output, lastOutput, skillCodes);
             }
         }
     }

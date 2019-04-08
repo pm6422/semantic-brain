@@ -1,5 +1,6 @@
 package org.infinity.semanticbrain.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.infinity.semanticbrain.config.ApplicationProperties;
 import org.infinity.semanticbrain.dialog.context.DialogContextManager;
 import org.infinity.semanticbrain.dialog.entity.Input;
@@ -80,7 +81,11 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         try {
             Output lastOutput = this.getLastOutput(input);
             this.beforeProcess(input, lastOutput);
-            SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool).doFilter(input, output, lastOutput);
+            List<String> skillCodes = new ArrayList<>();
+            if (StringUtils.isNotEmpty(skillCode)) {
+                skillCodes.add(skillCode);
+            }
+            SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
         }

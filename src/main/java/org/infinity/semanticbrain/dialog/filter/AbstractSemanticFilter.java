@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class AbstractSemanticFilter implements SemanticFilter {
@@ -14,9 +15,9 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSemanticFilter.class);
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException {
+    public void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
-        Output candidate = this.recognize(input, lastOutput);
+        Output candidate = this.recognize(input, lastOutput, skillCodes);
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());
@@ -26,9 +27,9 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
     }
 
     @Override
-    public void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) throws InterruptedException {
+    public void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes, CountDownLatch countDownLatch) throws InterruptedException {
         LOGGER.debug("Filtering by {}", this.getName());
-        Output candidate = this.recognize(input, lastOutput);
+        Output candidate = this.recognize(input, lastOutput, skillCodes);
         if (candidate.getScore().compareTo(output.getScore()) > 0) {
             // Store the result with the higher score
             candidate.setMatchedFilter(this.getName());
@@ -50,5 +51,5 @@ public abstract class AbstractSemanticFilter implements SemanticFilter {
         }
     }
 
-    protected abstract Output recognize(final Input input, final Output lastOutput) throws InterruptedException;
+    protected abstract Output recognize(final Input input, final Output lastOutput, List<String> skillCodes) throws InterruptedException;
 }

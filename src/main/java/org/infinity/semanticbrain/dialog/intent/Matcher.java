@@ -2,10 +2,9 @@ package org.infinity.semanticbrain.dialog.intent;
 
 import com.google.common.collect.Multimap;
 import org.apache.commons.collections.CollectionUtils;
-import org.infinity.semanticbrain.dialog.entity.Input;
-import org.infinity.semanticbrain.dialog.entity.MatchedSlot;
-import org.infinity.semanticbrain.dialog.entity.Output;
-import org.infinity.semanticbrain.dialog.entity.ParsedInputText;
+import org.infinity.semanticbrain.dialog.entity.*;
+import org.infinity.semanticbrain.domain.MatchRule;
+import org.infinity.semanticbrain.service.MatchRuleService;
 import org.infinity.semanticbrain.service.SlotValService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,22 +12,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.trie4j.patricia.PatriciaTrie;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @Component
 public class Matcher {
-    private static final Logger         LOGGER = LoggerFactory.getLogger(Matcher.class);
+    private static final Logger           LOGGER = LoggerFactory.getLogger(Matcher.class);
     @Autowired
-    private              SlotValService slotValService;
+    private              SlotValService   slotValService;
+    @Autowired
+    private              MatchRuleService matchRuleService;
 
-    public Output matchSlotVal(Input input, Output lastOutput) {
+    public Output matchSlotVal(Input input, Output lastOutput, List<String> skillCodes) {
         Output output = new Output();
-        List<MatchedSlot> slots = this.extractSlot(input.getPreprocessedText());
-        if (CollectionUtils.isEmpty(slots)) {
-            return output;
+        for (String skillCode : skillCodes) {
+            List<MatchedSlot> slots = this.extractSlot(skillCode, input.getPreprocessedText());
+            if (CollectionUtils.isEmpty(slots)) {
+                return output;
+            }
+            List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
+            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
-        List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
-        return this.matchRules(input, lastOutput, parsedInputTexts);
+
+
+        return output;
     }
 
     /**
@@ -38,7 +48,7 @@ public class Matcher {
      * @param inputText 用户输入文本
      * @return 提取的槽位结果，包含词和词在输入文本中的位置
      */
-    private List<MatchedSlot> extractSlot(String inputText) {
+    private List<MatchedSlot> extractSlot(String skillCode, String inputText) {
         PatriciaTrie trie = slotValService.getSlotValTrie();
         Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap();
         List<MatchedSlot> matchedSlots = new ArrayList<MatchedSlot>();
@@ -75,7 +85,7 @@ public class Matcher {
 
         int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
         for (int i = 1; i <= bit; i++) {
-            Set<MatchedSlot> slots = new HashSet<MatchedSlot>();
+            List<MatchedSlot> slots = new ArrayList<>();
             for (int j = 0; j < matchedSlots.size(); j++) {
                 count++;
                 if ((i << (31 - j)) >> 31 == -1) {
@@ -91,7 +101,11 @@ public class Matcher {
                             }
                         }
                         if (valid) {
-                            slots.add(matchedSlots.get(j));
+                            if (matchedSlots.contains(matchedSlots.get(j))) {
+                                throw new RuntimeException("Duplicated element bug found" + matchedSlots.get(j));
+                            } else {
+                                slots.add(matchedSlots.get(j));
+                            }
                         }
                     }
                 }
@@ -106,7 +120,41 @@ public class Matcher {
         return parsedInputTexts;
     }
 
-    private Output matchRules(Input input, Output lastOutput, List<ParsedInputText> parsedInputTexts) {
+    private Output matchRules(String skillCode, Input input, Output lastOutput, List<ParsedInputText> parsedInputTexts) {
+        Output higherScoreOutput = null;
+        BigDecimal higherScore = new BigDecimal(0);
+        List<ParsedInputText> highScoreParsedInputTexts = new ArrayList<ParsedInputText>();
+        List<MatchRule> highScoreRules = new ArrayList<MatchRule>();
+        for (ParsedInputText parsedInputText : parsedInputTexts) {
+            List<MatchRule> matchRules = matchRuleService.find(skillCode);
+            if (CollectionUtils.isEmpty(matchRules)) {
+                continue;
+            }
+            for (MatchRule matchRule : matchRules) {
+                if (parsedInputText.getSlotFilledText().length() < matchRule.getRule().length()) {
+                    // 用户输入文本长度如果小于句式长度肯定不会匹配上
+                    continue;
+                }
+                if (parsedInputText.getSlotFilledText().equals(matchRule.getRule())) {
+                    // 用户输入文本完全匹配则获得最高分
+                    higherScore = Output.TOP_SCORE;
+                    highScoreParsedInputTexts.add(parsedInputText);
+                    highScoreRules.add(matchRule);
+                }
+            }
+
+        }
+        if (CollectionUtils.isNotEmpty(highScoreParsedInputTexts)) {
+            List<Intent> intents = new ArrayList<>();
+            for (int i = 0; i < highScoreParsedInputTexts.size(); i++) {
+                List<Slot> slots = new ArrayList<>();
+                highScoreParsedInputTexts.get(i).getMatchedSlots().forEach(matchedSlot -> {
+                    slots.add(Slot.of(matchedSlot.getCode(), "", matchedSlot.getValue(), "", true, true, 0, false));
+                });
+                intents.add(Intent.of(skillCode, "", "", "", "", highScoreRules.get(i).getRule(), slots, "", ""));
+            }
+            higherScoreOutput = new Output(input, intents, higherScore);
+        }
         return lastOutput;
     }
 }

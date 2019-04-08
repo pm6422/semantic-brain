@@ -3,6 +3,7 @@ package org.infinity.semanticbrain.dialog.filter;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public interface SemanticFilter {
@@ -24,8 +25,9 @@ public interface SemanticFilter {
      * @param input
      * @param output
      * @param lastOutput
+     * @param skillCodes
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput) throws InterruptedException;
+    void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) throws InterruptedException;
 
     /**
      * For multiple thread
@@ -33,8 +35,9 @@ public interface SemanticFilter {
      * @param input
      * @param output
      * @param lastOutput
+     * @param skillCodes
      * @param countDownLatch
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput, CountDownLatch countDownLatch) throws InterruptedException;
+    void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes, CountDownLatch countDownLatch) throws InterruptedException;
 
 }

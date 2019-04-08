@@ -1,18 +1,18 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class ParsedInputText {
 
-    private static final String           LEFT_BRACE  = "{";
-    private static final String           RIGHT_BRACE = "}";
-    private              String           slotFilledText; // 格式：买一张{21}到{22}的机票
-    private              Set<MatchedSlot> matchedSlots;
+    private static final String            LEFT_BRACE  = "{";
+    private static final String            RIGHT_BRACE = "}";
+    private              String            slotFilledText; // 格式：买一张{21}到{22}的机票
+    private              List<MatchedSlot> matchedSlots;
 
-    public static ParsedInputText of(String inputText, Set<MatchedSlot> matchedSlots) {
+    public static ParsedInputText of(String inputText, List<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
         Map<Integer, String> indexMap = new TreeMap<Integer, String>();// A map ordered by key
         char[] inputChars = inputText.toCharArray();
@@ -43,11 +43,11 @@ public class ParsedInputText {
         this.slotFilledText = slotFilledText;
     }
 
-    public Set<MatchedSlot> getMatchedSlots() {
+    public List<MatchedSlot> getMatchedSlots() {
         return matchedSlots;
     }
 
-    public void setMatchedSlots(Set<MatchedSlot> matchedSlots) {
+    public void setMatchedSlots(List<MatchedSlot> matchedSlots) {
         this.matchedSlots = matchedSlots;
     }
 

@@ -3,6 +3,8 @@ package org.infinity.semanticbrain.dialog.filter;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 
+import java.util.List;
+
 public interface SemanticFilterChain {
 
     /**
@@ -11,7 +13,8 @@ public interface SemanticFilterChain {
      * @param input
      * @param output
      * @param lastOutput
+     * @param skillCodes
      */
-    void doFilter(final Input input, final Output output, final Output lastOutput);
+    void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes);
 
 }

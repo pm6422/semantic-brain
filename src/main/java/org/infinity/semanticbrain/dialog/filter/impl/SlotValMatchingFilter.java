@@ -7,6 +7,8 @@ import org.infinity.semanticbrain.dialog.intent.Matcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @Component
@@ -31,8 +33,8 @@ public class SlotValMatchingFilter extends AbstractSemanticFilter {
     }
 
     @Override
-    protected Output recognize(Input input, final Output lastOutput) throws InterruptedException {
-        Output output = matcher.matchSlotVal(input, lastOutput);
+    protected Output recognize(Input input, final Output lastOutput, List<String> skillCodes) throws InterruptedException {
+        Output output = matcher.matchSlotVal(input, lastOutput, skillCodes);
         return output;
     }
 }

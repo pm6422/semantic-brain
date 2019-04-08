@@ -16,28 +16,34 @@ public class Output implements Serializable {
 
     public static final BigDecimal          TOP_SCORE     = new BigDecimal(100);
     @ApiModelProperty("用户输入信息")
-    private Input               input;
+    private             Input               input;
     @ApiModelProperty("意图识别列表")
-    private List<Intent>        intents       = new ArrayList<Intent>();
+    private             List<Intent>        intents       = new ArrayList<Intent>();
     @ApiModelProperty("分数")
-    private BigDecimal          score         = new BigDecimal(0);
+    private             BigDecimal          score         = new BigDecimal(0);
+    @ApiModelProperty("技能代码")
+    private             List<String>        skillCodes    = new ArrayList<String>();
     @ApiModelProperty("识别过滤器列表")
-    private List<ProcessFilter> filters       = new ArrayList<ProcessFilter>();
+    private             List<ProcessFilter> filters       = new ArrayList<ProcessFilter>();
     @ApiModelProperty("最终识别的过滤器")
-    private String              matchedFilter = "";
-    @ApiModelProperty("用户命令")
-    private List<String>        userCommands  = new ArrayList<String>();
+    private             String              matchedFilter = "";
     @ApiModelProperty("状态信息")
-    private String              status        = "";
+    private             String              status        = "";
     @ApiModelProperty("创建时间")
-    private Instant             time;
+    private             Instant             time;
     @ApiModelProperty("耗费时间")
-    private Long                elapsed; // Time in ms
+    private             Long                elapsed; // Time in ms
     @ApiModelProperty("其他信息")
-    private Extra               extra;
+    private             Extra               extra;
 
 
     public Output() {
+    }
+
+    public Output(Input input, List<Intent> intents, BigDecimal score) {
+        this.input = input;
+        this.intents = intents;
+        this.score = score;
     }
 
     public Input getInput() {
@@ -68,6 +74,14 @@ public class Output implements Serializable {
         this.score = score;
     }
 
+    public List<String> getSkillCodes() {
+        return skillCodes;
+    }
+
+    public void setSkillCodes(List<String> skillCodes) {
+        this.skillCodes = skillCodes;
+    }
+
     public List<ProcessFilter> getFilters() {
         return filters;
     }
@@ -82,14 +96,6 @@ public class Output implements Serializable {
 
     public void setMatchedFilter(String matchedFilter) {
         this.matchedFilter = matchedFilter;
-    }
-
-    public List<String> getUserCommands() {
-        return userCommands;
-    }
-
-    public void setUserCommands(List<String> userCommands) {
-        this.userCommands = userCommands;
     }
 
     public String getStatus() {
