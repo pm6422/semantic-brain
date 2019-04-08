@@ -94,7 +94,7 @@ public class Matcher {
                     } else {
                         boolean valid = true;
                         for (MatchedSlot slot : slots) {
-                            // 参数错开的情况下才可以放到同一个slots组合内
+                            // 参数错位的情况下才可以放到同一个slots组合内
                             if (!(matchedSlots.get(j).getEnd() < slot.getStart() || matchedSlots.get(j).getStart() > slot.getEnd())) {
                                 valid = false;
                                 break;
