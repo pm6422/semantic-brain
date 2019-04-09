@@ -36,27 +36,27 @@ public class MatcherTest {
 
     @Test
     public void testExtractSlot1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Multimap<String, Integer> map = ArrayListMultimap.create();
-        map.put("爸爸", 1);
-        map.put("爸", 1);
-        map.put("妈妈", 1);
-        map.put("哥哥", 1);
-        map.put("弟弟", 1);
-        map.put("姐姐", 1);
-        map.put("妹妹", 1);
-        map.put("叔叔", 1);
-        map.put("阿姨", 1);
+        Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
+        slotValCodeMap.put("爸爸", 1);
+        slotValCodeMap.put("爸", 1);
+        slotValCodeMap.put("妈妈", 1);
+        slotValCodeMap.put("哥哥", 1);
+        slotValCodeMap.put("弟弟", 1);
+        slotValCodeMap.put("姐姐", 1);
+        slotValCodeMap.put("妹妹", 1);
+        slotValCodeMap.put("叔叔", 1);
+        slotValCodeMap.put("阿姨", 1);
 //        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(map);
 
         PatriciaTrie slotTrie = new PatriciaTrie();
-        for (Map.Entry<String, Integer> entry : map.entries()) {
+        for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
             slotTrie.insert(entry.getKey());
         }
 //        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(trie);
 
         Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         method.setAccessible(true);
-        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, map);
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, slotValCodeMap);
         Assert.assertEquals(10, results.size());
     }
 
@@ -81,6 +81,22 @@ public class MatcherTest {
         Assert.assertEquals(4, results.size());
     }
 
+    @Test
+    public void testExtractSlot3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
+        slotValCodeMap.put("论语", 15);
+        slotValCodeMap.put("论语修身篇", 16);
+
+        PatriciaTrie slotTrie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
+            slotTrie.insert(entry.getKey());
+        }
+
+        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
+        method.setAccessible(true);
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "播放论语修身篇", slotTrie, slotValCodeMap);
+        Assert.assertEquals(2, results.size());
+    }
 
     @Test
     public void testParseInputTexts() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
