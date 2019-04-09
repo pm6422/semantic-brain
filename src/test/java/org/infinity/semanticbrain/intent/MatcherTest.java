@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StopWatch;
 import org.trie4j.patricia.PatriciaTrie;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,10 +29,11 @@ import java.util.Map;
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
 
+    private static final Logger             LOGGER = LoggerFactory.getLogger(MatcherTest.class);
     @Mock
-    private SlotValServiceImpl slotValService;
+    private              SlotValServiceImpl slotValService;
     @InjectMocks
-    private Matcher            matcher;
+    private              Matcher            matcher;
 
     @Before
     public void setUp() {
@@ -48,13 +52,11 @@ public class MatcherTest {
         slotValCodeMap.put("妹妹", 1);
         slotValCodeMap.put("叔叔", 1);
         slotValCodeMap.put("阿姨", 1);
-//        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(map);
 
         PatriciaTrie slotTrie = new PatriciaTrie();
         for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
             slotTrie.insert(entry.getKey());
         }
-//        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(trie);
 
         Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         method.setAccessible(true);
@@ -122,6 +124,34 @@ public class MatcherTest {
 
     @Test
     public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
+        slotValCodeMap.put("爸爸", 1);
+        slotValCodeMap.put("爸", 1);
+        slotValCodeMap.put("妈妈", 1);
+        slotValCodeMap.put("妈", 1);
+
+        PatriciaTrie slotTrie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
+            slotTrie.insert(entry.getKey());
+        }
+
+        Method extractSlotMethod = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
+        extractSlotMethod.setAccessible(true);
+        extractSlotMethod.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, slotValCodeMap);
+        List<MatchedSlot> matchedSlots1 = (List<MatchedSlot>) extractSlotMethod.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, slotValCodeMap);
+
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
+        method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        stopWatch.stop();
+        LOGGER.debug("Elapsed: {} ms", stopWatch.getTotalTimeMillis());
+    }
+
+    @Test
+    public void testParseInputTexts3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -134,7 +164,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts4() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -147,23 +177,8 @@ public class MatcherTest {
         Assert.assertEquals(1, results1.get(1).getMatchedSlots().size());
     }
 
-    /**
-     * 去除被包含的部分
-     * 删除之前
-     * MatchedArg = { argCode: arg42, argValue: 心情, startIndex: 1, endIndex: 2 },（删除）
-     * MatchedArg = { argCode: arg348, argValue: 来首, startIndex: 5, endIndex: 6 },
-     * MatchedArg = { argCode: arg42, argValue: 心情不好, startIndex: 1, endIndex: 4 },（重复）
-     * MatchedArg = { argCode: arg42, argValue: 我心, startIndex: 0, endIndex: 1 },
-     * MatchedArg = { argCode: arg42, argValue: 不好, startIndex: 3, endIndex: 4 },（删除）
-     * MatchedArg = { argCode: arg387, argValue: 心情不好, startIndex: 1, endIndex: 4 }（重复）
-     * 删除之后
-     * MatchedArg = { argCode: arg348, argValue: 来首, startIndex: 5, endIndex: 6 },
-     * MatchedArg = { argCode: arg42, argValue: 心情不好, startIndex: 1, endIndex: 4 },
-     * MatchedArg = { argCode: arg42, argValue: 我心, startIndex: 0, endIndex: 1 },
-     * MatchedArg = { argCode: arg387, argValue: 心情不好, startIndex: 1, endIndex: 4 }
-     */
     @Test
-    public void testParseInputTexts4() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts5() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
