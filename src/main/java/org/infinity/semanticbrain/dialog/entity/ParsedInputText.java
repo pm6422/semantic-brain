@@ -14,11 +14,15 @@ public class ParsedInputText {
 
     public static ParsedInputText of(String inputText, List<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
+        parsedInputText.setMatchedSlots(matchedSlots);
+
         Map<Integer, String> indexMap = new TreeMap<Integer, String>();// A map ordered by key
         char[] inputChars = inputText.toCharArray();
         for (int i = 0; i < inputChars.length; i++) {
             indexMap.put(i, String.valueOf(inputChars[i]));
         }
+        inputChars = null; // for GC intentionally
+
         for (MatchedSlot slot : matchedSlots) {
             for (int i = slot.getStart(); i < slot.getEnd(); i++) {
                 // 删除slot值部分
@@ -31,7 +35,6 @@ public class ParsedInputText {
         StringBuilder sb = new StringBuilder();
         indexMap.forEach((k, v) -> sb.append(v));
         parsedInputText.setSlotFilledText(sb.toString());
-        parsedInputText.setMatchedSlots(matchedSlots);
         return parsedInputText;
     }
 
