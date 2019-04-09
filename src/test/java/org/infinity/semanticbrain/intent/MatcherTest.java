@@ -99,7 +99,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -109,6 +109,21 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(3, "上海", 5, 7));
         List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
         Assert.assertEquals(8, results1.size());
+    }
+
+    @Test
+    public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        String s = "播放论语修身篇".substring(2, 7);
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
+        List<MatchedSlot> matchedSlots1 = new ArrayList<>();
+        matchedSlots1.add(MatchedSlot.of(15, "论语", 2, 4));
+        matchedSlots1.add(MatchedSlot.of(16, "论语修身篇", 2, 7));
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "播放论语修身篇", matchedSlots1);
+        Assert.assertEquals(2, results1.size());
+        // MatchedSlot{code='15', value='论语', start=2, end=4}, MatchedSlot{code='16', value='论语修身篇', start=2, end=7} 这两个不可以放在一组
+        Assert.assertEquals(1, results1.get(0).getMatchedSlots().size());
+        Assert.assertEquals(1, results1.get(1).getMatchedSlots().size());
     }
 
 //    @Test
