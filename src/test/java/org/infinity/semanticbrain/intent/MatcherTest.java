@@ -135,17 +135,17 @@ public class MatcherTest {
             slotTrie.insert(entry.getKey());
         }
 
+        String inputText = "爸爸妈妈爸爸妈妈爸爸妈妈";
         Method extractSlotMethod = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         extractSlotMethod.setAccessible(true);
-        extractSlotMethod.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, slotValCodeMap);
-        List<MatchedSlot> matchedSlots1 = (List<MatchedSlot>) extractSlotMethod.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, slotValCodeMap);
+        List<MatchedSlot> matchedSlots1 = (List<MatchedSlot>) extractSlotMethod.invoke(matcher, inputText, slotTrie, slotValCodeMap);
 
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
-        method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        method.invoke(matcher, inputText, matchedSlots1);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
         stopWatch.stop();
         LOGGER.debug("Elapsed: {} ms", stopWatch.getTotalTimeMillis());
     }
