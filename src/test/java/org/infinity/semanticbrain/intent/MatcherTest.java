@@ -1,9 +1,10 @@
 package org.infinity.semanticbrain.intent;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import org.infinity.semanticbrain.dialog.entity.MatchedSlot;
-import org.infinity.semanticbrain.dialog.entity.ParsedInputText;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.infinity.semanticbrain.dialog.entity.*;
 import org.infinity.semanticbrain.dialog.intent.Matcher;
 import org.infinity.semanticbrain.service.impl.SlotValServiceImpl;
 import org.junit.Assert;
@@ -12,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.trie4j.patricia.PatriciaTrie;
 
@@ -175,20 +177,38 @@ public class MatcherTest {
         Assert.assertEquals(15, results1.size());
     }
 
-//    @Test
-//    public void testMatchSlotVal() {
-//        Input input = new Input();
-//        input.setOriginalText("爸爸妈妈爸爸妈妈哥哥弟弟");
-//        input.setPreprocessedText("爸爸妈妈爸爸妈妈哥哥弟弟");
-//        input.setRequestId(RandomStringUtils.randomNumeric(5));
-//
-//        Device device = new Device();
-//        device.setCompanyId("company1");
-//        device.setModelId("model1");
-//        device.addUserId("user1");
-//        input.setDevice(device);
-//
-//        Output output = matcher.matchSlotVal(input, null);
-//        System.out.println(output);
-//    }
+    @Test
+    public void testMatchSlotVal() {
+        Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
+        slotValCodeMap.put("爸爸", 1);
+        slotValCodeMap.put("爸", 1);
+        slotValCodeMap.put("妈妈", 1);
+        slotValCodeMap.put("哥哥", 1);
+        slotValCodeMap.put("弟弟", 1);
+        slotValCodeMap.put("姐姐", 1);
+        slotValCodeMap.put("妹妹", 1);
+        slotValCodeMap.put("叔叔", 1);
+        slotValCodeMap.put("阿姨", 1);
+        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(slotValCodeMap);
+
+        PatriciaTrie slotTrie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
+            slotTrie.insert(entry.getKey());
+        }
+        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(slotTrie);
+
+        Input input = new Input();
+        input.setOriginalText("爸爸妈妈爸爸妈妈哥哥弟弟");
+        input.setPreprocessedText("爸爸妈妈爸爸妈妈哥哥弟弟");
+        input.setRequestId(RandomStringUtils.randomNumeric(5));
+
+        Device device = new Device();
+        device.setCompanyId("company1");
+        device.setModelId("model1");
+        device.addUserId("user1");
+        input.setDevice(device);
+
+        Output output = matcher.matchSlotVal(input, null, Lists.newArrayList("dummy"));
+        System.out.println(output);
+    }
 }

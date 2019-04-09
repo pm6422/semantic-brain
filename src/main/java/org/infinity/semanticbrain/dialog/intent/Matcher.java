@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import org.trie4j.patricia.PatriciaTrie;
 
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public class Matcher {
                 return output;
             }
             List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
-            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
+//            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
 
 
@@ -86,6 +87,8 @@ public class Matcher {
     private List<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         List<ParsedInputText> parsedInputTexts = new ArrayList<>();
         int count = 0;
+        StopWatch watch = new StopWatch();
+        watch.start();
 
         int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
         for (int i = 1; i <= bit; i++) {
@@ -120,7 +123,9 @@ public class Matcher {
                 parsedInputTexts.add(of);
             }
         }
+        watch.stop();
         LOGGER.debug("Combination loop count: {}", count);
+        LOGGER.debug("parseInputTexts execution: {}ms", watch.getTotalTimeMillis());
         return parsedInputTexts;
     }
 
