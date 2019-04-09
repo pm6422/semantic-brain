@@ -14,10 +14,7 @@ import org.springframework.util.StopWatch;
 import org.trie4j.patricia.PatriciaTrie;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class Matcher {
@@ -40,7 +37,7 @@ public class Matcher {
             if (CollectionUtils.isEmpty(slots)) {
                 return output;
             }
-            List<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
+            Set<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
 //            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
 
@@ -84,8 +81,8 @@ public class Matcher {
      * @param matchedSlots 提取的槽位
      * @return 转换的输入文本
      */
-    private List<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
-        List<ParsedInputText> parsedInputTexts = new ArrayList<>();
+    private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
+        Set<ParsedInputText> parsedInputTexts = new HashSet<>();
         int count = 0;
         StopWatch watch = new StopWatch();
         watch.start();
@@ -118,10 +115,9 @@ public class Matcher {
                 }
             }
 
-            ParsedInputText of = ParsedInputText.of(inputText, slots);
-            if (!parsedInputTexts.contains(of)) {
-                parsedInputTexts.add(of);
-            }
+            // ArrayList.contains性能太差
+            // Refer https://blog.csdn.net/liu_005/article/details/80850171
+            parsedInputTexts.add(ParsedInputText.of(inputText, slots));
         }
         watch.stop();
         LOGGER.debug("Combination loop count: {}", count);
@@ -129,7 +125,7 @@ public class Matcher {
         return parsedInputTexts;
     }
 
-    private Output matchRules(String skillCode, Input input, Output lastOutput, List<ParsedInputText> parsedInputTexts) {
+    private Output matchRules(String skillCode, Input input, Output lastOutput, Set<ParsedInputText> parsedInputTexts) {
         Output higherScoreOutput = null;
         BigDecimal higherScore = new BigDecimal(0);
         List<ParsedInputText> highScoreParsedInputTexts = new ArrayList<ParsedInputText>();

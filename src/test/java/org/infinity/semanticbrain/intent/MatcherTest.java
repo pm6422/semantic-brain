@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
@@ -118,7 +119,7 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(3, "哥哥", 8, 10));
         matchedSlots1.add(MatchedSlot.of(3, "弟弟", 10, 12));
 
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", matchedSlots1);
+        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", matchedSlots1);
         Assert.assertEquals(399, results1.size());
     }
 
@@ -142,12 +143,14 @@ public class MatcherTest {
 
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
+        // pre call
         method.invoke(matcher, inputText, matchedSlots1);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
+        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
         stopWatch.stop();
         LOGGER.debug("Elapsed: {} ms", stopWatch.getTotalTimeMillis());
+        LOGGER.debug("Size: {}", results1.size());
     }
 
     @Test
@@ -159,7 +162,7 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(3, "北京", 2, 4));
         matchedSlots1.add(MatchedSlot.of(2, "上海", 5, 7));
         matchedSlots1.add(MatchedSlot.of(3, "上海", 5, 7));
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
+        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
         Assert.assertEquals(8, results1.size());
     }
 
@@ -170,11 +173,10 @@ public class MatcherTest {
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
         matchedSlots1.add(MatchedSlot.of(15, "论语", 2, 4));
         matchedSlots1.add(MatchedSlot.of(16, "论语修身篇", 2, 7));
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "播放论语修身篇", matchedSlots1);
+        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "播放论语修身篇", matchedSlots1);
         Assert.assertEquals(2, results1.size());
         // MatchedSlot{code='15', value='论语', start=2, end=4}, MatchedSlot{code='16', value='论语修身篇', start=2, end=7} 这两个不可以放在一组
-        Assert.assertEquals(1, results1.get(0).getMatchedSlots().size());
-        Assert.assertEquals(1, results1.get(1).getMatchedSlots().size());
+        Assert.assertEquals(1, results1.stream().findFirst().get().getMatchedSlots().size());
     }
 
     @Test
