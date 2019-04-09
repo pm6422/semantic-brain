@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.trie4j.patricia.PatriciaTrie;
 
@@ -47,17 +46,17 @@ public class MatcherTest {
         map.put("妹妹", 1);
         map.put("叔叔", 1);
         map.put("阿姨", 1);
-        Mockito.when(slotValService.getValCodeMap()).thenReturn(map);
+//        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(map);
 
-        PatriciaTrie trie = new PatriciaTrie();
+        PatriciaTrie slotTrie = new PatriciaTrie();
         for (Map.Entry<String, Integer> entry : map.entries()) {
-            trie.insert(entry.getKey());
+            slotTrie.insert(entry.getKey());
         }
-        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
+//        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(trie);
 
-        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class);
+        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         method.setAccessible(true);
-        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟");
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", slotTrie, map);
         Assert.assertEquals(10, results.size());
     }
 
@@ -68,17 +67,17 @@ public class MatcherTest {
         map.put("北京", 2);
         map.put("上海", 3);
         map.put("北京", 3);
-        Mockito.when(slotValService.getValCodeMap()).thenReturn(map);
+//        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(map);
 
-        PatriciaTrie trie = new PatriciaTrie();
+        PatriciaTrie slotTrie = new PatriciaTrie();
         for (Map.Entry<String, Integer> entry : map.entries()) {
-            trie.insert(entry.getKey());
+            slotTrie.insert(entry.getKey());
         }
-        Mockito.when(slotValService.getSlotValTrie()).thenReturn(trie);
+//        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(trie);
 
-        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class);
+        Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         method.setAccessible(true);
-        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "订从北京到上海的机票");
+        List<MatchedSlot> results = (List<MatchedSlot>) method.invoke(matcher, "订从北京到上海的机票", slotTrie, map);
         Assert.assertEquals(4, results.size());
     }
 

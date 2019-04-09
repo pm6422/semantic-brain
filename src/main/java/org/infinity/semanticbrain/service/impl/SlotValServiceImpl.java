@@ -42,7 +42,7 @@ public class SlotValServiceImpl implements SlotValService, InitializingBean {
     }
 
     @Override
-    public PatriciaTrie getSlotValTrie() {
+    public PatriciaTrie getSlotValTrie(String skillCode) {
         return trie;
     }
 
@@ -52,7 +52,7 @@ public class SlotValServiceImpl implements SlotValService, InitializingBean {
     }
 
     @Override
-    public Multimap<String, Integer> getValCodeMap() {
+    public Multimap<String, Integer> getValCodeMap(String skillCode) {
         Multimap<String, Integer> map = ArrayListMultimap.create();
         Collection<Map.Entry<Integer, String>> entries = codeValMap.entries();
         for (Map.Entry<Integer, String> entry : entries) {

@@ -29,7 +29,13 @@ public class Matcher {
     public Output matchSlotVal(Input input, Output lastOutput, List<String> skillCodes) {
         Output output = new Output();
         for (String skillCode : skillCodes) {
-            List<MatchedSlot> slots = this.extractSlot(skillCode, input.getPreprocessedText());
+            PatriciaTrie slotTrie = slotValService.getSlotValTrie(skillCode);
+            Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap(skillCode);
+            if (slotTrie == null) {
+                continue;
+            }
+
+            List<MatchedSlot> slots = this.extractSlot(input.getPreprocessedText(), slotTrie, slotValCodeMap);
             if (CollectionUtils.isEmpty(slots)) {
                 return output;
             }
@@ -48,13 +54,11 @@ public class Matcher {
      * @param inputText 用户输入文本
      * @return 提取的槽位结果，包含词和词在输入文本中的位置
      */
-    private List<MatchedSlot> extractSlot(String skillCode, String inputText) {
-        PatriciaTrie trie = slotValService.getSlotValTrie();
-        Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap();
+    private List<MatchedSlot> extractSlot(String inputText, PatriciaTrie slotTrie, Multimap<String, Integer> slotValCodeMap) {
         List<MatchedSlot> matchedSlots = new ArrayList<MatchedSlot>();
         for (int i = 0; i < inputText.length(); i++) {
             // 以用户输入文本的首字母+i位置开始循环的进行连续匹配槽位值
-            Iterator<String> it = trie.commonPrefixSearch(inputText.substring(i)).iterator();
+            Iterator<String> it = slotTrie.commonPrefixSearch(inputText.substring(i)).iterator();
             while (it.hasNext()) {
                 String slotVal = it.next();
                 Collection<Integer> slotCodes = slotValCodeMap.get(slotVal);
@@ -101,7 +105,7 @@ public class Matcher {
                             }
                         }
                         if (valid) {
-                            if (matchedSlots.contains(matchedSlots.get(j))) {
+                            if (slots.contains(matchedSlots.get(j))) {
                                 throw new RuntimeException("Duplicated element bug found" + matchedSlots.get(j));
                             } else {
                                 slots.add(matchedSlots.get(j));

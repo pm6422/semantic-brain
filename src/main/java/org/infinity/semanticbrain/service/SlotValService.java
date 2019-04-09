@@ -4,9 +4,9 @@ import com.google.common.collect.Multimap;
 import org.trie4j.patricia.PatriciaTrie;
 
 public interface SlotValService {
-    PatriciaTrie getSlotValTrie();
+    PatriciaTrie getSlotValTrie(String skillCode);
 
     Multimap<Integer, String> getCodeValMap();
 
-    Multimap<String, Integer> getValCodeMap();
+    Multimap<String, Integer> getValCodeMap(String skillCode);
 }
