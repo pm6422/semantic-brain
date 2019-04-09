@@ -103,6 +103,26 @@ public class MatcherTest {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
+        matchedSlots1.add(MatchedSlot.of(1, "爸", 0, 1));
+        matchedSlots1.add(MatchedSlot.of(3, "爸爸", 0, 2));
+        matchedSlots1.add(MatchedSlot.of(2, "爸", 1, 2));
+        matchedSlots1.add(MatchedSlot.of(3, "妈妈", 2, 4));
+        matchedSlots1.add(MatchedSlot.of(1, "爸", 4, 5));
+        matchedSlots1.add(MatchedSlot.of(3, "爸爸", 4, 6));
+        matchedSlots1.add(MatchedSlot.of(1, "爸", 5, 6));
+        matchedSlots1.add(MatchedSlot.of(3, "妈妈", 6, 8));
+        matchedSlots1.add(MatchedSlot.of(3, "哥哥", 8, 10));
+        matchedSlots1.add(MatchedSlot.of(3, "弟弟", 10, 12));
+
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", matchedSlots1);
+        Assert.assertEquals(399, results1.size());
+    }
+
+    @Test
+    public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
+        List<MatchedSlot> matchedSlots1 = new ArrayList<>();
         matchedSlots1.add(MatchedSlot.of(2, "北京", 2, 4));
         matchedSlots1.add(MatchedSlot.of(3, "北京", 2, 4));
         matchedSlots1.add(MatchedSlot.of(2, "上海", 5, 7));
@@ -112,8 +132,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        String s = "播放论语修身篇".substring(2, 7);
+    public void testParseInputTexts3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -124,6 +143,36 @@ public class MatcherTest {
         // MatchedSlot{code='15', value='论语', start=2, end=4}, MatchedSlot{code='16', value='论语修身篇', start=2, end=7} 这两个不可以放在一组
         Assert.assertEquals(1, results1.get(0).getMatchedSlots().size());
         Assert.assertEquals(1, results1.get(1).getMatchedSlots().size());
+    }
+
+    /**
+     * 去除被包含的部分
+     * 删除之前
+     * MatchedArg = { argCode: arg42, argValue: 心情, startIndex: 1, endIndex: 2 },（删除）
+     * MatchedArg = { argCode: arg348, argValue: 来首, startIndex: 5, endIndex: 6 },
+     * MatchedArg = { argCode: arg42, argValue: 心情不好, startIndex: 1, endIndex: 4 },（重复）
+     * MatchedArg = { argCode: arg42, argValue: 我心, startIndex: 0, endIndex: 1 },
+     * MatchedArg = { argCode: arg42, argValue: 不好, startIndex: 3, endIndex: 4 },（删除）
+     * MatchedArg = { argCode: arg387, argValue: 心情不好, startIndex: 1, endIndex: 4 }（重复）
+     * 删除之后
+     * MatchedArg = { argCode: arg348, argValue: 来首, startIndex: 5, endIndex: 6 },
+     * MatchedArg = { argCode: arg42, argValue: 心情不好, startIndex: 1, endIndex: 4 },
+     * MatchedArg = { argCode: arg42, argValue: 我心, startIndex: 0, endIndex: 1 },
+     * MatchedArg = { argCode: arg387, argValue: 心情不好, startIndex: 1, endIndex: 4 }
+     */
+    @Test
+    public void testParseInputTexts4() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
+        List<MatchedSlot> matchedSlots1 = new ArrayList<>();
+        matchedSlots1.add(MatchedSlot.of(42, "心情", 1, 3));
+        matchedSlots1.add(MatchedSlot.of(348, "来首", 5, 7));
+        matchedSlots1.add(MatchedSlot.of(42, "心情不好", 1, 5));
+        matchedSlots1.add(MatchedSlot.of(42, "我心", 0, 2));
+        matchedSlots1.add(MatchedSlot.of(42, "不好", 3, 5));
+        matchedSlots1.add(MatchedSlot.of(387, "心情不好", 1, 5));
+        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "我心情不好来首歌", matchedSlots1);
+        Assert.assertEquals(15, results1.size());
     }
 
 //    @Test
