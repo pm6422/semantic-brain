@@ -59,13 +59,17 @@ public class ParsedInputText {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParsedInputText that = (ParsedInputText) o;
-        return Objects.equals(slotFilledText, that.slotFilledText) &&
-                Objects.equals(matchedSlots, that.matchedSlots);
+        return Objects.equals(matchedSlots, that.matchedSlots);
     }
 
+    /**
+     * 只需要判断matchedSlots
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(slotFilledText, matchedSlots);
+        return Objects.hash(matchedSlots);
     }
 
     @Override
