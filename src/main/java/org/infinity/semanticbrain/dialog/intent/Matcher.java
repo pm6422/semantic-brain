@@ -98,18 +98,15 @@ public class Matcher {
                     } else {
                         boolean valid = true;
                         for (MatchedSlot slot : slots) {
-                            // 参数错位的情况下才可以放到同一个slots组合内
-                            if (!(matchedSlots.get(j).getEnd() <= slot.getStart() || matchedSlots.get(j).getStart() >= slot.getEnd())) {
+                            // 非同一个slotCode且参数错位的情况下才可以放到同一个slots组合内
+                            if (matchedSlots.get(j).getCode() == slot.getCode() || !(matchedSlots.get(j).getEnd() <= slot.getStart() || matchedSlots.get(j).getStart() >= slot.getEnd())) {
                                 valid = false;
                                 break;
                             }
                         }
                         if (valid) {
-                            if (slots.contains(matchedSlots.get(j))) {
-                                throw new RuntimeException("Duplicated element bug found" + matchedSlots.get(j));
-                            } else {
-                                slots.add(matchedSlots.get(j));
-                            }
+                            // 不会有重复数据
+                            slots.add(matchedSlots.get(j));
                         }
                     }
                 }
