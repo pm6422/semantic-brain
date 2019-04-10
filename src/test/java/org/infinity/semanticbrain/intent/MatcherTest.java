@@ -120,7 +120,7 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(3, "弟弟", 10, 12));
 
         Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "爸爸妈妈爸爸妈妈哥哥弟弟", matchedSlots1);
-        Assert.assertEquals(399, results1.size());
+        Assert.assertEquals(46, results1.size());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(2, "上海", 5, 7));
         matchedSlots1.add(MatchedSlot.of(3, "上海", 5, 7));
         Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "订从北京到上海的机票", matchedSlots1);
-        Assert.assertEquals(8, results1.size());
+        Assert.assertEquals(6, results1.size());
     }
 
     @Test
@@ -190,8 +190,8 @@ public class MatcherTest {
         matchedSlots1.add(MatchedSlot.of(42, "我心", 0, 2));
         matchedSlots1.add(MatchedSlot.of(42, "不好", 3, 5));
         matchedSlots1.add(MatchedSlot.of(387, "心情不好", 1, 5));
-        List<ParsedInputText> results1 = (List<ParsedInputText>) method.invoke(matcher, "我心情不好来首歌", matchedSlots1);
-        Assert.assertEquals(15, results1.size());
+        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "我心情不好来首歌", matchedSlots1);
+        Assert.assertEquals(11, results1.size());
     }
 
     @Test
