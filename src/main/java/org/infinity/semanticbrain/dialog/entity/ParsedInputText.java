@@ -1,9 +1,8 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 public class ParsedInputText {
 
@@ -16,25 +15,26 @@ public class ParsedInputText {
         ParsedInputText parsedInputText = new ParsedInputText();
         parsedInputText.setMatchedSlots(matchedSlots);
 
-        Map<Integer, String> indexMap = new TreeMap<Integer, String>();// A map ordered by key
         char[] inputChars = inputText.toCharArray();
-        for (int i = 0; i < inputChars.length; i++) {
-            indexMap.put(i, String.valueOf(inputChars[i]));
-        }
-        inputChars = null; // for GC intentionally
-
-        for (MatchedSlot slot : matchedSlots) {
-            for (int i = slot.getStart(); i < slot.getEnd(); i++) {
-                // 删除slot值部分
-                indexMap.remove(i);
+        StringBuilder slotFilledText = new StringBuilder();
+        Iterator<MatchedSlot> matchedSlotIterator = matchedSlots.iterator();
+        MatchedSlot matchedSlot = matchedSlotIterator.next();
+        for (int i = 0; i < inputChars.length; ) {
+            if (matchedSlot == null || matchedSlot != null && matchedSlot.getStart() > i) {
+                slotFilledText.append(inputChars[i]);
+                i++;
+            } else {
+                slotFilledText.append(LEFT_BRACE).append(matchedSlot.getCode()).append(RIGHT_BRACE);
+                i += matchedSlot.getValue().length();
+                if (matchedSlotIterator.hasNext()) {
+                    matchedSlot = matchedSlotIterator.next();
+                } else {
+                    matchedSlot = null;
+                }
             }
-            // 添加slot代码部分
-            indexMap.put(slot.getStart(), LEFT_BRACE + slot.getCode() + RIGHT_BRACE);
         }
 
-        StringBuilder sb = new StringBuilder();
-        indexMap.forEach((k, v) -> sb.append(v));
-        parsedInputText.setSlotFilledText(sb.toString());
+        parsedInputText.setSlotFilledText(slotFilledText.toString());
         return parsedInputText;
     }
 
