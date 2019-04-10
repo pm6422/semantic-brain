@@ -149,7 +149,7 @@ public class MatcherTest {
         stopWatch.start();
         Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
         stopWatch.stop();
-        LOGGER.debug("Elapsed: {} ms", stopWatch.getTotalTimeMillis());
+        LOGGER.debug("Total elapsed: {} ms", stopWatch.getTotalTimeMillis());
         LOGGER.debug("Size: {}", results1.size());
     }
 
