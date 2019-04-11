@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StopWatch;
 import org.trie4j.patricia.PatriciaTrie;
 
 import java.math.BigDecimal;
@@ -86,8 +85,6 @@ public class Matcher {
      */
     private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         Set<ParsedInputText> parsedInputTexts = new HashSet<>();
-        StopWatch watch = new StopWatch();
-        watch.start();
 
         int count = (0xFFFFFFFF >>> (32 - matchedSlots.size()));//(2^n)-1
         LOGGER.debug("Combination count: {}", count);
@@ -136,8 +133,6 @@ public class Matcher {
                 parsedInputTexts.add(ParsedInputText.of(inputText, slots));
             }
         }
-        watch.stop();
-        LOGGER.debug("parseInputTexts execution: {} ms", watch.getTotalTimeMillis());
         return parsedInputTexts;
     }
 

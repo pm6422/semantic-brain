@@ -145,19 +145,22 @@ public class MatcherTest {
         extractSlotMethod.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = (List<MatchedSlot>) extractSlotMethod.invoke(matcher, inputText, slotTrie, slotValCodeMap);
 
-        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
-        method.setAccessible(true);
-
         StopWatch watch = new StopWatch();
         watch.start();
         int requestCount = 1000;
-        int threadPoolSize = 10;
+        int threadPoolSize = 1;
         ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
         IntStream.range(0, requestCount).forEach(i -> {
             threadPool.execute(() -> {
                 try {
+                    StopWatch stopWatch = new StopWatch();
+                    stopWatch.start();
                     Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
+                    stopWatch.stop();
+                    LOGGER.debug("parseInputTexts execution: {} ms", stopWatch.getTotalTimeMillis());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -168,6 +171,7 @@ public class MatcherTest {
         // Blocks until all tasks have completed execution after a shutdown request
         if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
             watch.stop();
+
             LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
             LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
             LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
