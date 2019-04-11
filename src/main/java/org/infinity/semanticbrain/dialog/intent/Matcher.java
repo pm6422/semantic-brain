@@ -15,14 +15,17 @@ import org.trie4j.patricia.PatriciaTrie;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.BiPredicate;
 
 @Component
 public class Matcher {
-    private static final Logger           LOGGER = LoggerFactory.getLogger(Matcher.class);
+    private static final Logger                                LOGGER             = LoggerFactory.getLogger(Matcher.class);
     @Autowired
-    private              SlotValService   slotValService;
+    private              SlotValService                        slotValService;
     @Autowired
-    private              MatchRuleService matchRuleService;
+    private              MatchRuleService                      matchRuleService;
+    // 非同一个slotCode且参数错位的情况下才可以放到同一个slots组合内
+    private              BiPredicate<MatchedSlot, MatchedSlot> invalidCombination = (s1, s2) -> s1.getCode() == s2.getCode() || !(s1.getEnd() <= s2.getStart() || s1.getStart() >= s2.getEnd());
 
     public Output matchSlotVal(Input input, Output lastOutput, List<String> skillCodes) {
         Output output = new Output();
@@ -83,29 +86,42 @@ public class Matcher {
      */
     private Set<ParsedInputText> parseInputTexts(String inputText, List<MatchedSlot> matchedSlots) {
         Set<ParsedInputText> parsedInputTexts = new HashSet<>();
-        int count = 0;
         StopWatch watch = new StopWatch();
         watch.start();
 
-        int bit = (0xFFFFFFFF >>> (32 - matchedSlots.size()));
-        for (int i = 1; i <= bit; i++) {
-            List<MatchedSlot> slots = new ArrayList<>();
+        int count = (0xFFFFFFFF >>> (32 - matchedSlots.size()));//(2^n)-1
+        LOGGER.debug("Combination count: {}", count);
+        for (int i = 1; i <= count; i++) {
+            MatchedSlot slot = null;// 单个元素变量存储不下升级使用数组存储，创建数组非常消耗时间与资源，只有元素数量大于1时才需要数组存储
+            List<MatchedSlot> slots = null;
+
             for (int j = 0; j < matchedSlots.size(); j++) {
-                count++;
                 if ((i << (31 - j)) >> 31 == -1) {
-                    if (CollectionUtils.isEmpty(slots)) {
-                        slots.add(matchedSlots.get(j));
+                    if (slot == null && CollectionUtils.isEmpty(slots)) {
+                        slot = matchedSlots.get(j);
                     } else {
                         boolean valid = true;
-                        for (MatchedSlot slot : slots) {
-                            // 非同一个slotCode且参数错位的情况下才可以放到同一个slots组合内
-                            if (matchedSlots.get(j).getCode() == slot.getCode() || !(matchedSlots.get(j).getEnd() <= slot.getStart() || matchedSlots.get(j).getStart() >= slot.getEnd())) {
+                        if (slot != null) {
+                            if (invalidCombination.test(matchedSlots.get(j), slot)) {
                                 valid = false;
-                                break;
+                            }
+                        } else {
+                            for (MatchedSlot s : slots) {
+                                if (invalidCombination.test(matchedSlots.get(j), s)) {
+                                    valid = false;
+                                    break;
+                                }
                             }
                         }
                         if (valid) {
-                            // 不会有重复数据
+                            if (slots == null) {
+                                slots = new ArrayList<MatchedSlot>();
+                            }
+                            if (slot != null) {
+                                slots.add(slot);
+                                slot = null;
+                            }
+                            // 数组内保证不会有重复数据
                             slots.add(matchedSlots.get(j));
                         }
                     }
@@ -114,11 +130,14 @@ public class Matcher {
 
             // ArrayList.contains性能太差
             // Refer https://blog.csdn.net/liu_005/article/details/80850171
-            parsedInputTexts.add(ParsedInputText.of(inputText, slots));
+            if (slot != null) {
+                parsedInputTexts.add(ParsedInputText.of(inputText, slot));
+            } else {
+                parsedInputTexts.add(ParsedInputText.of(inputText, slots));
+            }
         }
         watch.stop();
-        LOGGER.debug("Combination loop count: {}", count);
-        LOGGER.debug("parseInputTexts execution: {}ms", watch.getTotalTimeMillis());
+        LOGGER.debug("parseInputTexts execution: {} ms", watch.getTotalTimeMillis());
         return parsedInputTexts;
     }
 

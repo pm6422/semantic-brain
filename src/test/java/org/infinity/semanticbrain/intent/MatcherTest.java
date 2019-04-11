@@ -197,7 +197,7 @@ public class MatcherTest {
         Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "播放论语修身篇", matchedSlots1);
         Assert.assertEquals(2, results1.size());
         // MatchedSlot{code='15', value='论语', start=2, end=4}, MatchedSlot{code='16', value='论语修身篇', start=2, end=7} 这两个不可以放在一组
-        Assert.assertEquals(1, results1.stream().findFirst().get().getMatchedSlots().size());
+        Assert.assertNotNull(results1.stream().findFirst().get().getMatchedSlot());
     }
 
     @Test
