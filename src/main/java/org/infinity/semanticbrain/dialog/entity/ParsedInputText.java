@@ -1,5 +1,7 @@
 package org.infinity.semanticbrain.dialog.entity;
 
+import com.google.common.collect.Lists;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +12,27 @@ public class ParsedInputText {
     private static final String            RIGHT_BRACE = "}";
     private              String            slotFilledText; // 格式：买一张{21}到{22}的机票
     private              List<MatchedSlot> matchedSlots;
+
+    public static ParsedInputText of(String inputText, MatchedSlot matchedSlot) {
+        ParsedInputText parsedInputText = new ParsedInputText();
+        parsedInputText.setMatchedSlots(Lists.newArrayList(matchedSlot));
+
+        char[] inputChars = inputText.toCharArray();
+        StringBuilder slotFilledText = new StringBuilder();
+        for (int i = 0; i < inputChars.length; ) {
+            if (matchedSlot == null || matchedSlot != null && matchedSlot.getStart() > i) {
+                slotFilledText.append(inputChars[i]);
+                i++;
+            } else {
+                slotFilledText.append(LEFT_BRACE).append(matchedSlot.getCode()).append(RIGHT_BRACE);
+                i += matchedSlot.getValue().length();
+                matchedSlot = null;
+            }
+        }
+
+        parsedInputText.setSlotFilledText(slotFilledText.toString());
+        return parsedInputText;
+    }
 
     public static ParsedInputText of(String inputText, List<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
