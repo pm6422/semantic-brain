@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatcherTest {
@@ -124,7 +128,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
         Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
         slotValCodeMap.put("爸爸", 1);
         slotValCodeMap.put("爸", 1);
@@ -143,14 +147,31 @@ public class MatcherTest {
 
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
-        // pre call
-        method.invoke(matcher, inputText, matchedSlots1);
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
-        stopWatch.stop();
-        LOGGER.debug("Total elapsed: {} ms", stopWatch.getTotalTimeMillis());
-        LOGGER.debug("Size: {}", results1.size());
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        int requestCount = 1000;
+        int threadPoolSize = 10;
+        ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
+
+        IntStream.range(0, requestCount).forEach(i -> {
+            threadPool.execute(() -> {
+                try {
+                    Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        threadPool.shutdown();
+        // Blocks until all tasks have completed execution after a shutdown request
+        if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+            watch.stop();
+            LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
+            LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
+            LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
+        }
     }
 
     @Test
@@ -227,5 +248,20 @@ public class MatcherTest {
 
         Output output = matcher.matchSlotVal(input, null, Lists.newArrayList("dummy"));
         System.out.println(output);
+    }
+
+    @Test
+    public void testCreateList() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        int len = 18;
+        int bit = (0xFFFFFFFF >>> (32 - len));
+        LOGGER.debug("Bit: {}", bit);
+        for (int i = 1; i <= bit; i++) {
+            List<MatchedSlot> slots = new ArrayList<>();
+            slots.add(MatchedSlot.of(0, "test", 1, 2));
+        }
+        stopWatch.stop();
+        LOGGER.debug("Elapsed: {} ms", stopWatch.getTotalTimeMillis());
     }
 }
