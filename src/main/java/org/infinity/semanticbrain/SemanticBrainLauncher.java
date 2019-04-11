@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.infinity.semanticbrain.config.ApplicationConstants;
 import org.infinity.semanticbrain.config.ApplicationProperties;
+import org.infinity.semanticbrain.utils.NetworkIpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class SemanticBrainLauncher {
                 isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
                 env.getProperty("server.port"), defaultString(env.getProperty("server.context-path")),
                 isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
-                ApplicationConstants.SERVER_IP, env.getProperty("server.port"),
+                NetworkIpUtils.INTERNET_IP, env.getProperty("server.port"),
                 defaultString(env.getProperty("server.context-path")),
                 org.springframework.util.StringUtils.arrayToCommaDelimitedString(env.getActiveProfiles()),
                 env.getProperty("PID"), Charset.defaultCharset(), env.getProperty("LOG_PATH") + "-"
