@@ -103,6 +103,7 @@ public class ParsedInputText {
     public String toString() {
         return "ParsedInputText{" +
                 "slotFilledText='" + slotFilledText + '\'' +
+                ", matchedSlot=" + matchedSlot +
                 ", matchedSlots=" + matchedSlots +
                 '}';
     }
