@@ -76,13 +76,11 @@ public class MatcherTest {
         map.put("北京", 2);
         map.put("上海", 3);
         map.put("北京", 3);
-//        Mockito.when(slotValService.getValCodeMap("dummy")).thenReturn(map);
 
         PatriciaTrie slotTrie = new PatriciaTrie();
         for (Map.Entry<String, Integer> entry : map.entries()) {
             slotTrie.insert(entry.getKey());
         }
-//        Mockito.when(slotValService.getSlotValTrie("dummy")).thenReturn(trie);
 
         Method method = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
         method.setAccessible(true);
