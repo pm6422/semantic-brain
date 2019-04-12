@@ -145,7 +145,7 @@ public class MatcherTest {
 
         StopWatch watch = new StopWatch();
         watch.start();
-        int requestCount = 100;
+        int requestCount = 50;
         int threadPoolSize = 1;
         ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
