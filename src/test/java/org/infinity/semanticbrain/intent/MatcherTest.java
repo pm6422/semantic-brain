@@ -177,7 +177,66 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts3() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InterruptedException {
+        Multimap<String, Integer> slotValCodeMap = ArrayListMultimap.create();
+        slotValCodeMap.put("爸爸", 1);
+        slotValCodeMap.put("爸", 1);
+        slotValCodeMap.put("妈妈", 1);
+        slotValCodeMap.put("妈", 1);
+        slotValCodeMap.put("奶奶", 1);
+        slotValCodeMap.put("奶", 1);
+        slotValCodeMap.put("弟弟", 1);
+        slotValCodeMap.put("弟", 1);
+        slotValCodeMap.put("哥哥", 1);
+        slotValCodeMap.put("哥", 1);
+        slotValCodeMap.put("姐姐", 1);
+        slotValCodeMap.put("姐", 1);
+
+        PatriciaTrie slotTrie = new PatriciaTrie();
+        for (Map.Entry<String, Integer> entry : slotValCodeMap.entries()) {
+            slotTrie.insert(entry.getKey());
+        }
+
+        String inputText = "小爱同学爸爸的爸爸的妈妈的奶奶的弟弟的姐姐的哥哥是谁";
+        Method extractSlotMethod = Matcher.class.getDeclaredMethod("extractSlot", String.class, PatriciaTrie.class, Multimap.class);
+        extractSlotMethod.setAccessible(true);
+        List<MatchedSlot> matchedSlots1 = (List<MatchedSlot>) extractSlotMethod.invoke(matcher, inputText, slotTrie, slotValCodeMap);
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+        int requestCount = 50;
+        int threadPoolSize = 1;
+        ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
+
+        Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
+        method.setAccessible(true);
+        IntStream.range(0, requestCount).forEach(i -> {
+            threadPool.execute(() -> {
+                try {
+                    StopWatch stopWatch = new StopWatch();
+                    stopWatch.start();
+                    Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, inputText, matchedSlots1);
+                    stopWatch.stop();
+                    LOGGER.debug("parseInputTexts execution: {} ms", stopWatch.getTotalTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        threadPool.shutdown();
+        // Blocks until all tasks have completed execution after a shutdown request
+        if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+            watch.stop();
+
+            LOGGER.debug("Total: {} s", watch.getTotalTimeMillis() / 1000);
+            LOGGER.debug("Mean: {} ms", watch.getTotalTimeMillis() / requestCount);
+            LOGGER.debug("TPS: {}", requestCount / (watch.getTotalTimeMillis() / 1000));
+        }
+    }
+
+    @Test
+    public void testParseInputTexts4() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -190,7 +249,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts4() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts5() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
@@ -203,7 +262,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testParseInputTexts5() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testParseInputTexts6() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
