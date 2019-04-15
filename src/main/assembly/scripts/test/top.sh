@@ -7,12 +7,12 @@ cd `dirname $0`
 serverPort=${app.server.port}
 
 #------------------------------------------------------------------------------------------------------------
-# Check the existing process
+# Execute top command of the specified process
 #------------------------------------------------------------------------------------------------------------
 function executeTop() {
     PID=`ps -ef | grep java | grep -v "grep" | grep "$serverPort" | awk '{print $2}'`
     if [[ ! -z $PID  ]];then
-        top -p PID
+        top -p $PID -n 20
     fi
 }
 
