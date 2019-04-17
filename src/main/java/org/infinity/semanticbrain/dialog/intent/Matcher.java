@@ -79,6 +79,7 @@ public class Matcher {
     /**
      * 当matchedSlots的size比较大的时候parseInputTexts的组合种类会非常大，因此会非常消耗时间。
      * 使用parsedInputTextCacheMap可以作为同一个解析的槽位列表在不同skill之间的缓存
+     * 同一个matchedSlots对应同一个parsedInputTexts
      *
      * @param parsedInputTextCacheMap
      * @param inputText
