@@ -41,7 +41,7 @@ public class Matcher {
                 return output;
             }
             Set<ParsedInputText> parsedInputTexts = this.getCachedParseInputTexts(parsedInputTextCacheMap, input.getPreprocessedText(), slots);
-//            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
+            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
 
 
