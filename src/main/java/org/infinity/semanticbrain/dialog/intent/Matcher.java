@@ -28,6 +28,7 @@ public class Matcher {
 
     public Output matchSlotVal(Input input, Output lastOutput, List<String> skillCodes) {
         Output output = new Output();
+        Map<List<MatchedSlot>, Set<ParsedInputText>> parsedInputTextCacheMap = new HashMap<>(); // 用于在不同skill之间缓存
         for (String skillCode : skillCodes) {
             PatriciaTrie slotTrie = slotValService.getSlotValTrie(skillCode);
             Multimap<String, Integer> slotValCodeMap = slotValService.getValCodeMap(skillCode);
@@ -39,7 +40,7 @@ public class Matcher {
             if (CollectionUtils.isEmpty(slots)) {
                 return output;
             }
-            Set<ParsedInputText> parsedInputTexts = this.parseInputTexts(input.getPreprocessedText(), slots);
+            Set<ParsedInputText> parsedInputTexts = this.getCachedParseInputTexts(parsedInputTextCacheMap, input.getPreprocessedText(), slots);
 //            this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
 
@@ -73,6 +74,21 @@ public class Matcher {
             }
         }
         return matchedSlots;
+    }
+
+    private Set<ParsedInputText> getCachedParseInputTexts(Map<List<MatchedSlot>, Set<ParsedInputText>> parsedInputTextCacheMap, String inputText, List<MatchedSlot> matchedSlots) {
+        if (matchedSlots.size() <= 4) {
+            return this.parseInputTexts(inputText, matchedSlots);
+        }
+
+        Set<ParsedInputText> cachedParsedInputTexts = parsedInputTextCacheMap.get(matchedSlots);
+        if (CollectionUtils.isNotEmpty(cachedParsedInputTexts)) {
+            return cachedParsedInputTexts;
+        }
+
+        cachedParsedInputTexts = this.parseInputTexts(inputText, matchedSlots);
+        parsedInputTextCacheMap.put(matchedSlots, cachedParsedInputTexts);
+        return cachedParsedInputTexts;
     }
 
     /**
