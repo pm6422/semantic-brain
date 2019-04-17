@@ -23,7 +23,7 @@ public class Matcher {
     private              SlotValService                        slotValService;
     @Autowired
     private              MatchRuleService                      matchRuleService;
-    // 非同一个slotCode且参数错位的情况下才可以放到同一个slots组合内
+    // 非同一个code且参数错位的情况下才可以放到同一个slots组合内
     private              BiPredicate<MatchedSlot, MatchedSlot> invalidCombination = (s1, s2) -> s1.getCode() == s2.getCode() || !(s1.getEnd() <= s2.getStart() || s1.getStart() >= s2.getEnd());
 
     public Output matchSlotVal(Input input, Output lastOutput, List<String> skillCodes) {
