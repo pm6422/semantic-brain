@@ -76,6 +76,15 @@ public class Matcher {
         return matchedSlots;
     }
 
+    /**
+     * 当matchedSlots的size比较大的时候parseInputTexts的组合种类会非常大，因此会非常消耗时间。
+     * 使用parsedInputTextCacheMap可以作为同一个解析的槽位列表在不同skill之间的缓存
+     *
+     * @param parsedInputTextCacheMap
+     * @param inputText
+     * @param matchedSlots
+     * @return
+     */
     private Set<ParsedInputText> getCachedParseInputTexts(Map<List<MatchedSlot>, Set<ParsedInputText>> parsedInputTextCacheMap, String inputText, List<MatchedSlot> matchedSlots) {
         if (matchedSlots.size() <= 4) {
             return this.parseInputTexts(inputText, matchedSlots);
