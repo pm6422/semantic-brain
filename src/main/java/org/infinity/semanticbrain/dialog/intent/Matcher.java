@@ -91,6 +91,7 @@ public class Matcher {
             return this.parseInputTexts(inputText, matchedSlots);
         }
 
+        // 先判断containKey，然后执行get方法时都会调用hashcode，直接调用get可以省略一次hashcode的计算，可以节约计算资源
         Set<ParsedInputText> cachedParsedInputTexts = parsedInputTextCacheMap.get(matchedSlots);
         if (CollectionUtils.isNotEmpty(cachedParsedInputTexts)) {
             return cachedParsedInputTexts;
