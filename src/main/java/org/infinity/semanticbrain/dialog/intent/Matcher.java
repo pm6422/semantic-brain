@@ -87,6 +87,7 @@ public class Matcher {
      * @return
      */
     private Set<ParsedInputText> getCachedParseInputTexts(Map<List<MatchedSlot>, Set<ParsedInputText>> parsedInputTextCacheMap, String inputText, List<MatchedSlot> matchedSlots) {
+        // 只有大组合才需要缓存，如果将小组合放进缓存中会导致缓存超大
         if (matchedSlots.size() <= 4) {
             return this.parseInputTexts(inputText, matchedSlots);
         }
