@@ -115,7 +115,7 @@ public class Matcher {
         Set<ParsedInputText> parsedInputTexts = new HashSet<>();
 
         int count = (0xFFFFFFFF >>> (32 - matchedSlots.size()));//(2^n)-1
-        LOGGER.debug("Combination count: {}", count);
+        LOGGER.debug("Slot combination: {}", count);
         for (int i = 1; i <= count; i++) {
             MatchedSlot slot = null;// 单个元素变量存储不下升级使用数组存储，创建数组非常消耗时间与资源，只有元素数量大于1时才需要数组存储
             List<MatchedSlot> slots = null;
@@ -125,20 +125,16 @@ public class Matcher {
                     if (slot == null && CollectionUtils.isEmpty(slots)) {
                         slot = matchedSlots.get(j);
                     } else {
-                        boolean valid = true;
+                        boolean invalid = false;
                         if (slot != null) {
                             if (invalidCombination.test(matchedSlots.get(j), slot)) {
-                                valid = false;
+                                invalid = true;
                             }
                         } else {
-                            for (MatchedSlot s : slots) {
-                                if (invalidCombination.test(matchedSlots.get(j), s)) {
-                                    valid = false;
-                                    break;
-                                }
-                            }
+                            final int tempJ = j;
+                            invalid = slots.stream().filter(s -> invalidCombination.test(matchedSlots.get(tempJ), s)).findAny().isPresent();
                         }
-                        if (valid) {
+                        if (!invalid) {
                             if (slots == null) {
                                 slots = new ArrayList<MatchedSlot>();
                             }
@@ -153,8 +149,7 @@ public class Matcher {
                 }
             }
 
-            // ArrayList.contains性能太差
-            // Refer https://blog.csdn.net/liu_005/article/details/80850171
+            // ArrayList.contains性能太差，所以使用Set去重
             if (slot != null) {
                 parsedInputTexts.add(ParsedInputText.of(inputText, slot));
             } else {
