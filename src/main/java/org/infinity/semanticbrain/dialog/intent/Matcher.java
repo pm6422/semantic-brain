@@ -127,9 +127,7 @@ public class Matcher {
                     } else {
                         boolean invalid = false;
                         if (slot != null) {
-                            if (invalidCombination.test(matchedSlots.get(j), slot)) {
-                                invalid = true;
-                            }
+                            invalid = invalidCombination.test(matchedSlots.get(j), slot);
                         } else {
                             final int tempJ = j;
                             invalid = slots.stream().filter(s -> invalidCombination.test(matchedSlots.get(tempJ), s)).findAny().isPresent();
