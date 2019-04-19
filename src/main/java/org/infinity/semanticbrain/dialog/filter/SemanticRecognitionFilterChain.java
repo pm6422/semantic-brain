@@ -108,6 +108,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
                 // Get the result of the highest score
                 Output maxScoreOutput = Collections.max(candidateOutputs, Comparator.comparing(Output::getScore));
+                // TODO: bug found
                 BeanUtils.copyProperties(maxScoreOutput, output);
 
                 // Add filters
