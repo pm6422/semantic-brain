@@ -12,6 +12,11 @@ public class ParsedInputText {
     private              MatchedSlot       matchedSlot;// 单个元素变量存储不下升级使用数组存储，创建数组非常消耗时间与资源，只有元素数量大于1时才需要数组存储
     private              List<MatchedSlot> matchedSlots;// 单个元素变量存储不下升级使用数组存储，创建数组非常消耗时间与资源，只有元素数量大于1时才需要数组存储
 
+    /**
+     * @param inputText   输入文本
+     * @param matchedSlot 匹配的槽位
+     * @return ParsedInputText实例
+     */
     public static ParsedInputText of(String inputText, MatchedSlot matchedSlot) {
         ParsedInputText parsedInputText = new ParsedInputText();
         parsedInputText.setMatchedSlot(matchedSlot);
@@ -34,6 +39,12 @@ public class ParsedInputText {
         return parsedInputText;
     }
 
+    /**
+     *
+     * @param inputText 输入文本
+     * @param matchedSlots matchedSlot必须按照索引先后排序
+     * @return ParsedInputText实例
+     */
     public static ParsedInputText of(String inputText, List<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
         parsedInputText.setMatchedSlots(matchedSlots);
