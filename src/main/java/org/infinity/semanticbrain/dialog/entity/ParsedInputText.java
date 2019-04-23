@@ -40,19 +40,18 @@ public class ParsedInputText {
     }
 
     /**
-     *
-     * @param inputText 输入文本
+     * @param inputText    输入文本
      * @param matchedSlots matchedSlot必须按照索引先后排序
      * @return ParsedInputText实例
      */
     public static ParsedInputText of(String inputText, List<MatchedSlot> matchedSlots) {
         ParsedInputText parsedInputText = new ParsedInputText();
         parsedInputText.setMatchedSlots(matchedSlots);
-
         char[] inputChars = inputText.toCharArray();
         StringBuilder slotFilledText = new StringBuilder();
         Iterator<MatchedSlot> matchedSlotIterator = matchedSlots.iterator();
         MatchedSlot matchedSlot = matchedSlotIterator.next();
+        int maxStart = matchedSlot.getStart();
         for (int i = 0; i < inputChars.length; ) {
             if (matchedSlot == null || matchedSlot != null && matchedSlot.getStart() > i) {
                 slotFilledText.append(inputChars[i]);
@@ -62,6 +61,10 @@ public class ParsedInputText {
                 i += matchedSlot.getValue().length();
                 if (matchedSlotIterator.hasNext()) {
                     matchedSlot = matchedSlotIterator.next();
+                    if (matchedSlot.getStart() < maxStart) {
+                        throw new RuntimeException("matchedSlots must be sorted.");
+                    }
+                    maxStart = matchedSlot.getStart();
                 } else {
                     matchedSlot = null;
                 }
