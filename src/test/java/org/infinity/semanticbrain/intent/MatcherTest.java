@@ -266,12 +266,12 @@ public class MatcherTest {
         Method method = Matcher.class.getDeclaredMethod("parseInputTexts", String.class, List.class);
         method.setAccessible(true);
         List<MatchedSlot> matchedSlots1 = new ArrayList<>();
-        matchedSlots1.add(MatchedSlot.of(42, "心情", 1, 3));
-        matchedSlots1.add(MatchedSlot.of(348, "来首", 5, 7));
-        matchedSlots1.add(MatchedSlot.of(42, "心情不好", 1, 5));
         matchedSlots1.add(MatchedSlot.of(42, "我心", 0, 2));
-        matchedSlots1.add(MatchedSlot.of(42, "不好", 3, 5));
+        matchedSlots1.add(MatchedSlot.of(42, "心情", 1, 3));
+        matchedSlots1.add(MatchedSlot.of(42, "心情不好", 1, 5));
         matchedSlots1.add(MatchedSlot.of(387, "心情不好", 1, 5));
+        matchedSlots1.add(MatchedSlot.of(42, "不好", 3, 5));
+        matchedSlots1.add(MatchedSlot.of(348, "来首", 5, 7));
         Set<ParsedInputText> results1 = (Set<ParsedInputText>) method.invoke(matcher, "我心情不好来首歌", matchedSlots1);
         Assert.assertEquals(11, results1.size());
     }
