@@ -12,12 +12,12 @@ public class RabbitMessageSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void send(String message) {
+    public void publish(String message) {
         //FanoutExchange类型的交换机，routingKey不起作用
         rabbitTemplate.convertAndSend(RabbitMessageConfiguration.FANOUT_EXCHANGE, "", message);
     }
 
-    public void send(MethodOperation methodOperation) {
+    public void publish(MethodOperation methodOperation) {
         //FanoutExchange类型的交换机，routingKey不起作用
         rabbitTemplate.convertAndSend(RabbitMessageConfiguration.FANOUT_EXCHANGE, "", methodOperation);
     }

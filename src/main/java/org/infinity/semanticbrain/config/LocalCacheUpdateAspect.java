@@ -55,7 +55,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         Object[] methodArgs = joinPoint.getArgs();
 
         // Starting broadcast update
-        rabbitMessageSender.send(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
+        rabbitMessageSender.publish(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
         LOGGER.debug("Initiated a broadcast update");
 
         Object result = joinPoint.proceed();

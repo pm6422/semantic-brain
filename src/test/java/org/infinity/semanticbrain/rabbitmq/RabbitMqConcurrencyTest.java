@@ -48,7 +48,7 @@ public class RabbitMqConcurrencyTest {
             threadPool.execute(() -> {
                 LOGGER.debug("Active thread count: {}", Thread.activeCount());
                 try {
-                    rabbitMessageSender.send(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date()));
+                    rabbitMessageSender.publish(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
