@@ -2,7 +2,7 @@ package org.infinity.semanticbrain.rabbitmq;//package org.infinity.semanticbrain
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.infinity.semanticbrain.SemanticBrainLauncher;
-import org.infinity.semanticbrain.component.RabbitMessageSender;
+import org.infinity.semanticbrain.component.RabbitMessagePublisher;
 import org.infinity.semanticbrain.config.ApplicationConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +25,9 @@ import java.util.stream.IntStream;
 @ActiveProfiles(ApplicationConstants.SPRING_PROFILE_TEST)
 public class RabbitMqConcurrencyTest {
 
-    private static final Logger              LOGGER = LoggerFactory.getLogger(RabbitMqConcurrencyTest.class);
+    private static final Logger                 LOGGER = LoggerFactory.getLogger(RabbitMqConcurrencyTest.class);
     @Autowired
-    private              RabbitMessageSender rabbitMessageSender;
+    private              RabbitMessagePublisher rabbitMessageSender;
 
     public RabbitMqConcurrencyTest() {
         super();

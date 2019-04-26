@@ -5,7 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.infinity.semanticbrain.component.RabbitMessageSender;
+import org.infinity.semanticbrain.component.RabbitMessagePublisher;
 import org.infinity.semanticbrain.utils.NetworkIpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +30,12 @@ import java.util.Date;
 @Configuration
 public class LocalCacheUpdateAspect implements ApplicationContextAware {
 
-    private static final Logger              LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
-    public static final  String              INSTANCE_NODE_ID        = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
-    public static final  String              BROADCAST_METHOD_PREFIX = "broadcast";
-    private              ApplicationContext  applicationContext;
+    private static final Logger                 LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
+    public static final  String                 INSTANCE_NODE_ID        = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
+    public static final  String                 BROADCAST_METHOD_PREFIX = "broadcast";
+    private              ApplicationContext     applicationContext;
     @Autowired
-    private              RabbitMessageSender rabbitMessageSender;
+    private              RabbitMessagePublisher rabbitMessageSender;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

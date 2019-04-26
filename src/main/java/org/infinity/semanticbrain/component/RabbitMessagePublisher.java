@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import static org.infinity.semanticbrain.config.LocalCacheUpdateAspect.MethodOperation;
 
 @Component
-public class RabbitMessageSender {
+public class RabbitMessagePublisher {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
