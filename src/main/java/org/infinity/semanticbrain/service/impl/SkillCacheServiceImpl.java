@@ -22,6 +22,7 @@ public class SkillCacheServiceImpl implements SkillCacheService, InitializingBea
 
     @Override
     public void refresh() {
+        LOGGER.debug("");
     }
 
     @Override
