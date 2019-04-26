@@ -22,7 +22,7 @@
         *************************************************************************************
     -->
     <properties>
-        <app.server.port>8080</app.server.port>
+        <app.server.port>6010</app.server.port>
         <asciidoctor.html.output.directory>${project.basedir}/src/main/webapp/asciidoc
         </asciidoctor.html.output.directory>
         <asciidoctor.input.directory>${project.basedir}/docs/asciidoc</asciidoctor.input.directory>
@@ -111,6 +111,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -387,13 +395,13 @@
     <profiles>
         <profile>
             <id>test</id>
+            <!-- default Spring profiles -->
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <mvn.profiles.active>test</mvn.profiles.active>
                 <server.port>${app.server.port}</server.port>
-                <!-- default Spring profiles -->
                 <spring.profiles.active>test</spring.profiles.active>
             </properties>
         </profile>
@@ -402,7 +410,6 @@
             <properties>
                 <mvn.profiles.active>prod</mvn.profiles.active>
                 <server.port>${app.server.port}</server.port>
-                <!-- default Spring profiles -->
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
