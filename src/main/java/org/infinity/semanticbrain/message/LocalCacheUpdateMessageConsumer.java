@@ -20,7 +20,7 @@ import static org.infinity.semanticbrain.config.LocalCacheUpdateAspect.MethodOpe
 import static org.infinity.semanticbrain.message.LocalCacheUpdateMessageProducer.LOCAL_CACHE_UPDATE_TOPIC;
 
 @Component
-@RocketMQMessageListener(topic = LOCAL_CACHE_UPDATE_TOPIC, consumerGroup = "consumer-group", messageModel = MessageModel.BROADCASTING, consumeMode = ConsumeMode.CONCURRENTLY)
+@RocketMQMessageListener(topic = LOCAL_CACHE_UPDATE_TOPIC, consumerGroup = "${spring.application.name}", messageModel = MessageModel.BROADCASTING, consumeMode = ConsumeMode.CONCURRENTLY)
 public class LocalCacheUpdateMessageConsumer implements RocketMQListener<MethodOperation>, ApplicationContextAware {
 
     private static final Logger             LOGGER = LoggerFactory.getLogger(LocalCacheUpdateMessageConsumer.class);
