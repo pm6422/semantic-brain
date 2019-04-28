@@ -55,6 +55,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         Object[] methodArgs = joinPoint.getArgs();
 
         // Starting broadcast update
+        // TODO: check result
         localCacheUpdateMessageProducer.syncSend(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
 
         LOGGER.debug("Initiated a broadcast update");
