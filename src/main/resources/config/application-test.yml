@@ -18,8 +18,6 @@ spring:
             enabled: false # we use gulp + BrowserSync for livereload
     rocketmq: # used by RocketMQProperties
         nameServer: 127.0.0.1:9876
-        producer:
-            group: ${spring.application.name} # 可选, 如果无需发送消息则忽略该配置
 # ===================================================================
 # Application specific properties
 # ===================================================================
