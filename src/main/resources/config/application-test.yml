@@ -16,10 +16,6 @@ spring:
             enabled: true
         livereload:
             enabled: false # we use gulp + BrowserSync for livereload
-    rabbitmq: # used by RabbitProperties
-        addresses: 192.168.20.101:1672,192.168.20.101:2672,192.168.20.101:3672 #Admin URL: http://192.168.20.101:11672
-        username: guest
-        password: guest
 
 # ===================================================================
 # Application specific properties
