@@ -5,7 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.infinity.semanticbrain.component.LocalCacheUpdateMessageProducer;
+import org.infinity.semanticbrain.message.LocalCacheUpdateMessageProducer;
 import org.infinity.semanticbrain.utils.NetworkIpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

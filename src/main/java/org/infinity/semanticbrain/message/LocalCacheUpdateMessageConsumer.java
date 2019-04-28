@@ -1,4 +1,4 @@
-package org.infinity.semanticbrain.component;
+package org.infinity.semanticbrain.message;
 
 import com.qianmi.ms.starter.rocketmq.annotation.RocketMQMessageListener;
 import com.qianmi.ms.starter.rocketmq.core.RocketMQListener;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
-import static org.infinity.semanticbrain.component.LocalCacheUpdateMessageProducer.LOCAL_CACHE_UPDATE_TOPIC;
 import static org.infinity.semanticbrain.config.LocalCacheUpdateAspect.MethodOperation;
+import static org.infinity.semanticbrain.message.LocalCacheUpdateMessageProducer.LOCAL_CACHE_UPDATE_TOPIC;
 
 @Component
 @RocketMQMessageListener(topic = LOCAL_CACHE_UPDATE_TOPIC, consumerGroup = "consumer-group", messageModel = MessageModel.BROADCASTING, consumeMode = ConsumeMode.CONCURRENTLY)

@@ -1,4 +1,4 @@
-package org.infinity.semanticbrain.component;
+package org.infinity.semanticbrain.message;
 
 import com.qianmi.ms.starter.rocketmq.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
