@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.infinity.semanticbrain.component.RabbitMessageSender;
 import org.infinity.semanticbrain.utils.NetworkIpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Date;
+
+import static org.infinity.semanticbrain.config.RabbitMessageConfiguration.RabbitMessageSender;
 
 /**
  * Aspect for method execution of local cache service.
@@ -55,7 +56,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         Object[] methodArgs = joinPoint.getArgs();
 
         // Starting broadcast update
-        rabbitMessageSender.publish(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
+        rabbitMessageSender.send(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
         LOGGER.debug("Initiated a broadcast update");
 
         Object result = joinPoint.proceed();

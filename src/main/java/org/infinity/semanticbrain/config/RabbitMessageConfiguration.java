@@ -4,12 +4,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -66,6 +64,11 @@ public class RabbitMessageConfiguration implements ApplicationContextAware {
         return BindingBuilder.bind(broadcastUpdateLocalCacheQueue).to(fanoutExchange);
     }
 
+    @Bean
+    public RabbitMessageSender rabbitMessageSender(RabbitTemplate rabbitTemplate, Exchange exchange) {
+        return new RabbitMessageSender(rabbitTemplate, exchange);
+    }
+
     @RabbitHandler
     public void receiveMethodOperationMessage(@Payload MethodOperation methodOperation) {
         LOGGER.debug("Message consumer: {}:{}", INSTANCE_NODE_ID, env.getProperty("server.port"));
@@ -95,4 +98,25 @@ public class RabbitMessageConfiguration implements ApplicationContextAware {
     public void receiveTestMessage(String message) {
         LOGGER.debug("Received message {} at {}", message, new Date());
     }
+
+    public static class RabbitMessageSender {
+        private RabbitTemplate rabbitTemplate;
+        private Exchange       exchange;
+
+        public RabbitMessageSender(RabbitTemplate rabbitTemplate, Exchange exchange) {
+            this.rabbitTemplate = rabbitTemplate;
+            this.exchange = exchange;
+        }
+
+        public void send(String message) {
+            //FanoutExchange类型的交换机，routingKey不起作用
+            rabbitTemplate.convertAndSend(exchange.getName(), "", message);
+        }
+
+        public void send(MethodOperation methodOperation) {
+            //FanoutExchange类型的交换机，routingKey不起作用
+            rabbitTemplate.convertAndSend(exchange.getName(), "", methodOperation);
+        }
+    }
 }
+

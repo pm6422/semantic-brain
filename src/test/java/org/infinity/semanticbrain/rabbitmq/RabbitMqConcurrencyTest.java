@@ -2,7 +2,6 @@ package org.infinity.semanticbrain.rabbitmq;//package org.infinity.semanticbrain
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.infinity.semanticbrain.SemanticBrainLauncher;
-import org.infinity.semanticbrain.component.RabbitMessageSender;
 import org.infinity.semanticbrain.config.ApplicationConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
+import static org.infinity.semanticbrain.config.RabbitMessageConfiguration.RabbitMessageSender;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SemanticBrainLauncher.class)
@@ -48,7 +49,7 @@ public class RabbitMqConcurrencyTest {
             threadPool.execute(() -> {
                 LOGGER.debug("Active thread count: {}", Thread.activeCount());
                 try {
-                    rabbitMessageSender.publish(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date()));
+                    rabbitMessageSender.send(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
