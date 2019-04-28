@@ -10,7 +10,7 @@ import static org.infinity.semanticbrain.config.LocalCacheUpdateAspect.MethodOpe
 @Component
 public class LocalCacheUpdateMessageProducer {
 
-    public static final String LOCAL_CACHE_UPDATE_TOPIC = "semanticBrainLocalCacheUpdate";
+    public static final String LOCAL_CACHE_UPDATE_TOPIC = "localCacheUpdate";
 
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
