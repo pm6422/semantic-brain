@@ -43,7 +43,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
     }
 
     @Around("execution(* " + ApplicationConstants.BASE_PACKAGE + ".service.impl.*CacheServiceImpl." + BROADCAST_METHOD_PREFIX + "*(..)) || " + BroadcastExecute.AROUND)
-    public Object localDatabaseUpdatePointcut(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object localCacheUpdatePointcut(ProceedingJoinPoint joinPoint) throws Throwable {
         String typeName = joinPoint.getSignature().getDeclaringTypeName();
         Object type = this.applicationContext.getBean(joinPoint.getSignature().getDeclaringType());
         if (type == null) {
