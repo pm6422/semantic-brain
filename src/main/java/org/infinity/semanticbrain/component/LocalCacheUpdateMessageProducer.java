@@ -22,8 +22,4 @@ public class LocalCacheUpdateMessageProducer {
     public void syncSend(MethodOperation methodOperation) {
         rocketMQTemplate.syncSend(LOCAL_CACHE_UPDATE_TOPIC, methodOperation);
     }
-
-    public void syncSendOrderly(MethodOperation methodOperation, String hashKey) {
-        rocketMQTemplate.syncSendOrderly(LOCAL_CACHE_UPDATE_TOPIC, methodOperation, hashKey);
-    }
 }
