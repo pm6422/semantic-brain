@@ -32,7 +32,6 @@ import java.util.Date;
 public class LocalCacheUpdateAspect implements ApplicationContextAware {
 
     private static final Logger                          LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
-    public static final  String                          INSTANCE_NODE_ID        = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
     public static final  String                          BROADCAST_METHOD_PREFIX = "broadcast";
     private              ApplicationContext              applicationContext;
     @Autowired
@@ -68,6 +67,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
     public static class MethodOperation implements Serializable {
 
         private static final long     serialVersionUID = 4648383076842560788L;
+        public static final  String   INSTANCE_NODE_ID = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
         private              String   instanceNodeId;
         private              String   typeName;
         private              String   methodName;
