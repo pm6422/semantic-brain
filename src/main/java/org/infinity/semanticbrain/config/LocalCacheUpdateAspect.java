@@ -1,13 +1,16 @@
 package org.infinity.semanticbrain.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.infinity.semanticbrain.component.LocalCacheUpdateMessageProducer;
 import org.infinity.semanticbrain.utils.NetworkIpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
+import java.util.Date;
 
 
 /**
@@ -27,10 +31,12 @@ import java.util.Arrays;
 @Configuration
 public class LocalCacheUpdateAspect implements ApplicationContextAware {
 
-    private static final Logger              LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
-    public static final  String              INSTANCE_NODE_ID        = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
-    public static final  String              BROADCAST_METHOD_PREFIX = "broadcast";
-    private              ApplicationContext  applicationContext;
+    private static final Logger                          LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
+    public static final  String                          INSTANCE_NODE_ID        = NetworkIpUtils.INTERNET_IP; // 注意同一台机器上不可以同时部署多个应用，保证一个IP一个应用
+    public static final  String                          BROADCAST_METHOD_PREFIX = "broadcast";
+    private              ApplicationContext              applicationContext;
+    @Autowired
+    private              LocalCacheUpdateMessageProducer localCacheUpdateMessageProducer;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -50,7 +56,8 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         Object[] methodArgs = joinPoint.getArgs();
 
         // Starting broadcast update
-//        rabbitMessageSender.send(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
+        localCacheUpdateMessageProducer.send(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
+
         LOGGER.debug("Initiated a broadcast update");
 
         Object result = joinPoint.proceed();
