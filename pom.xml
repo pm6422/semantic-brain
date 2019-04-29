@@ -55,6 +55,17 @@
             <groupId>com.qianmi</groupId>
             <artifactId>spring-boot-starter-rocketmq</artifactId>
             <version>1.1.0-RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.27.Final</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
