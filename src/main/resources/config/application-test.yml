@@ -17,7 +17,7 @@ spring:
         livereload:
             enabled: false # we use gulp + BrowserSync for livereload
     rocketmq: # used by RocketMQProperties
-        nameServer: 127.0.0.1:9876
+        nameServer: 192.168.20.101:9876
 # ===================================================================
 # Application specific properties
 # ===================================================================
