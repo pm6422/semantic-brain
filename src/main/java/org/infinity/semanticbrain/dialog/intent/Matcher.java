@@ -125,7 +125,7 @@ public class Matcher {
                     if (slot == null && CollectionUtils.isEmpty(slots)) {
                         slot = matchedSlots.get(j);
                     } else {
-                        boolean invalid = false;
+                        boolean invalid;
                         if (slot != null) {
                             invalid = invalidCombination.test(matchedSlots.get(j), slot);
                         } else {
