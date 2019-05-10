@@ -1,7 +1,8 @@
-package org.infinity.semanticbrain.dialog.entity;
+package org.infinity.semanticbrain.dialog.context;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.infinity.semanticbrain.dialog.entity.Output;
 
 import java.io.Serializable;
 import java.time.Instant;

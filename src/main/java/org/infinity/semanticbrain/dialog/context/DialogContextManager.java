@@ -1,7 +1,6 @@
 package org.infinity.semanticbrain.dialog.context;
 
 import org.infinity.semanticbrain.config.ApplicationProperties;
-import org.infinity.semanticbrain.dialog.entity.DialogContext;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.infinity.semanticbrain.config.LocalCacheUpdateAspect.BroadcastExecute;
 
 @Component
 public class DialogContextManager {
@@ -25,6 +26,7 @@ public class DialogContextManager {
         return dialogContext.getLastOutput();
     }
 
+    @BroadcastExecute
     public void addOutput(Input input, Output output) {
         DialogContext dialogContext = dialogContextMap.get(input.getDevice().getDeviceId());
         if (dialogContext == null) {
