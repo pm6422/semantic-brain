@@ -57,6 +57,21 @@ logging:
 # Application specific properties
 # ===================================================================
 application:
+    swagger:
+        api:
+            title: Semantic Brain API
+            description: Semantic Brain 接口文档
+        open-api:
+            title: Semantic Brain Open API
+            description: Semantic Brain 开放接口文档
+        version: @project.version@
+        terms-of-service-url: http://www.infinity.org
+        contact-name: Louis
+        contact-url: http://www.infinity.org
+        contact-email: pm6422@126.com
+        license: 1.0
+        license-url: http://www.apache.org/licenses/LICENSE-2.0.html
+        host:
     dialog-context:
         keep-alive-seconds: 45 # 45 seconds
         skill-mode-keep-alive-seconds: 1800 # 30 minutes
