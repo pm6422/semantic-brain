@@ -60,7 +60,7 @@ application:
     dialog-context:
         keep-alive-seconds: 45 # 45 seconds
         skill-mode-keep-alive-seconds: 1800 # 30 minutes
-        latest-output-size: 5
+        latest-output-size: 4
     semantic-filter:
         seq[0]: emojiMatchingFilter,fullMatchingFilter,contextFullMatchingFilter,slotValMatchingFilter
         seq[1]: partialMatchingFilter

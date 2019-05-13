@@ -3,6 +3,7 @@ package org.infinity.semanticbrain.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.infinity.semanticbrain.config.ApplicationProperties;
 import org.infinity.semanticbrain.dialog.context.DialogContextManager;
+import org.infinity.semanticbrain.dialog.entity.Device;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
@@ -79,7 +80,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         stopWatch.start();
         Output output = new Output();
         try {
-            Output lastOutput = this.getLastOutput(input);
+            Output lastOutput = this.getLastOutput(input.getDevice());
             this.beforeProcess(input, lastOutput);
             List<String> skillCodes = new ArrayList<>();
             if (StringUtils.isNotEmpty(skillCode)) {
@@ -113,8 +114,8 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
         }
     }
 
-    private Output getLastOutput(Input input) {
-        return dialogContextManager.getLastOutput(input);
+    private Output getLastOutput(Device device) {
+        return dialogContextManager.getLastAliveOutput(device);
     }
 
     private void beforeProcess(Input input, Output lastOutput) {
@@ -125,6 +126,6 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     private void terminated(Input input, Output output) {
-        dialogContextManager.addOutput(input, output);
+        dialogContextManager.addOutput(input.getDevice(), output);
     }
 }

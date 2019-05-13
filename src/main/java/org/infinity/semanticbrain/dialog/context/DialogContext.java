@@ -24,6 +24,9 @@ public class DialogContext implements Serializable {
     @ApiModelProperty("技能模式下上下文对话有效时间秒数")
     private              int          skillModeKeepAliveSeconds = 1800;
 
+    /**
+     * Used to serialize
+     */
     public DialogContext() {
     }
 
@@ -41,6 +44,14 @@ public class DialogContext implements Serializable {
 
     public void setLastOutput(Output lastOutput) {
         this.lastOutput = lastOutput;
+    }
+
+    public List<Output> getLatestOutputs() {
+        return latestOutputs;
+    }
+
+    public void setLatestOutputs(List<Output> latestOutputs) {
+        this.latestOutputs = latestOutputs;
     }
 
     public int getLatestOutputSize() {
