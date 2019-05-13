@@ -5,24 +5,19 @@ import io.swagger.annotations.ApiModelProperty;
 import org.infinity.semanticbrain.dialog.entity.Output;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @ApiModel("对话上下文")
 public class DialogContext implements Serializable {
 
-    private static final long         serialVersionUID          = 6996205094278136766L;
+    private static final long         serialVersionUID = 6996205094278136766L;
     @ApiModelProperty("上次输出结果")
     private              Output       lastOutput;
     @ApiModelProperty("最近多次输出结果历史")
-    private              List<Output> latestOutputs             = new CopyOnWriteArrayList<Output>();// Read more than write
+    private              List<Output> latestOutputs    = new CopyOnWriteArrayList<Output>();// Read more than write
     @ApiModelProperty("最近多次输出结果历史大小")
-    private              int          latestOutputSize          = 5;
-    @ApiModelProperty("上下文对话有效时间秒数")
-    private              int          keepAliveSeconds          = 45;
-    @ApiModelProperty("技能模式下上下文对话有效时间秒数")
-    private              int          skillModeKeepAliveSeconds = 1800;
+    private              int          latestOutputSize = 5;
 
     /**
      * Used to serialize
@@ -30,11 +25,9 @@ public class DialogContext implements Serializable {
     public DialogContext() {
     }
 
-    public static DialogContext of(int latestOutputSize, int keepAliveSeconds, int skillModeKeepAliveSeconds) {
+    public static DialogContext of(int latestOutputSize) {
         DialogContext context = new DialogContext();
         context.setLatestOutputSize(latestOutputSize);
-        context.setKeepAliveSeconds(keepAliveSeconds);
-        context.setSkillModeKeepAliveSeconds(skillModeKeepAliveSeconds);
         return context;
     }
 
@@ -62,22 +55,6 @@ public class DialogContext implements Serializable {
         this.latestOutputSize = latestOutputSize;
     }
 
-    public int getKeepAliveSeconds() {
-        return keepAliveSeconds;
-    }
-
-    public void setKeepAliveSeconds(int keepAliveSeconds) {
-        this.keepAliveSeconds = keepAliveSeconds;
-    }
-
-    public int getSkillModeKeepAliveSeconds() {
-        return skillModeKeepAliveSeconds;
-    }
-
-    public void setSkillModeKeepAliveSeconds(int skillModeKeepAliveSeconds) {
-        this.skillModeKeepAliveSeconds = skillModeKeepAliveSeconds;
-    }
-
     /**
      * Add last dialog context output
      *
@@ -89,27 +66,6 @@ public class DialogContext implements Serializable {
         if (latestOutputs.size() > latestOutputSize) {
             latestOutputs.remove(0);
         }
-    }
-
-    /**
-     * Get the latest output and return null if it is expired
-     *
-     * @return latest dialog context output
-     */
-    public Output getAliveOutput() {
-        if (lastOutput == null || expired()) {
-            return null;
-        }
-        return lastOutput;
-    }
-
-    /**
-     * Check whether the dialog context is expired or not
-     *
-     * @return
-     */
-    public boolean expired() {
-        return Instant.now().isAfter(lastOutput.getTime().plusSeconds(keepAliveSeconds));
     }
 
     /**

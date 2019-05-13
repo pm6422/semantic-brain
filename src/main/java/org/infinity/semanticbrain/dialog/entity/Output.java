@@ -31,6 +31,10 @@ public class Output implements Serializable {
     private             String              status        = "";
     @ApiModelProperty("创建时间")
     private             Instant             time;
+    @ApiModelProperty("上下文对话有效时间秒数")
+    private             Integer             keepAliveSeconds;
+    @ApiModelProperty("技能模式下上下文对话有效时间秒数")
+    private             Integer             skillModeKeepAliveSeconds;
     @ApiModelProperty("耗费时间")
     private             Long                elapsed; // Time in ms
     @ApiModelProperty("其他信息")
@@ -115,6 +119,22 @@ public class Output implements Serializable {
         this.time = time;
     }
 
+    public Integer getKeepAliveSeconds() {
+        return keepAliveSeconds;
+    }
+
+    public void setKeepAliveSeconds(Integer keepAliveSeconds) {
+        this.keepAliveSeconds = keepAliveSeconds;
+    }
+
+    public Integer getSkillModeKeepAliveSeconds() {
+        return skillModeKeepAliveSeconds;
+    }
+
+    public void setSkillModeKeepAliveSeconds(Integer skillModeKeepAliveSeconds) {
+        this.skillModeKeepAliveSeconds = skillModeKeepAliveSeconds;
+    }
+
     public Long getElapsed() {
         return elapsed;
     }
@@ -148,6 +168,24 @@ public class Output implements Serializable {
      */
     public boolean isDetermined() {
         return this.recognized() && intents.stream().allMatch(x -> x.isDetermined());
+    }
+
+    /**
+     * Check whether the dialog context is expired or not
+     *
+     * @return true: expired, false: not yet expired
+     */
+    public boolean expired() {
+        return keepAliveSeconds != null && Instant.now().isAfter(time.plusSeconds(keepAliveSeconds));
+    }
+
+    /**
+     * Check whether the dialog context is expired or not
+     *
+     * @return true: expired, false: not yet expired
+     */
+    public boolean skillModeExpired() {
+        return skillModeKeepAliveSeconds != null && Instant.now().isAfter(time.plusSeconds(skillModeKeepAliveSeconds));
     }
 
     public Intent findOneIntent() {
