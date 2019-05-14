@@ -29,27 +29,10 @@
 
     <script type="text/javascript">
         $(function () {
-            var url = "../../v2/api-docs?group=api-group";
-
-            // Pre load translate...
-            if(window.SwaggerTranslator) {
-                window.SwaggerTranslator.translate();
-            }
             window.swaggerUi = new SwaggerUi({
-                url: url,
                 dom_id: "swagger-ui-container",
                 supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
                 onComplete: function(swaggerApi, swaggerUi){
-                    if(typeof initOAuth == "function") {
-                        initOAuth({
-                            clientId: "your-client-id",
-                            clientSecret: "your-client-secret",
-                            realm: "your-realms",
-                            appName: "your-app-name",
-                            scopeSeparator: ","
-                        });
-                    }
-
                     if(window.SwaggerTranslator) {
                         window.SwaggerTranslator.translate();
                     }
@@ -69,7 +52,41 @@
                 showRequestHeaders: false
             });
 
+            initializeBaseUrl();
+
+            $('#select_baseUrl').change(function() {
+                window.swaggerUi.headerView.trigger('update-swagger-ui', {
+                    url: $('#select_baseUrl').val()
+                });
+            });
+
             window.swaggerUi.load();
+
+            function initializeBaseUrl() {
+                var relativeLocation = "";
+
+                $('#input_baseUrl').hide();
+
+                $.getJSON(relativeLocation + "/swagger-resources", function(data) {
+                    var $urlDropdown = $('#select_baseUrl');
+                    $urlDropdown.empty();
+                    $.each(data, function(i, resource) {
+                        var option = $('<option></option>')
+                            .attr("value", maybePrefix(resource.location, relativeLocation))
+                            .text(resource.name + " (" + resource.location + ")");
+                        $urlDropdown.append(option);
+                    });
+                    $urlDropdown.change();
+                });
+            }
+
+            function maybePrefix(location, withRelativePath) {
+                var pat = /^https?:\/\//i;
+                if (pat.test(location)) {
+                    return location;
+                }
+                return withRelativePath + location;
+            }
 
             function log() {
                 if ('console' in window) {
@@ -83,7 +100,15 @@
 <body class="swagger-section">
 <div id='header'>
     <div class="swagger-ui-wrap">
-        <a id="logo">API Documentation</a>
+        <a id="logo" href="http://swagger.io">API Documentation</a>
+
+        <form id='api_selector'>
+            <div class='input'>
+                <select id="select_baseUrl" name="select_baseUrl"></select>
+            </div>
+            <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/>
+            </div>
+        </form>
     </div>
 </div>
 
