@@ -51,7 +51,8 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         }
 
         String originalMethodName = joinPoint.getSignature().getName();
-        String methodName = originalMethodName.contains(BROADCAST_METHOD_PREFIX) ? StringUtils.uncapitalize(originalMethodName.substring(BROADCAST_METHOD_PREFIX.length())) : originalMethodName;
+        // Remove method name with BROADCAST_METHOD_PREFIX
+        String methodName = StringUtils.uncapitalize(originalMethodName.substring(BROADCAST_METHOD_PREFIX.length()));
         Object[] methodArgs = joinPoint.getArgs();
 
         // Starting broadcast update

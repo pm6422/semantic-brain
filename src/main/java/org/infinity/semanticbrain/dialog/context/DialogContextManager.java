@@ -61,7 +61,6 @@ public class DialogContextManager {
      * @param device: device info
      * @param output: output info
      */
-    @BroadcastExecute
     public void addOutput(Device device, Output output) {
         DialogContext dialogContext = dialogContextMap.get(device.getDeviceId());
         if (dialogContext == null) {
@@ -72,11 +71,21 @@ public class DialogContextManager {
     }
 
     /**
+     * Save this output to context
+     *
+     * @param device: device info
+     * @param output: output info
+     */
+    @BroadcastExecute
+    public void broadcastAddOutput(Device device, Output output) {
+        this.addOutput(device, output);
+    }
+
+    /**
      * Expire dialog context
      *
      * @param device: device info
      */
-    @BroadcastExecute
     public void expire(Device device) {
         DialogContext dialogContext = dialogContextMap.get(device.getDeviceId());
         if (dialogContext == null) {
@@ -84,6 +93,16 @@ public class DialogContextManager {
         }
         // Clear expired data
         dialogContextMap.remove(device.getDeviceId());
+    }
+
+    /**
+     * Expire dialog context
+     *
+     * @param device: device info
+     */
+    @BroadcastExecute
+    public void broadcastExpire(Device device) {
+        this.expire(device);
     }
 
     /**

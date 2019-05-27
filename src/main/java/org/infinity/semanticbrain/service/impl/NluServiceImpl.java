@@ -126,6 +126,6 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     private void terminated(Input input, Output output) {
-        dialogContextManager.addOutput(input.getDevice(), output);
+        dialogContextManager.broadcastAddOutput(input.getDevice(), output);
     }
 }
