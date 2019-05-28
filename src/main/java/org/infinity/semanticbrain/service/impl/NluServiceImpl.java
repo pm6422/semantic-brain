@@ -78,6 +78,12 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     public Output recognize(Input input, String skillCode) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+
+        Output checkedOutput = this.checkInput(input);
+        if (checkedOutput != null) {
+            return checkedOutput;
+        }
+
         Output output = new Output();
         try {
             Output lastOutput = this.getLastOutput(input.getDevice());
@@ -112,6 +118,11 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             }
             return null;
         }
+    }
+
+    private Output checkInput(Input input) {
+
+        return null;
     }
 
     private Output getLastOutput(Device device) {
