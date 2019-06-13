@@ -44,7 +44,6 @@ public class Matcher {
             this.matchRules(skillCode, input, lastOutput, parsedInputTexts);
         }
 
-
         return output;
     }
 
