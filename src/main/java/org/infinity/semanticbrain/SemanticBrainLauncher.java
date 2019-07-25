@@ -1,6 +1,7 @@
 package org.infinity.semanticbrain;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.infinity.semanticbrain.config.ApplicationConstants;
 import org.infinity.semanticbrain.config.ApplicationProperties;
@@ -21,9 +22,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-
-import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
@@ -50,14 +48,18 @@ public class SemanticBrainLauncher {
         String appBanner = StreamUtils.copyToString(new ClassPathResource("config/banner-app.txt").getInputStream(),
                 Charset.defaultCharset());
         LOGGER.info(appBanner, env.getProperty("spring.application.name"),
-                isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
-                env.getProperty("server.port"), defaultString(env.getProperty("server.context-path")),
-                isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
-                NetworkIpUtils.INTERNET_IP, env.getProperty("server.port"),
-                defaultString(env.getProperty("server.context-path")),
+                StringUtils.isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
+                NetworkIpUtils.INTRANET_IP,
+                env.getProperty("server.port"),
+                StringUtils.defaultString(env.getProperty("server.servlet.context-path")),
+                StringUtils.isEmpty(env.getProperty("server.ssl.key-store")) ? "http" : "https",
+                NetworkIpUtils.INTERNET_IP,
+                env.getProperty("server.port"),
+                StringUtils.defaultString(env.getProperty("server.servlet.context-path")),
                 org.springframework.util.StringUtils.arrayToCommaDelimitedString(env.getActiveProfiles()),
-                env.getProperty("PID"), Charset.defaultCharset(), env.getProperty("LOG_PATH") + "-"
-                        + DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(new Date()) + ".log");
+                env.getProperty("PID"),
+                Charset.defaultCharset(),
+                env.getProperty("LOG_PATH") + "-" + DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(new Date()) + ".log");
     }
 
     @PostConstruct
