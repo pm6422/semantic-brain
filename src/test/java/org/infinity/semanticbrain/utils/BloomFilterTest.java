@@ -56,5 +56,10 @@ public class BloomFilterTest {
         watch.stop();
         LOGGER.debug("Elapsed: {} ms", watch.getTotalTimeMillis());
         LOGGER.debug("误判数量: {}", list.size());
+        // 误判对数量：330
+        // 我们故意取10000个不在过滤器里的值，却还有330个被认为在过滤器里，这说明了误判率为0.03.即，在不做任何设置的情况下，默认的误判率为0.03。
+
+        // BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size, 0.01); //此时误判率为0.01
+        // 误判率越低，则底层维护的数组越长，占用空间越大。因此，误判率实际取值，根据服务器所能够承受的负载来决定，不是拍脑袋瞎想的。
     }
 }
