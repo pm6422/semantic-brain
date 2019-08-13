@@ -9,5 +9,5 @@ public interface NluService {
 
     Output recognize(Input input);
 
-    Output recognize(Input input, boolean saveOutput);
+    Output recognize(Input input, String skillCode, boolean saveOutput);
 }

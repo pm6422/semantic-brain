@@ -108,20 +108,19 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     @Override
-    public Output recognize(Input input, boolean saveOutput) {
+    public Output recognize(Input input, String skillCode, boolean saveOutput) {
+        Output output = null;
         try {
-            return this.recognize(input, null);
+            output = this.recognize(input, skillCode);
         } finally {
             if (saveOutput) {
                 // Save output
-
             }
-            return null;
+            return output;
         }
     }
 
     private Output checkInput(Input input) {
-
         return null;
     }
 
