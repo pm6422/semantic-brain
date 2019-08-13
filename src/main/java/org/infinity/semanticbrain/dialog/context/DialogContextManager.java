@@ -19,6 +19,7 @@ public class DialogContextManager {
 
     @Autowired
     private ApplicationProperties      applicationProperties;
+    // Local cache supports distributed environment by using message queue.
     private Map<String, DialogContext> dialogContextMap = new ConcurrentHashMap<>();
 
     /**
@@ -33,6 +34,7 @@ public class DialogContextManager {
         }
 
         if (dialogContext.getLastOutput().expired() || dialogContext.getLastOutput().skillModeExpired()) {
+            // Cache lazy deletion mechanism
             // Clear expired data
             dialogContextMap.remove(device.getDeviceId());
             return null;
