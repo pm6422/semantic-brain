@@ -67,14 +67,6 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     @Override
-    public void destroy() throws Exception {
-        threadPool.shutdown();
-        if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
-            LOGGER.info("All threads are terminated!");
-        }
-    }
-
-    @Override
     public Output recognize(Input input, String skillCode) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -137,5 +129,13 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
 
     private void terminated(Input input, Output output) {
         dialogContextManager.broadcastAddOutput(input.getDevice(), output);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        threadPool.shutdown();
+        if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
+            LOGGER.info("All threads are terminated!");
+        }
     }
 }
