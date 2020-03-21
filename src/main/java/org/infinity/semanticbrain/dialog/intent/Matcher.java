@@ -1,7 +1,7 @@
 package org.infinity.semanticbrain.dialog.intent;
 
 import com.google.common.collect.Multimap;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.infinity.semanticbrain.dialog.entity.*;
 import org.infinity.semanticbrain.domain.MatchRule;
 import org.infinity.semanticbrain.service.MatchRuleService;

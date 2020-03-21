@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>platform-bom</artifactId>
-        <groupId>io.spring.platform</groupId>
-        <version>Cairo-SR3</version>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <version>2.2.5.RELEASE</version>
         <relativePath />
     </parent>
 
@@ -22,12 +22,8 @@
     -->
     <properties>
         <app.server.port>6010</app.server.port>
-        <asciidoctor.html.output.directory>${project.basedir}/src/main/webapp/asciidoc</asciidoctor.html.output.directory>
-        <asciidoctor.input.directory>${project.basedir}/docs/asciidoc</asciidoctor.input.directory>
-        <asciidoctor.maven.plugin.version>1.5.3</asciidoctor.maven.plugin.version>
-        <generated.asciidoc.directory>${project.build.directory}/asciidoc/generated</generated.asciidoc.directory>
         <java.version>1.8</java.version>
-        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.version>3.0.0</maven.version>
@@ -47,10 +43,6 @@
             <version>0.9.8</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.qianmi</groupId>
             <artifactId>spring-boot-starter-rocketmq</artifactId>
             <version>1.1.0-RELEASE</version>
@@ -62,12 +54,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -82,12 +71,6 @@
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-staticdocs</artifactId>
-            <version>2.6.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox.version}</version>
             <exclusions>
@@ -96,6 +79,11 @@
                     <groupId>org.mapstruct</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -211,57 +199,6 @@
                     </rules>
                 </configuration>
             </plugin>
-            <!-- Run the generated asciidoc through Asciidoctor to generate other documentation types, such as PDFs or HTML5 -->
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.3</version>
-                <!-- Since each execution can only handle one backend, run separate executions for each desired output type -->
-                <executions>
-                    <execution>
-                        <id>api-output-html</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                            <outputDirectory>${asciidoctor.html.output.directory}/api</outputDirectory>
-                            <attributes>
-                                <generated>${generated.asciidoc.directory}/api</generated>
-                            </attributes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>open-api-output-html</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                            <outputDirectory>${asciidoctor.html.output.directory}/open-api</outputDirectory>
-                            <attributes>
-                                <generated>${generated.asciidoc.directory}/open-api</generated>
-                            </attributes>
-                        </configuration>
-                    </execution>
-                </executions>
-                <!-- Configure generic document generation settings -->
-                <configuration>
-                    <sourceDirectory>${asciidoctor.input.directory}</sourceDirectory>
-                    <sourceDocumentName>index.adoc</sourceDocumentName>
-                    <attributes>
-                        <doctype>book</doctype>
-                        <toc>left</toc>
-                        <toclevels>3</toclevels>
-                        <numbered />
-                        <hardbreaks />
-                        <sectlinks />
-                        <sectanchors />
-                    </attributes>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -274,7 +211,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/classes</outputDirectory>
-                            <useDefaultDelimiters>false</useDefaultDelimiters>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources/</directory>
@@ -306,24 +242,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <!-- Force alphabetical order to have a reproducible build -->
-                    <runOrder>alphabetical</runOrder>
-                    <systemPropertyVariables>
-                        <api.staticdocs.outputDir>${generated.asciidoc.directory}/api</api.staticdocs.outputDir>
-                        <open.api.staticdocs.outputDir>${generated.asciidoc.directory}/open-api</open.api.staticdocs.outputDir>
-                    </systemPropertyVariables>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/Abstract*.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

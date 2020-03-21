@@ -2,7 +2,7 @@ package org.infinity.semanticbrain.dialog.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.infinity.semanticbrain.dialog.filter.ProcessFilter;
 
 import java.io.Serializable;
