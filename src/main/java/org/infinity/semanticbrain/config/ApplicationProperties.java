@@ -19,7 +19,6 @@ import java.util.List;
 public class ApplicationProperties {
 
     private final Directory            directory            = new Directory();
-    private final Async                async                = new Async();
     private final Swagger              swagger              = new Swagger();
     private final Zookeeper            zookeeper            = new Zookeeper();
     private final Redis                redis                = new Redis();
@@ -31,10 +30,6 @@ public class ApplicationProperties {
 
     public Directory getDirectory() {
         return directory;
-    }
-
-    public Async getAsync() {
-        return async;
     }
 
     public Swagger getSwagger() {
@@ -108,39 +103,6 @@ public class ApplicationProperties {
 
         public void setAppsFile(String appsFile) {
             this.appsFile = appsFile;
-        }
-    }
-
-    public static class Async {
-
-        private int corePoolSize = 2;
-
-        private int maxPoolSize = 50;
-
-        private int queueCapacity = 10000;
-
-        public int getCorePoolSize() {
-            return corePoolSize;
-        }
-
-        public void setCorePoolSize(int corePoolSize) {
-            this.corePoolSize = corePoolSize;
-        }
-
-        public int getMaxPoolSize() {
-            return maxPoolSize;
-        }
-
-        public void setMaxPoolSize(int maxPoolSize) {
-            this.maxPoolSize = maxPoolSize;
-        }
-
-        public int getQueueCapacity() {
-            return queueCapacity;
-        }
-
-        public void setQueueCapacity(int queueCapacity) {
-            this.queueCapacity = queueCapacity;
         }
     }
 
