@@ -37,6 +37,9 @@ spring:
         mode: HTML
     banner:
         location: classpath:config/banner-company.txt
+    output:
+        ansi:
+            console-available: true # Configures the ANSI output
     rocketmq: # used by RocketMQProperties
         producer:
             group: ${spring.application.name}
@@ -49,7 +52,8 @@ server:
                 name: ${info.artifact.name}
 logging:
     config: classpath:config/logback-spring.xml
-    path: ${user.home}${file.separator}Log${file.separator}${info.artifact.id}${file.separator}${info.artifact.id}
+    file:
+        path: ${user.home}${file.separator}Log${file.separator}${info.artifact.id}${file.separator}${info.artifact.id}
     level:
         root: DEBUG
         ${info.project.package}: DEBUG
