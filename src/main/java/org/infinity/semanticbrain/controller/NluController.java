@@ -21,8 +21,8 @@ public class NluController {
 
     @ApiOperation(value = "意图识别", notes = "deviceId取值规则：不指定deviceId时使用登录用户名, userIds多值时使用英文逗号分割")
     @ApiResponses(value = {@ApiResponse(code = 201, message = "处理成功")})
-    @GetMapping(value = "/api/semantic-recognize")
-    public ResponseEntity<Output> semanticRecognize() {
+    @GetMapping(value = "/api/recognize-intent")
+    public ResponseEntity<Output> recognizeIntent() {
         Input input = new Input();
         return ResponseEntity.ok(nluService.recognize(input));
     }
