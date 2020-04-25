@@ -38,6 +38,10 @@
     -->
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.takawitter</groupId>
             <artifactId>trie4j</artifactId>
             <version>0.9.8</version>
