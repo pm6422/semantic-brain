@@ -76,6 +76,10 @@ application:
         license: 1.0
         license-url: http://www.apache.org/licenses/LICENSE-2.0.html
         host:
+    aop-logging:
+        enabled: true
+    service-metrics:
+        enabled: true
     dialog-context:
         keep-alive-seconds: 45 # 45 seconds
         skill-mode-keep-alive-seconds: 1800 # 30 minutes
