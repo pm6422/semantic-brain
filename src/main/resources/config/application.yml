@@ -62,6 +62,7 @@ logging:
 # ===================================================================
 application:
     swagger:
+        enabled: true
         api:
             title: Semantic Brain API
             description: Semantic Brain 接口文档
