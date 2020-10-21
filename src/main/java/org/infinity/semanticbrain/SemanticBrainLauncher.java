@@ -35,7 +35,7 @@ public class SemanticBrainLauncher {
      * Entrance method which used to run the application. Spring profiles can be configured with a program arguments
      * --spring.profiles.active=your-active-profile
      *
-     * @param args
+     * @param args program arguments
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
