@@ -1,5 +1,6 @@
 package org.infinity.semanticbrain.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -7,12 +8,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.infinity.semanticbrain.message.LocalCacheUpdateMessageProducer;
 import org.infinity.semanticbrain.utils.NetworkIpUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.Serializable;
@@ -29,26 +24,19 @@ import java.util.Date;
  */
 @Aspect
 @Configuration
-public class LocalCacheUpdateAspect implements ApplicationContextAware {
+@Slf4j
+public class LocalCacheUpdateAspect {
 
-    private static final Logger                          LOGGER                  = LoggerFactory.getLogger(LocalCacheUpdateAspect.class);
-    public static final  String                          BROADCAST_METHOD_PREFIX = "broadcast";
-    private              ApplicationContext              applicationContext;
-    @Autowired
-    private              LocalCacheUpdateMessageProducer localCacheUpdateMessageProducer;
+    public static final String                          BROADCAST_METHOD_PREFIX = "broadcast";
+    private final       LocalCacheUpdateMessageProducer localCacheUpdateMessageProducer;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public LocalCacheUpdateAspect(LocalCacheUpdateMessageProducer localCacheUpdateMessageProducer) {
+        this.localCacheUpdateMessageProducer = localCacheUpdateMessageProducer;
     }
 
     @Around("execution(* " + ApplicationConstants.BASE_PACKAGE + ".service.impl.*CacheServiceImpl." + BROADCAST_METHOD_PREFIX + "*(..)) || " + BroadcastExecute.AROUND)
     public Object localCacheUpdatePointcut(ProceedingJoinPoint joinPoint) throws Throwable {
         String typeName = joinPoint.getSignature().getDeclaringTypeName();
-        Object type = this.applicationContext.getBean(joinPoint.getSignature().getDeclaringType());
-        if (type == null) {
-            throw new RuntimeException("Incorrect usage of pointcut.");
-        }
 
         String originalMethodName = joinPoint.getSignature().getName();
         // Remove method name with BROADCAST_METHOD_PREFIX
@@ -58,10 +46,8 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
         // Starting broadcast update
         // TODO: check result
         localCacheUpdateMessageProducer.syncSend(MethodOperation.of(typeName, methodName, methodArgs, DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date())));
-        LOGGER.debug("Initiated a broadcast update");
-
-        Object result = joinPoint.proceed();
-        return result;
+        log.debug("Initiated a broadcast update");
+        return joinPoint.proceed();
     }
 
 
@@ -145,9 +131,7 @@ public class LocalCacheUpdateAspect implements ApplicationContextAware {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface BroadcastExecute {
-
-        public static final String AROUND = "@annotation(" + ApplicationConstants.BASE_PACKAGE + ".config.LocalCacheUpdateAspect.BroadcastExecute)";
-
+        String AROUND = "@annotation(" + ApplicationConstants.BASE_PACKAGE + ".config.LocalCacheUpdateAspect.BroadcastExecute)";
     }
 }
 

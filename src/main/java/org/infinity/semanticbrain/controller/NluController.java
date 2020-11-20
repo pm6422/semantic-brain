@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiResponses;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.service.NluService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class NluController {
 
-    @Autowired
-    private NluService nluService;
+    private final NluService nluService;
+
+    public NluController(NluService nluService) {
+        this.nluService = nluService;
+    }
 
     @ApiOperation(value = "意图识别", notes = "deviceId取值规则：不指定deviceId时使用登录用户名, userIds多值时使用英文逗号分割")
     @ApiResponses(value = {@ApiResponse(code = 201, message = "处理成功")})

@@ -2,14 +2,12 @@ package org.infinity.semanticbrain.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.MimeMappings;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 
 import javax.servlet.ServletContext;
@@ -25,11 +23,7 @@ import static java.net.URLDecoder.decode;
  */
 @Configuration
 public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory> {
-    private static final Logger                LOGGER = LoggerFactory.getLogger(WebConfigurer.class);
-    @Autowired
-    private              Environment           env;
-    @Autowired
-    private              ApplicationProperties applicationProperties;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebConfigurer.class);
 
     @Override
     public void onStartup(ServletContext servletContext) {

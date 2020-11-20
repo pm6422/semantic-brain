@@ -19,7 +19,7 @@ public class ThreadPoolConfiguration {
     @Bean
     public ExecutorService nluThreadPool() {
         int cpuCores = Runtime.getRuntime().availableProcessors() - 3;
-        return new ThreadPoolExecutor(cpuCores, cpuCores, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue(16),
+        return new ThreadPoolExecutor(cpuCores, cpuCores, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(16),
                 new NamedThreadFactory(StringUtils.upperCase(appName) + "-NLU-POOL"), new ThreadPoolExecutor.DiscardPolicy());
     }
 }
