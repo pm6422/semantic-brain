@@ -21,7 +21,6 @@ import java.util.List;
 public class ApplicationProperties {
     private final Directory            directory            = new Directory();
     private final Swagger              swagger              = new Swagger();
-    private final AopLogging           aopLogging           = new AopLogging();
     private final ServiceMetrics       serviceMetrics       = new ServiceMetrics();
     private final Zookeeper            zookeeper            = new Zookeeper();
     private final Redis                redis                = new Redis();
@@ -64,11 +63,6 @@ public class ApplicationProperties {
             private String title;
             private String description;
         }
-    }
-
-    @Data
-    public static class AopLogging {
-        private boolean enabled;
     }
 
     @Data
