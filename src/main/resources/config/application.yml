@@ -30,16 +30,11 @@ spring:
         basename: i18n/messages_zh_CN,i18n/messages_en_US
         fallback-to-system-locale: false
     mvc:
-        favicon:
-            enabled: false
         locale: zh_CN
     thymeleaf: #ThymeleafAutoConfiguration
         mode: HTML
     banner:
         location: classpath:config/banner-company.txt
-    output:
-        ansi:
-            console-available: true # Configures the ANSI output
     rocketmq: # used by RocketMQProperties
         producer:
             group: ${spring.application.name}
