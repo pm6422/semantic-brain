@@ -62,7 +62,7 @@ public class PageableParameterBuilderPlugin implements ParameterBuilderPlugin {
                     context.parameterBuilder().parameterType("query").name("page").modelRef(intModel)
                             .description("页码(从0开始)").build(),
                     context.parameterBuilder().parameterType("query").name("size").modelRef(intModel)
-                            .description("每页大小").build(),
+                            .description("每页大小(最大值为2000)").build(),
                     context.parameterBuilder().parameterType("query").name("sort").modelRef(stringModel)
                             .allowMultiple(true).description("排序(默认升序)。例: field1,asc或field2,desc")
                             .build());
