@@ -1,6 +1,7 @@
 package org.infinity.semanticbrain.config;
 
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +18,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 @Validated
-@Data
+@Getter
 public class ApplicationProperties {
     private final Directory            directory            = new Directory();
     private final Swagger              swagger              = new Swagger();
