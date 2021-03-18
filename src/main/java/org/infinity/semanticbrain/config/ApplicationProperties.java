@@ -20,24 +20,10 @@ import java.util.List;
 @Validated
 @Getter
 public class ApplicationProperties {
-    private final Directory            directory            = new Directory();
-    private final Swagger              swagger              = new Swagger();
-    private final ServiceMetrics       serviceMetrics       = new ServiceMetrics();
-    private final Zookeeper            zookeeper            = new Zookeeper();
-    private final Redis                redis                = new Redis();
-    private final Ribbon               ribbon               = new Ribbon();
-    private final HttpClientConnection httpClientConnection = new HttpClientConnection();
-    private final Url                  url                  = new Url();
-    private final DialogContext        dialogContext        = new DialogContext();
-    private final SemanticFilter       semanticFilter       = new SemanticFilter();
-
-    @Data
-    public static class Directory {
-        private String config    = "classpath:config";
-        private String templates = "classpath:templates";
-        private String data      = "classpath:data";
-        private String appsFile;
-    }
+    private final Swagger        swagger        = new Swagger();
+    private final Ribbon         ribbon         = new Ribbon();
+    private final DialogContext  dialogContext  = new DialogContext();
+    private final SemanticFilter semanticFilter = new SemanticFilter();
 
     @Data
     public static class Swagger {
@@ -67,39 +53,8 @@ public class ApplicationProperties {
     }
 
     @Data
-    public static class ServiceMetrics {
-        private boolean enabled;
-    }
-
-    @Data
-    public static class Dubbo {
-        private String adminUrl;
-        private String monitorUrl;
-    }
-
-    @Data
-    public static class Zookeeper {
-        private String adminUrl;
-    }
-
-    @Data
-    public static class Redis {
-        private String adminUrl;
-    }
-
-    @Data
     public static class Ribbon {
         private String[] displayOnActiveProfiles;
-    }
-
-    @Data
-    public static class HttpClientConnection {
-        private int globalRetryCount;
-        private int globalReadTimeoutInSeconds;
-    }
-
-    @Data
-    public static class Url {
     }
 
     @Data
