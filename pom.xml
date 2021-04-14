@@ -13,7 +13,7 @@
     <artifactId>semantic-brain</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    <name>SemanticBrain</name>
+    <name>${project.artifactId}</name>
 
     <!--
         *************************************************************************************
