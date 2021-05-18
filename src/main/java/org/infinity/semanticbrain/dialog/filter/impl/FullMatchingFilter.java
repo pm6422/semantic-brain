@@ -33,8 +33,9 @@ public class FullMatchingFilter extends AbstractSemanticFilter {
         // stimulate time consuming event
         for (int i = 0; i < 10000; i++) {
             for (int j = 0; j < 100000; j++) {
-                if (j % 100000 == 0)
+                if (j % 100000 == 0) {
                     System.out.println(j);
+                }
             }
         }
         return output;

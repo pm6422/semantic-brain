@@ -12,12 +12,26 @@ public interface SemanticFilter {
         TYPE_IMMEDIATE_TERMINATE, TYPE_PARALLEL_COMPARING, TYPE_SERIAL_COMPARING
     }
 
+    /**
+     * Check whether it is a dialog context dialog
+     *
+     * @return true: dialog context dialog
+     */
     boolean isContextFilter();
 
+    /**
+     * Get filter name
+     *
+     * @return filter name
+     */
     String getName();
 
+    /**
+     * Get filter type
+     *
+     * @return filter type
+     */
     TYPE getType();
-
 
     /**
      * For single thread

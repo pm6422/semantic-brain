@@ -14,6 +14,7 @@ import java.util.List;
 @ApiModel("意图识别结果")
 public class Output implements Serializable {
 
+    private static final long               serialVersionUID = 5913151987481470986L;
     public static final BigDecimal          TOP_SCORE     = new BigDecimal(100);
     @ApiModelProperty("用户输入信息")
     private             Input               input;
