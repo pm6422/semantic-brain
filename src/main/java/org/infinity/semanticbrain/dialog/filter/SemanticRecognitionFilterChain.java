@@ -33,7 +33,9 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     private              ExecutorService                       threadPool;
 
 
-    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs, Map<String, SemanticFilter> semanticFilterMap, ExecutorService threadPool) {
+    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs,
+                                          Map<String, SemanticFilter> semanticFilterMap,
+                                          ExecutorService threadPool) {
         this.filterConfigs = filterConfigs;
         this.semanticFilterMap = semanticFilterMap;
         this.threadPool = threadPool;

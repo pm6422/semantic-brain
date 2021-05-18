@@ -7,7 +7,6 @@ import org.infinity.semanticbrain.dialog.entity.Device;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
-import org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
@@ -29,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory.createFilterChain;
 
 @Service
 public class NluServiceImpl implements NluService, ApplicationContextAware, InitializingBean, DisposableBean {
@@ -84,7 +85,8 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             if (StringUtils.isNotEmpty(skillCode)) {
                 skillCodes.add(skillCode);
             }
-            SemanticFilterFactory.createFilterChain(filterChainConfigs, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
+            createFilterChain(filterChainConfigs, semanticFilterMap, threadPool)
+                    .doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
         }
