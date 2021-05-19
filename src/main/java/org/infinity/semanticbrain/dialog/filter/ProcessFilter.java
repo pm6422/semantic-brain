@@ -1,29 +1,22 @@
 package org.infinity.semanticbrain.dialog.filter;
 
+import lombok.Data;
+
+@Data
 public class ProcessFilter {
+    /**
+     * Filter name
+     */
     private String name;
-    private Long   elapsed; // Time unit in ms
+    /**
+     * Time unit in milliseconds
+     */
+    private Long   elapsed;
 
     public static ProcessFilter of(String name, Long elapsed) {
         ProcessFilter processFilter = new ProcessFilter();
         processFilter.setName(name);
         processFilter.setElapsed(elapsed);
         return processFilter;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getElapsed() {
-        return elapsed;
-    }
-
-    public void setElapsed(Long elapsed) {
-        this.elapsed = elapsed;
     }
 }

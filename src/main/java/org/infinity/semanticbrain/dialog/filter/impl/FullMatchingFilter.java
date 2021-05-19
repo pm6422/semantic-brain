@@ -2,7 +2,7 @@ package org.infinity.semanticbrain.dialog.filter.impl;
 
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
-import org.infinity.semanticbrain.dialog.filter.AbstractSemanticFilter;
+import org.infinity.semanticbrain.dialog.filter.AbstractRecognizeFilter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @Component
-public class FullMatchingFilter extends AbstractSemanticFilter {
+public class FullMatchingFilter extends AbstractRecognizeFilter {
 
     @Override
     public boolean isContextFilter() {

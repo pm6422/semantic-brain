@@ -6,7 +6,7 @@ import org.infinity.semanticbrain.dialog.entity.Output;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public interface SemanticFilter {
+public interface RecognizeFilter {
 
     enum TYPE {
         TYPE_IMMEDIATE_TERMINATE, TYPE_PARALLEL_COMPARING, TYPE_SERIAL_COMPARING

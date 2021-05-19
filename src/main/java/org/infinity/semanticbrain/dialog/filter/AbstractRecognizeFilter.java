@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 @Slf4j
-public abstract class AbstractSemanticFilter implements SemanticFilter {
+public abstract class AbstractRecognizeFilter implements RecognizeFilter {
 
     @Override
     public void doFilter(final Input input, final Output output,

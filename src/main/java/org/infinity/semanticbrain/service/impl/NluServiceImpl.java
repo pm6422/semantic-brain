@@ -7,8 +7,8 @@ import org.infinity.semanticbrain.dialog.context.DialogContextManager;
 import org.infinity.semanticbrain.dialog.entity.Device;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
-import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
-import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
+import org.infinity.semanticbrain.dialog.filter.RecognizeFilter;
+import org.infinity.semanticbrain.dialog.filter.RecognizeFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
 import org.springframework.beans.BeansException;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory.createFilterChain;
+import static org.infinity.semanticbrain.dialog.filter.RecognizeFilterFactory.createFilterChain;
 
 @Service
 @Slf4j
@@ -41,9 +41,9 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     private       InputPreprocessService                inputPreprocessService;
     @Autowired
     private       DialogContextManager                  dialogContextManager;
-    private       ApplicationContext                    applicationContext;
-    private final List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
-    private       Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
+    private       ApplicationContext           applicationContext;
+    private final List<RecognizeFilterConfig>  filterChainConfigs = new ArrayList<>();
+    private       Map<String, RecognizeFilter> semanticFilterMap  = new HashMap<>();
     @Autowired
     @Qualifier("nluThreadPool")
     private       ExecutorService                       threadPool;
@@ -56,15 +56,15 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     @Override
     public void afterPropertiesSet() {
         applicationProperties.getSemanticFilter().getSeq().forEach(filterNames -> {
-            List<SemanticFilter> filterBeans = new ArrayList<>();
+            List<RecognizeFilter> filterBeans = new ArrayList<>();
             filterNames.forEach(filterName -> {
-                SemanticFilter filterBean = (SemanticFilter) applicationContext.getBean(filterName);
+                RecognizeFilter filterBean = (RecognizeFilter) applicationContext.getBean(filterName);
                 filterBeans.add(filterBean);
             });
-            filterChainConfigs.add(SemanticRecognitionFilterConfig.of(filterBeans));
+            filterChainConfigs.add(new RecognizeFilterConfig(filterBeans));
         });
 
-        semanticFilterMap = applicationContext.getBeansOfType(SemanticFilter.class);
+        semanticFilterMap = applicationContext.getBeansOfType(RecognizeFilter.class);
     }
 
     @Override

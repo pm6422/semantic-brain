@@ -12,16 +12,16 @@ import java.util.*;
 import java.util.concurrent.*;
 
 @Slf4j
-public class SemanticRecognitionFilterChain implements SemanticFilterChain {
+public class RecognizeFilterChain {
 
     /**
      * Filters
      */
-    private final List<SemanticRecognitionFilterConfig> filterConfigs;
+    private final List<RecognizeFilterConfig>  filterConfigs;
     /**
      * The map which is used to save semantic filterConfigs
      */
-    private final Map<String, SemanticFilter>           semanticFilterMap;
+    private final Map<String, RecognizeFilter> semanticFilterMap;
     /**
      * Thread pool
      */
@@ -32,15 +32,22 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     private       int                                   pos = 0;
 
 
-    public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs,
-                                          Map<String, SemanticFilter> semanticFilterMap,
-                                          ExecutorService threadPool) {
+    public RecognizeFilterChain(List<RecognizeFilterConfig> filterConfigs,
+                                Map<String, RecognizeFilter> semanticFilterMap,
+                                ExecutorService threadPool) {
         this.filterConfigs = filterConfigs;
         this.semanticFilterMap = semanticFilterMap;
         this.threadPool = threadPool;
     }
 
-    @Override
+    /**
+     * FilterChain接口的doFilter方法用于把请求交给Filter链中的下一个Filter去处理
+     *
+     * @param input
+     * @param output
+     * @param lastOutput
+     * @param skillCodes
+     */
     public void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) {
         try {
             internalDoFilter(input, output, lastOutput, skillCodes);
@@ -58,8 +65,8 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                                   List<String> skillCodes) throws InterruptedException {
         // Call the next filter
         if (pos < filterConfigs.size()) {
-            SemanticRecognitionFilterConfig filterConfig = filterConfigs.get(pos);
-            List<SemanticFilter> parallelFilters = filterConfig.getFilters();
+            RecognizeFilterConfig filterConfig = filterConfigs.get(pos);
+            List<RecognizeFilter> parallelFilters = filterConfig.getFilters();
 
             if (parallelFilters.size() == 1) {
                 // Executing one filter
@@ -71,7 +78,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 List<Future<Output>> outputs = new ArrayList<>(filterCountInParallel);
                 List<ProcessFilter> filters = new ArrayList<>();
-                for (SemanticFilter parallelFilter : parallelFilters) {
+                for (RecognizeFilter parallelFilter : parallelFilters) {
                     if (this.enableFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
                         Callable<Output> task = () -> {
@@ -131,13 +138,13 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
         log.error(ExceptionUtils.getStackTrace(e));
     }
 
-    private boolean enableFilter(final Output lastOutput, final SemanticFilter parallelFilter) {
+    private boolean enableFilter(final Output lastOutput, final RecognizeFilter parallelFilter) {
         return lastOutput == null && !parallelFilter.isContextFilter() || lastOutput != null && parallelFilter.isContextFilter();
     }
 
     private boolean continueToFilter(final Output output) {
-        SemanticFilter matchedFilter = semanticFilterMap.get(output.getMatchedFilter());
-        return !output.recognized() || output.recognized() && matchedFilter.getType().equals(SemanticFilter.TYPE.TYPE_SERIAL_COMPARING);
+        RecognizeFilter matchedFilter = semanticFilterMap.get(output.getMatchedFilter());
+        return !output.recognized() || output.recognized() && matchedFilter.getType().equals(RecognizeFilter.TYPE.TYPE_SERIAL_COMPARING);
     }
 
     private void checkActiveThread() {
