@@ -41,8 +41,8 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     @Autowired
     private       DialogContextManager         dialogContextManager;
     private       ApplicationContext           applicationContext;
-    private final List<List<RecognizeFilter>>  filtersChains     = new ArrayList<>();
-    private       Map<String, RecognizeFilter> semanticFilterMap = new ConcurrentHashMap<>();
+    private final List<List<RecognizeFilter>>  filtersChains = new ArrayList<>();
+    private       Map<String, RecognizeFilter> filters       = new ConcurrentHashMap<>();
     @Autowired
     @Qualifier("nluThreadPool")
     private       ExecutorService              threadPool;
@@ -63,7 +63,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             filtersChains.add(filterBeans);
         });
         Assert.notEmpty(filtersChains, "Filters chains must NOT be empty!");
-        semanticFilterMap = applicationContext.getBeansOfType(RecognizeFilter.class);
+        filters = applicationContext.getBeansOfType(RecognizeFilter.class);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             if (StringUtils.isNotEmpty(skillCode)) {
                 skillCodes.add(skillCode);
             }
-            RecognizeFilterChain.of(filtersChains, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
+            RecognizeFilterChain.of(filtersChains, filters, threadPool).doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
             log.error("Failed to recognize intention", e);

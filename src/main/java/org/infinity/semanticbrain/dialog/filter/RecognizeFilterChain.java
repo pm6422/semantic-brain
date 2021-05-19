@@ -19,9 +19,9 @@ public class RecognizeFilterChain {
      */
     private final List<List<RecognizeFilter>>  filtersChains;
     /**
-     * The map which is used to save semantic filterConfigs
+     * The map which is used to save semantic filterChain
      */
-    private final Map<String, RecognizeFilter> semanticFilterMap;
+    private final Map<String, RecognizeFilter> filters;
     /**
      * Thread pool
      */
@@ -32,17 +32,17 @@ public class RecognizeFilterChain {
     private       int                          pos = 0;
 
     public static RecognizeFilterChain of(List<List<RecognizeFilter>> filtersChains,
-                                          Map<String, RecognizeFilter> semanticFilterMap,
+                                          Map<String, RecognizeFilter> filters,
                                           ExecutorService threadPoolExecutor) {
-        return new RecognizeFilterChain(filtersChains, semanticFilterMap, threadPoolExecutor);
+        return new RecognizeFilterChain(filtersChains, filters, threadPoolExecutor);
     }
 
 
     private RecognizeFilterChain(List<List<RecognizeFilter>> filtersChains,
-                                Map<String, RecognizeFilter> semanticFilterMap,
-                                ExecutorService threadPool) {
+                                 Map<String, RecognizeFilter> filters,
+                                 ExecutorService threadPool) {
         this.filtersChains = filtersChains;
-        this.semanticFilterMap = semanticFilterMap;
+        this.filters = filters;
         this.threadPool = threadPool;
     }
 
@@ -148,7 +148,7 @@ public class RecognizeFilterChain {
     }
 
     private boolean continueToFilter(final Output output) {
-        RecognizeFilter matchedFilter = semanticFilterMap.get(output.getMatchedFilter());
+        RecognizeFilter matchedFilter = filters.get(output.getMatchedFilter());
         return !output.recognized() || output.recognized() && matchedFilter.getType().equals(RecognizeFilter.TYPE.TYPE_SERIAL_COMPARING);
     }
 
