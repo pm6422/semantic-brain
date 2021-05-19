@@ -31,8 +31,14 @@ public class RecognizeFilterChain {
      */
     private       int                          pos = 0;
 
+    public static RecognizeFilterChain of(List<List<RecognizeFilter>> filtersChains,
+                                          Map<String, RecognizeFilter> semanticFilterMap,
+                                          ExecutorService threadPoolExecutor) {
+        return new RecognizeFilterChain(filtersChains, semanticFilterMap, threadPoolExecutor);
+    }
 
-    public RecognizeFilterChain(List<List<RecognizeFilter>> filtersChains,
+
+    private RecognizeFilterChain(List<List<RecognizeFilter>> filtersChains,
                                 Map<String, RecognizeFilter> semanticFilterMap,
                                 ExecutorService threadPool) {
         this.filtersChains = filtersChains;

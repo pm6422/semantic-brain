@@ -8,6 +8,7 @@ import org.infinity.semanticbrain.dialog.entity.Device;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.RecognizeFilter;
+import org.infinity.semanticbrain.dialog.filter.RecognizeFilterChain;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
 import org.springframework.beans.BeansException;
@@ -28,8 +29,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static org.infinity.semanticbrain.dialog.filter.RecognizeFilterFactory.createFilterChain;
 
 @Service
 @Slf4j
@@ -85,7 +84,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             if (StringUtils.isNotEmpty(skillCode)) {
                 skillCodes.add(skillCode);
             }
-            createFilterChain(filtersChains, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
+            RecognizeFilterChain.of(filtersChains, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
             log.error("Failed to recognize intention", e);
