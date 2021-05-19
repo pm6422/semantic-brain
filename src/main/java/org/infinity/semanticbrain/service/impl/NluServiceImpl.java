@@ -8,7 +8,6 @@ import org.infinity.semanticbrain.dialog.entity.Device;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
 import org.infinity.semanticbrain.dialog.filter.RecognizeFilter;
-import org.infinity.semanticbrain.dialog.filter.RecognizeFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
 import org.springframework.beans.BeansException;
@@ -20,12 +19,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -36,17 +36,17 @@ import static org.infinity.semanticbrain.dialog.filter.RecognizeFilterFactory.cr
 public class NluServiceImpl implements NluService, ApplicationContextAware, InitializingBean, DisposableBean {
 
     @Autowired
-    private       ApplicationProperties                 applicationProperties;
+    private       ApplicationProperties        applicationProperties;
     @Autowired
-    private       InputPreprocessService                inputPreprocessService;
+    private       InputPreprocessService       inputPreprocessService;
     @Autowired
-    private       DialogContextManager                  dialogContextManager;
+    private       DialogContextManager         dialogContextManager;
     private       ApplicationContext           applicationContext;
-    private final List<RecognizeFilterConfig>  filterChainConfigs = new ArrayList<>();
-    private       Map<String, RecognizeFilter> semanticFilterMap  = new HashMap<>();
+    private final List<List<RecognizeFilter>>  filtersChains     = new ArrayList<>();
+    private       Map<String, RecognizeFilter> semanticFilterMap = new ConcurrentHashMap<>();
     @Autowired
     @Qualifier("nluThreadPool")
-    private       ExecutorService                       threadPool;
+    private       ExecutorService              threadPool;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
@@ -54,16 +54,16 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public synchronized void afterPropertiesSet() {
         applicationProperties.getSemanticFilter().getSeq().forEach(filterNames -> {
             List<RecognizeFilter> filterBeans = new ArrayList<>();
             filterNames.forEach(filterName -> {
                 RecognizeFilter filterBean = (RecognizeFilter) applicationContext.getBean(filterName);
                 filterBeans.add(filterBean);
             });
-            filterChainConfigs.add(new RecognizeFilterConfig(filterBeans));
+            filtersChains.add(filterBeans);
         });
-
+        Assert.notEmpty(filtersChains, "Filters chains must NOT be empty!");
         semanticFilterMap = applicationContext.getBeansOfType(RecognizeFilter.class);
     }
 
@@ -85,8 +85,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
             if (StringUtils.isNotEmpty(skillCode)) {
                 skillCodes.add(skillCode);
             }
-            createFilterChain(filterChainConfigs, semanticFilterMap, threadPool)
-                    .doFilter(input, output, lastOutput, skillCodes);
+            createFilterChain(filtersChains, semanticFilterMap, threadPool).doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
             log.error("Failed to recognize intention", e);

@@ -15,9 +15,9 @@ import java.util.concurrent.*;
 public class RecognizeFilterChain {
 
     /**
-     * Filters
+     * Filters chains
      */
-    private final List<RecognizeFilterConfig>  filterConfigs;
+    private final List<List<RecognizeFilter>>  filtersChains;
     /**
      * The map which is used to save semantic filterConfigs
      */
@@ -25,17 +25,17 @@ public class RecognizeFilterChain {
     /**
      * Thread pool
      */
-    private final ExecutorService                       threadPool;
+    private final ExecutorService              threadPool;
     /**
      * The int which is used to maintain the current position in the filter chain
      */
-    private       int                                   pos = 0;
+    private       int                          pos = 0;
 
 
-    public RecognizeFilterChain(List<RecognizeFilterConfig> filterConfigs,
+    public RecognizeFilterChain(List<List<RecognizeFilter>> filtersChains,
                                 Map<String, RecognizeFilter> semanticFilterMap,
                                 ExecutorService threadPool) {
-        this.filterConfigs = filterConfigs;
+        this.filtersChains = filtersChains;
         this.semanticFilterMap = semanticFilterMap;
         this.threadPool = threadPool;
     }
@@ -43,10 +43,10 @@ public class RecognizeFilterChain {
     /**
      * FilterChain接口的doFilter方法用于把请求交给Filter链中的下一个Filter去处理
      *
-     * @param input
-     * @param output
-     * @param lastOutput
-     * @param skillCodes
+     * @param input      input
+     * @param output     output
+     * @param lastOutput lastOutput
+     * @param skillCodes skillCodes
      */
     public void doFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) {
         try {
@@ -64,9 +64,8 @@ public class RecognizeFilterChain {
     private void internalDoFilter(final Input input, final Output output, final Output lastOutput,
                                   List<String> skillCodes) throws InterruptedException {
         // Call the next filter
-        if (pos < filterConfigs.size()) {
-            RecognizeFilterConfig filterConfig = filterConfigs.get(pos);
-            List<RecognizeFilter> parallelFilters = filterConfig.getFilters();
+        if (pos < filtersChains.size()) {
+            List<RecognizeFilter> parallelFilters = filtersChains.get(pos);
 
             if (parallelFilters.size() == 1) {
                 // Executing one filter
