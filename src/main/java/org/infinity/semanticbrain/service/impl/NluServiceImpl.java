@@ -1,5 +1,6 @@
 package org.infinity.semanticbrain.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.infinity.semanticbrain.config.ApplicationProperties;
 import org.infinity.semanticbrain.dialog.context.DialogContextManager;
@@ -10,8 +11,6 @@ import org.infinity.semanticbrain.dialog.filter.SemanticFilter;
 import org.infinity.semanticbrain.dialog.filter.SemanticRecognitionFilterConfig;
 import org.infinity.semanticbrain.service.InputPreprocessService;
 import org.infinity.semanticbrain.service.NluService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -32,29 +32,29 @@ import java.util.concurrent.TimeUnit;
 import static org.infinity.semanticbrain.dialog.filter.SemanticFilterFactory.createFilterChain;
 
 @Service
+@Slf4j
 public class NluServiceImpl implements NluService, ApplicationContextAware, InitializingBean, DisposableBean {
 
-    private static final Logger                                LOGGER             = LoggerFactory.getLogger(NluServiceImpl.class);
     @Autowired
-    private              ApplicationProperties                 applicationProperties;
+    private       ApplicationProperties                 applicationProperties;
     @Autowired
-    private              InputPreprocessService                inputPreprocessService;
+    private       InputPreprocessService                inputPreprocessService;
     @Autowired
-    private              DialogContextManager                  dialogContextManager;
-    private              ApplicationContext                    applicationContext;
-    private              List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
-    private              Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
+    private       DialogContextManager                  dialogContextManager;
+    private       ApplicationContext                    applicationContext;
+    private final List<SemanticRecognitionFilterConfig> filterChainConfigs = new ArrayList<>();
+    private       Map<String, SemanticFilter>           semanticFilterMap  = new HashMap<>();
     @Autowired
     @Qualifier("nluThreadPool")
-    private              ExecutorService                       threadPool;
+    private       ExecutorService                       threadPool;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         applicationProperties.getSemanticFilter().getSeq().forEach(filterNames -> {
             List<SemanticFilter> filterBeans = new ArrayList<>();
             filterNames.forEach(filterName -> {
@@ -89,6 +89,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
                     .doFilter(input, output, lastOutput, skillCodes);
             this.afterProcess(input, output);
         } catch (Exception e) {
+            log.error("Failed to recognize intention", e);
         }
         stopWatch.stop();
         output.setElapsed(stopWatch.getTotalTimeMillis());
@@ -103,14 +104,14 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
 
     @Override
     public Output recognize(Input input, String skillCode, boolean saveOutput) {
-        Output output = null;
+        Output output;
         try {
             output = this.recognize(input, skillCode);
+            return output;
         } finally {
             if (saveOutput) {
                 // Save output
             }
-            return output;
         }
     }
 
@@ -137,7 +138,7 @@ public class NluServiceImpl implements NluService, ApplicationContextAware, Init
     public void destroy() throws Exception {
         threadPool.shutdown();
         if (threadPool.awaitTermination(1, TimeUnit.HOURS)) {
-            LOGGER.info("All threads are terminated!");
+            log.info("All threads are terminated!");
         }
     }
 }

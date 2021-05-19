@@ -11,8 +11,7 @@ public abstract class SemanticFilterFactory {
     public static SemanticRecognitionFilterChain createFilterChain(List<SemanticRecognitionFilterConfig> filterChainConfigs,
                                                                    Map<String, SemanticFilter> semanticFilterMap,
                                                                    ExecutorService threadPoolExecutor) {
-        Assert.notEmpty(filterChainConfigs, "Filter chains must NOT be empty.");
-        SemanticRecognitionFilterChain filterChain = new SemanticRecognitionFilterChain(filterChainConfigs, semanticFilterMap, threadPoolExecutor);
-        return filterChain;
+        Assert.notEmpty(filterChainConfigs, "Filter chains must NOT be empty!");
+        return new SemanticRecognitionFilterChain(filterChainConfigs, semanticFilterMap, threadPoolExecutor);
     }
 }

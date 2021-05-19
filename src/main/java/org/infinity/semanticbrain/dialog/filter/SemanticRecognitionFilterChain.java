@@ -1,10 +1,9 @@
 package org.infinity.semanticbrain.dialog.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.infinity.semanticbrain.dialog.entity.Input;
 import org.infinity.semanticbrain.dialog.entity.Output;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StopWatch;
 
@@ -12,25 +11,25 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
+@Slf4j
 public class SemanticRecognitionFilterChain implements SemanticFilterChain {
 
-    private static final Logger                                LOGGER            = LoggerFactory.getLogger(SemanticRecognitionFilterChain.class);
     /**
      * Filters
      */
-    private              List<SemanticRecognitionFilterConfig> filterConfigs;
+    private final List<SemanticRecognitionFilterConfig> filterConfigs;
     /**
      * The map which is used to save semantic filterConfigs
      */
-    private              Map<String, SemanticFilter>           semanticFilterMap = new HashMap<>();
-    /**
-     * The int which is used to maintain the current position in the filter chain
-     */
-    private              int                                   pos               = 0;
+    private final Map<String, SemanticFilter>           semanticFilterMap;
     /**
      * Thread pool
      */
-    private              ExecutorService                       threadPool;
+    private final ExecutorService                       threadPool;
+    /**
+     * The int which is used to maintain the current position in the filter chain
+     */
+    private       int                                   pos = 0;
 
 
     public SemanticRecognitionFilterChain(List<SemanticRecognitionFilterConfig> filterConfigs,
@@ -55,7 +54,8 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
         output.setTime(Instant.now());
     }
 
-    private void internalDoFilter(final Input input, final Output output, final Output lastOutput, List<String> skillCodes) throws InterruptedException {
+    private void internalDoFilter(final Input input, final Output output, final Output lastOutput,
+                                  List<String> skillCodes) throws InterruptedException {
         // Call the next filter
         if (pos < filterConfigs.size()) {
             SemanticRecognitionFilterConfig filterConfig = filterConfigs.get(pos);
@@ -71,8 +71,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                 List<Output> candidateOutputs = new ArrayList<>(filterCountInParallel);
                 List<Future<Output>> outputs = new ArrayList<>(filterCountInParallel);
                 List<ProcessFilter> filters = new ArrayList<>();
-                for (int i = 0; i < filterCountInParallel; i++) {
-                    SemanticFilter parallelFilter = parallelFilters.get(i);
+                for (SemanticFilter parallelFilter : parallelFilters) {
                     if (this.enableFilter(lastOutput, parallelFilter)) {
                         // Execute by using thread pool
                         Callable<Output> task = () -> {
@@ -104,7 +103,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
                             task.cancel(true);
                         }
                     } catch (ExecutionException e) {
-                        LOGGER.error(ExceptionUtils.getStackTrace(e));
+                        log.error(ExceptionUtils.getStackTrace(e));
                     }
                 }
 
@@ -129,7 +128,7 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     }
 
     private void handleRunnableException(Exception e) {
-        LOGGER.error(ExceptionUtils.getStackTrace(e));
+        log.error(ExceptionUtils.getStackTrace(e));
     }
 
     private boolean enableFilter(final Output lastOutput, final SemanticFilter parallelFilter) {
@@ -142,14 +141,14 @@ public class SemanticRecognitionFilterChain implements SemanticFilterChain {
     }
 
     private void checkActiveThread() {
-        LOGGER.debug("Active thread count: {}", Thread.activeCount());
+        log.debug("Active thread count: {}", Thread.activeCount());
         if (Thread.activeCount() == 0) {
             limitRate();
         }
     }
 
     private void limitRate() {
-        LOGGER.error("Active thread is exhausted.");
+        log.error("Active thread is exhausted.");
         // Do some other rate limit
     }
 }
